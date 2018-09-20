@@ -1,0 +1,28 @@
+{
+  "env": {
+    "test": {
+      "presets": ["env", "react", "stage-0"],
+      "plugins": [
+        "transform-runtime"
+      ]
+    },
+    "transform": {
+      "presets": ["react", "stage-0", [
+        "env", {
+          "useBuiltIns": true,
+          "modules": false,
+          "targets": {
+            "safari": "12"
+          },
+        }
+      ]],
+      "plugins": [
+        ["transform-imports", {
+          "@roseys/futils": {
+            "transform": "@roseys/futils/src/${member}"
+          }
+        }]
+      ]
+    }
+  }
+}
