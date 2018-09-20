@@ -5,7 +5,6 @@ import { whenFunctionCallWith, isNumber } from './utils'
 export default ({
   lookupDefaultOptions,
   getTheme,
-  defaultLookups,
   options: globalOptions
 }) => ({ val, options: localOptions, selector, props }) => {
   const options = { ...globalOptions, ...localOptions }

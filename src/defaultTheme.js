@@ -1,25 +1,25 @@
 export default {
   breakpoints: {
-    mobile: "mobile",
-    tablet: "tablet",
-    laptop: "laptop",
-    desktop: "desktop",
+    mobile: 'mobile',
+    tablet: 'tablet',
+    laptop: 'laptop',
+    desktop: 'desktop',
 
-    mobileSm: "mobileSm",
-    mobileMd: "mobileMd",
-    mobileLg: "mobileLg",
+    mobileSm: 'mobileSm',
+    mobileMd: 'mobileMd',
+    mobileLg: 'mobileLg',
 
-    tabletSm: "tabletSm",
-    tabletMd: "tabletMd",
-    tabletLg: "tabletLg",
+    tabletSm: 'tabletSm',
+    tabletMd: 'tabletMd',
+    tabletLg: 'tabletLg',
 
-    laptopSm: "laptopSm",
-    laptopMd: "laptopMd",
-    laptopLg: "laptopLg",
+    laptopSm: 'laptopSm',
+    laptopMd: 'laptopMd',
+    laptopLg: 'laptopLg',
 
-    desktopSm: "desktopSm",
-    desktopMd: "desktopMd",
-    desktopLg: "desktopLg"
+    desktopSm: 'desktopSm',
+    desktopMd: 'desktopMd',
+    desktopLg: 'desktopLg'
   },
 
   space: {
@@ -42,25 +42,25 @@ export default {
     xxl: 32
   },
   colors: {
-    red: "#f5222d",
-    vermilion: "#fa541c",
-    orange: "#fa8c16",
-    amber: "#faad14",
-    yellow: "#fadb14",
-    lime: "#a0d911",
-    green: "#52c41a",
-    teal: "#13c2c2",
-    blue: "#1890ff",
-    indigo: "#2f54eb",
-    violet: "#5141DE",
-    purple: "#722ed1",
-    magenta: "#eb2f96",
-    slate: "#6f9cb3",
-    dusk: "#7781a6",
-    blueGray: "#aeb9cb",
-    lightGray: "#bfbfbf",
-    gray: "#808080",
-    darkGray: "#404040",
-    nuetral: "#97a4a4"
+    red: '#f5222d',
+    vermilion: '#fa541c',
+    orange: '#fa8c16',
+    amber: '#faad14',
+    yellow: '#fadb14',
+    lime: '#a0d911',
+    green: '#52c41a',
+    teal: '#13c2c2',
+    blue: '#1890ff',
+    indigo: '#2f54eb',
+    violet: '#5141DE',
+    purple: '#722ed1',
+    magenta: '#eb2f96',
+    slate: '#6f9cb3',
+    dusk: '#7781a6',
+    blueGray: '#aeb9cb',
+    lightGray: '#bfbfbf',
+    gray: '#808080',
+    darkGray: '#404040',
+    nuetral: '#97a4a4'
   }
-};
+}
