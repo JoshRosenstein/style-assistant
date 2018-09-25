@@ -13,7 +13,33 @@ const plugins = [
     exclude: 'node_modules/**',
     babelrc: false,
     presets: [['env', { loose: true, modules: false }], 'react', 'stage-0'],
-    plugins: ['external-helpers'],
+    plugins: ['external-helpers',        ['transform-imports', {
+      '@roseys/futils': {
+        'transform': '@roseys/futils/src/${member}'
+      }
+    }]],
+  }),
+  replace({
+    exclude: 'node_modules/**',
+    ENV: JSON.stringify(process.env.NODE_ENV || 'development')
+  })
+
+]
+
+const plugins2 = [
+  babel({
+    exclude: 'node_modules/**',
+    babelrc: false,
+
+    externalHelpers: true,
+    presets: [['env', {
+      'modules': false,
+    }], 'react', 'stage-0'],
+    plugins: ['external-helpers', ['transform-imports', {
+      '@roseys/futils': {
+        'transform': '@roseys/futils/src/${member}'
+      }
+    }]],
   }),
   replace({
     exclude: 'node_modules/**',
@@ -26,13 +52,13 @@ const treeshake={pureExternalModules:true,
 }
 
 const configBase = {
-  input: 'temp/index.js',
+  input: 'src/index.js',
+  external:'@roseys/futils',
   treeshake,
   output: [
     { file: pkg.browser, format: 'umd', name: 'name', sourcemap: false ,exports:'named'}
   ],
-  plugins:[  resolve(),
-    commonjs(),...plugins,terser(),filesize()]
+  plugins:[  resolve(),...plugins2,terser(),filesize()]
 }
 
 

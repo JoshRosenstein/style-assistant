@@ -13,7 +13,7 @@
   "scripts": {
     "prepack": "yarn run build",
     "clean": "rimraf node_modules && rimraf dist",
-    "build": " yarn run transform && yarn run rollup && yarn run clean:temp",
+    "build": "  yarn run rollup && yarn run clean:temp",
     "rollup": " cross-env NODE_ENV=production && rollup -c",
     "transform": "cross-env NODE_ENV=transform babel  src --out-dir temp --ignore *.spec.js,*.test.js ",
     "build:dev": "rollup -c",
@@ -28,8 +28,7 @@
     "clean:temp": "rimraf temp"
   },
   "dependencies": {
-    "@roseys/futils": "^0.0.21",
-    "loglevel": "^1.6.1"
+    "@roseys/futils": "^0.0.21"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

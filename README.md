@@ -7,19 +7,29 @@ style-assistant WIP
 [![npm](https://img.shields.io/npm/v/style-assistant.svg)](https://www.npmjs.com/package/style-assistant)
 
 
-
+---
 ### Table of Contents
 
 * [Installation](#installation)
 * [Usage](#usage)
-   * [Config](#Config)
+  * [Config](#Config)
+  * [Function Dependecies](#Function-Dependecies)
+  * [pxTo](#pxTo)
+  * [pxToEm](#pxToEm)
+  * [pxToRem](#pxToRem)
+  * [pxToPct](#pxToPct)
+  * [pxToPct](#pxToPct)
+  * [pxToRelative](#pxToRelative)
+  * [normalize](#normalize)
+  * [normalizeToEm](#normalizeToEm)
+  * [normalizeToRem](#normalizeToRem)
+  * [toMq](#toMq)
+  * [getTheme](#getTheme)
+  * [transformStyle](#transformStyle)
   * [responsiveProp](#responsiveProp)
   * [responsiveBoolProp](#responsiveBoolProp)
-  * [SwitchProp](#switchProp)
-  * [toMq](#toMq)
-  * [transformStyle](#transformStyle)
+  * [switchProp](#switchProp)
   * [parser](#parser)
-  * [pxTo](#pxTo)
 * [Contributing](#contributing)
 * [License](#license)
 
@@ -71,13 +81,25 @@ const {
 ### Config
 config descriptions
 
-```javascript
-import defaultLookups from './defaultLookups'
-import defaultTheme from './theme'
 
-const config={
+| Key                   | Default Value                                                                                           | Description                                                                              | Used in                                                                                  |
+|-----------------------|---------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
+| defaultTheme          | {}                                                                                                      | defaultTheme is a fallback object if a theme or theme value is not provided within props | [getTheme](#getTheme)                                                                    |
+| baseFontSize          | 16                                                                                                      | Used for unit conversion utils                                                           |  [pxTo](#pxTo)                                                                           |
+| themeKey              | 'theme'                                                                                                 | Although 'theme' is the norm, some other libraries pass theme as '$theme'                |  [getTheme](#getTheme)                                                                                  |
+| breakpointsKey        | 'breakpoints'                                                                                           | This is used for responsive utils and toMq util                                          |   [responsiveProp](#responsiveProp),[responsiveBoolProp](#responsiveBoolProp)            |
+| transformOptions      | {defaultLookup: false,     defaultTransform: false,     keys: {},     getter: {},     functions: {`pxToRem`,`pxToEm`,`pxToPct`}   } | Set Global options for the transformStyle util               |    [transformStyle](#transformStyle)                                                                                       |
+| responsivePropOptions | {transform: false}                                                                                      | Set Global options for responsivePropOptions                                             |    [responsiveProp](#responsiveProp)                                                                                      |
+| switchPropOptions     | {transform: false}                                                                                      | Set Global options for switchPropOptions                                                 |        [switchProp](#switchProp)                                                                                  |
+
+```javascript
+import Assistant from 'style-assistant'
+import defaultTheme from './theme'
+import defaultLookups from './defaultLookups'
+
+const config = {
   defaultTheme,
-  baseFontSize: 16,  /// Unitless value used for unit conversions Utils
+  baseFontSize: 16, /// Unitless value used for unit conversions Utils
   themeKey: 'theme', /// Unitless value used for unit conversions Utils
   breakpointsKey: 'breakpoints',
   alwaysTransform: true,
@@ -86,28 +108,20 @@ const config={
     defaultTransform: true,
     keys: defaultLookups.keys,
     getter: defaultLookups.getter,
-    functions: defaultLookups.functions
+    functions: defaultLookups.functions,
   },
   responsivePropOptions: {
-    transform: false
+    transform: false,
   },
   switchPropOptions: {
-    transform: false
-  }
+    transform: false,
+  },
 }
 
+export default new Assistant(config)
+
+
 ```
-| Key                   | Default Value                                                                                           | Description                                                                              |
-|-----------------------|---------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
-| defaultTheme          | {}                                                                                                      | defaultTheme is a fallback object if a theme or theme value is not provided within props |
-| baseFontSize          | 16                                                                                                      | Used for unit conversion utils                                                           |
-| themeKey              | 'theme'                                                                                                 | Although 'theme' is the norm, some other libraries pass theme as '$theme'                |
-| breakpointsKey        | 'breakpoints'                                                                                           | This is used for responsive utils and toMq util                                          |
-| transformOptions      | {defaultLookup: false,     defaultTransform: false,     keys: {},     getter: {},     functions: {`pxToRem`,`pxToEm`,`pxToPct`}   } | Set Global options for the transformStyle util                                           |
-| responsivePropOptions | {transform: false}                                                                                      | Set Global options for responsivePropOptions                                             |
-| switchPropOptions     | {transform: false}                                                                                      | Set Global options for switchPropOptions                                                 |
-
-
 
 **Example**
 Theme
@@ -149,9 +163,12 @@ export default {
 ```
 defaultLookUps
 ```javascript
+const identity = x => x
+
 /// Any theme attribute can be an value, array or object
 export default {
-  keys: { /// Default themeKey to use id matching cssProp is found within transformStyle
+  keys: {
+    /// Default themeKey to use id matching cssProp is found within transformStyle
     margin: 'space',
     marginTop: 'space',
     marginBottom: 'space',
@@ -177,9 +194,10 @@ export default {
     border: 'borders',
     borderColor: 'colors',
     backgroundColor: 'colors',
-    boxShadow: 'shadows'
+    boxShadow: 'shadows',
   },
-  getter: { /// Default getter to use id matching cssProp is found within transformStyle, can be string to match functions below or function
+  getter: {
+    /// Default getter to use id matching cssProp is found within transformStyle, can be string to match functions below or function
     margin: 'pxToRem',
     marginTop: 'pxToRem',
     marginBottom: 'pxToRem',
@@ -190,25 +208,231 @@ export default {
     paddingBottom: 'pxToRem',
     paddingLeft: 'pxToRem',
     paddingRight: 'pxToRem',
-    fontSize: 'px'
+    fontSize: 'px',
   },
-  functions: {  // Shorthand lookup functions. used in switchProp. If value is a string of one of the keys below, then will call corresponding function with corresponding prop value
-    returnAsIs: identity,
+  functions: {
+    // Shorthand lookup functions. used in switchProp. If value is a string of one of the keys below, then will call corresponding function with corresponding prop value
     identity,
-    propValue: identity,
-    self: identity,
-    pxToRem,
-    pxToEm,
-    pxToPct,
-    px,
-    ms,
-    pct,
-    '%': pct
-  }
+    returnAsIs: identity, //Can add aliases
+    propValue: identity, //alias
+    self: identity, //alias
+    px: x => parseFloat(x) + 'px',
+    ms: x => parseFloat(x) + 'ms',
+    pct: x => {
+      x = parseFloat(x)
+      x = Math.abs(x) < 1 ? x * 100 : x
+      return x + '%'
+    },
+  },
 }
 
+
 ```
+
+### Function Dependecies
+
+* [pxTo](#pxTo)
+  * **config.baseFontSize**
+* [pxToEm](#pxToEm)
+  * [pxTo](#pxTo)
+* [pxToRem](#pxToRem)
+  * [pxTo](#pxTo)
+* [pxToPct](#pxToPct)
+  * [pxTo](#pxTo)
+* [pxToPct](#pxToPct)
+  * [pxTo](#pxTo)
+* [pxToRelative](#pxToRelative)
+  * [pxTo](#pxTo)
+* [normalize](#normalize)
+  * [pxTo](#pxTo)
+* [normalizeToEm](#normalizeToEm)
+  * [pxTo](#pxTo)
+* [normalizeToRem](#normalizeToRem)
+  * [pxTo](#pxTo)
+* [toMq](#toMq)
+  * [pxToEm](#pxToEm)
+* [getTheme](#getTheme)
+  * **config.themeKey**
+  * **config.defaultTheme**
+* [transformStyle](#transformStyle)
+  * [getTheme](#getTheme)
+  * **config.transformOptions**
+  * **config.alwaysTransform**
+* [responsiveProp](#responsiveProp)
+  * [getTheme](#getTheme)
+  * **config.breakpointsKey**
+  * [toMq](#toMq)
+  * [transformStyle](#transformStyle)
+  * **config.responsivePropOptions**
+* [responsiveBoolProp](#responsiveBoolProp)
+  * [getTheme](#getTheme)
+  * **config.breakpointsKey**
+  * [toMq](#toMq)
+  * [transformStyle](#transformStyle)
+* [switchProp](#switchProp)
+  * [responsiveProp](#responsiveProp)
+  * [responsiveBoolProp](#responsiveBoolProp)
+  * [transformStyle](#transformStyle)
+  * **config.transformOptions.functions**
+  * **config.switchPropOptions**
+* [parser](#parser)
+  * [switchProp](#switchProp)
+  * [responsiveProp](#responsiveProp)
+  * [responsiveBoolProp](#responsiveBoolProp)
+  * [toMq](#toMq)
+
+
+### toMq
+**Deps:** | [pxToEm](#pxToEm) |
+Used in responsive utilties. quick helper to convert object to media query string. Currently depends on the 'pxToEm' functions.
+
+
+**Example**
+
+```javascript
+const toMq =
+```
+
+### transformStyle
+
+transformStyle Description
+
+**Example**
+
+```javascript
+const transformStyle =
+```
+
+### parser
+
+parser Description
+
+**Example**
+
+```javascript
+const parser =
+```
+
+### pxTo
+**Deps:** | [config.baseFontSize.](#Config) |
+pxTo Description
+
+**Example**
+
+```javascript
+const pxTo =
+```
+
+### pxToEm
+**Deps:** | [pxTo](#pxTo) |
+pxToEm Description
+
+**Example**
+
+```javascript
+const pxToEm =
+```
+
+### pxToRem
+**Deps:** | [pxTo](#pxTo) |
+pxToRem Description
+
+**Example**
+
+```javascript
+const pxToRem =
+```
+
+### pxToPct
+**Deps:** | [pxTo](#pxTo) |
+pxToPct Description
+
+**Example**
+
+```javascript
+const pxToPct =
+```
+
+### pxToRelative
+**Deps:** | [pxTo](#pxTo) |
+pxToRelative Description
+
+**Example**
+
+```javascript
+const pxToRelative =
+```
+
+### normalize
+**Deps:** | [pxTo](#pxTo) |
+normalize Description
+
+**Example**
+
+```javascript
+const normalize =
+```
+### normalizeToEm
+**Deps:** | [normalize](#normalize) |
+normalizeToEm Description
+
+**Example**
+
+```javascript
+const normalizeToEm =
+```
+### normalizeToRem
+**Deps:** | [normalize](#normalize) |
+normalizeToRem Description
+
+**Example**
+
+```javascript
+const normalizeToRem =
+```
+
+### toMq
+**Deps:** | [pxToEm](#pxToEm) |
+toMq Description
+
+**Example**
+
+```javascript
+const toMq =
+```
+
+### getTheme
+**Deps:** | [config.themeKey](#Config) | [config.defaultTheme](#Config) |
+getTheme Description
+
+**Example**
+
+```javascript
+const getTheme =
+```
+
+### transformStyle
+**Deps:** | [getTheme](#getTheme) | [config.transformOptions](#Config) | [config.alwaysTransform](#Config) |
+getTheme Description
+
+**Example**
+
+```javascript
+const transformStyle =
+```
+
+### responsiveProp
+**Deps:** | [getTheme](#getTheme) | [toMq](#toMq) | [transformStyle](#transformStyle) | [config.breakpointsKey](#Config) |
+responsiveProp Description
+
+**Example**
+
+```javascript
+const responsiveProp =
+```
+
 ### responsiveBoolProp
+**Deps:** | [getTheme](#getTheme) | [toMq](#toMq) | [config.breakpointsKey](#Config) |
 
 This function is useful if you have a css property with a static default value, and want to apply to certain breakpoints
 
@@ -234,6 +458,7 @@ const example2=isHiddenFunc(propsAsArray)
 ```
 
 ### switchProp
+**Deps:** | [responsiveProp](#responsiveProp)| [responsiveBoolProp](#responsiveBoolProp) | [transformStyle](#transformStyle) | [config.transformOptions.functions](#Config) | [config.switchPropOptions](#Config) |
 
 Useful SwitchStatement like style block.
 
@@ -270,29 +495,9 @@ const example33=getColorStyle({}) //=> returns {backgroundColor:'black'}
 
 ```
 
-### toMq
-
-toMq Description
-
-**Example**
-
-```javascript
-const toMq =
-```
-
-### transformStyle
-
-transformStyle Description
-
-**Example**
-
-```javascript
-const transformStyle =
-```
-
 ### parser
-
-parser Description
+**Deps:** | [switchProp](#switchProp) | [responsiveProp](#responsiveProp) | [responsiveBoolProp](#responsiveBoolProp) | [toMq](#toMq) |
+parser aka styler
 
 **Example**
 
@@ -300,15 +505,6 @@ parser Description
 const parser =
 ```
 
-### pxTo
-
-pxTo Description
-
-**Example**
-
-```javascript
-const pxTo =
-```
 ## Contributing
 
 Contributions are welcome! Feel free to open an issue or a pull request and participate at whatever level you would like.
