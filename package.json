@@ -11,10 +11,10 @@
   "unpkg": "dist/style-assistant.min.js",
   "jsdelivr": "dist/style-assistant.min.js",
   "scripts": {
-    "prepack": "yarn run build:prod",
+    "prepack": "yarn run build",
     "clean": "rimraf node_modules && rimraf dist",
     "build": " yarn run transform && yarn run rollup && yarn run clean:temp",
-    "rollup": " SET NODE_ENV=production && rollup -c",
+    "rollup": " cross-env NODE_ENV=production && rollup -c",
     "transform": "cross-env NODE_ENV=transform babel  src --out-dir temp --ignore *.spec.js,*.test.js ",
     "build:dev": "rollup -c",
     "watch": "rollup -c --watch",
@@ -27,9 +27,9 @@
     "lint": "npx eslint .",
     "clean:temp": "rimraf temp"
   },
-
   "dependencies": {
-    "@roseys/futils": "^0.0.19"
+    "@roseys/futils": "^0.0.21",
+    "loglevel": "^1.6.1"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -60,9 +60,11 @@
     "rollup-plugin-terser": "^1.0.1",
     "rollup-plugin-uglify": "3.0.0"
   },
-  "bundlesize": [{
-    "path": "dist/styler.min.js"
-  }],
+  "bundlesize": [
+    {
+      "path": "dist/styler.min.js"
+    }
+  ],
   "lint-staged": {
     "*.js": [
       "prettier --no-semi --single-quote --write",

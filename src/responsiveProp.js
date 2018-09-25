@@ -1,27 +1,37 @@
-import { prop, flow, isObject, toArray, mapValues } from "@roseys/futils";
-import { falseToNull, safeMapValues } from "./utils";
+import { prop, flow, isObject, toArray, mapValues } from '@roseys/futils'
+import { falseToNull, safeMapValues } from './utils'
 
 import {
   isLikeBreakpoints,
   getBreakPoints,
   responsiveReducer
-} from "./responsiveHelpers";
+} from './responsiveHelpers'
 
-export const responsiveBooleanProp = (getTheme, breakpointsKey, toMq) => ({
+export const responsiveBooleanProp = (
+  getTheme,
+  breakpointsKey,
+  toMq,
+  transformStyle
+) => ({
   defaultValue,
+  value,
   cssProp,
-  transformValue = v => v,
-  prop: targetPropName
+  prop: targetPropName,
+  transform,
+  transformOptions
 }) => props => {
-  const css = cssProp || prop;
+  const css = cssProp || prop
 
-  let matchedProp = flow(
-    props,
-    prop(targetPropName),
-    safeMapValues(falseToNull)
-  );
+  let matchedProp = value
+  if (!matchedProp) {
+    matchedProp = flow(
+      props,
+      prop(targetPropName),
+      safeMapValues(falseToNull)
+    )
+  }
   if (isLikeBreakpoints(matchedProp)) {
-    matchedProp = mapValues(falseToNull)(matchedProp);
+    matchedProp = mapValues(falseToNull)(matchedProp)
   }
 
   //   when(
@@ -42,21 +52,29 @@ export const responsiveBooleanProp = (getTheme, breakpointsKey, toMq) => ({
   // );
 
   //console.log(isDefined(matchedProp), matchedProp, boolsToNil(matchedProp));
-  const defaultResult = defaultValue ? { [css]: defaultValue } : {};
+  let transformer = v => v
+  if (transform || transformOptions) {
+    transformer = v =>
+      transformStyle({
+        value: v,
+        cssProp: css,
+        options: transformOptions
+      })(props)
+  }
+
+  const defaultResult = defaultValue ? { [css]: defaultValue } : {}
 
   if (!isLikeBreakpoints(matchedProp)) {
-    return !matchedProp
-      ? defaultResult
-      : { [css]: transformValue(matchedProp, props) };
+    return !matchedProp ? defaultResult : { [css]: transformer(matchedProp) }
   }
 
   let { breakpoints, getBp } = getBreakPoints(
     matchedProp,
     getTheme(breakpointsKey)(props)
-  );
+  )
 
   if (breakpoints && getBp) {
-    const computedValFn = currentVal => transformValue(currentVal, props);
+    const computedValFn = currentVal => transformer(currentVal)
     return responsiveReducer({
       breakpoints,
       getBp,
@@ -64,8 +82,8 @@ export const responsiveBooleanProp = (getTheme, breakpointsKey, toMq) => ({
       computedValFn,
       toMq,
       init: defaultResult
-    });
+    })
   }
-  return;
-};
-export default responsiveBooleanProp;
+  return
+}
+export default responsiveBooleanProp

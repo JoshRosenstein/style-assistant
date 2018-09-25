@@ -6,12 +6,12 @@ const styler = new Assistant({ defaultTheme: testTheme })
 
 describe('Quick Helpers', () => {
   it('Any raw Unitless Number assumes to be px ', () => {
-    const { pxToEm, normalize_em } = styler
+    const { pxToEm, normalizeToEm } = styler
     expect(pxToEm(16)).toEqual('1em')
-    expect(normalize_em(16, 16)).toEqual('1em')
-    expect(normalize_em(pxToEm(16), '1em')).toEqual('1em')
-    expect(normalize_em(pxToEm(8), '1em')).toEqual('0.5em')
-    expect(normalize_em(8, '1em')).toEqual('0.5em')
+    expect(normalizeToEm(16, 16)).toEqual('1em')
+    expect(normalizeToEm(pxToEm(16), '1em')).toEqual('1em')
+    expect(normalizeToEm(pxToEm(8), '1em')).toEqual('0.5em')
+    expect(normalizeToEm(8, '1em')).toEqual('0.5em')
   })
 
   it('toMq Helper', () => {
@@ -37,5 +37,16 @@ describe('Quick Helpers', () => {
     expect(getDefaultTheme('colors.black')).toEqual('#000')
     styler.mergeDefaultTheme({ colors: { customColor: 'MycustomColor' } })
     expect(getDefaultTheme('colors.customColor')).toEqual('MycustomColor')
+  }),
+  it('GetTheme', () => {
+    const { getTheme } = styler
+
+    expect(getTheme('colors.black')({})).toEqual('#000')
+
+    expect(
+      getTheme('customColors.black')({
+        theme: { customColors: { black: 'customBlack' } }
+      })
+    ).toEqual('customBlack')
   })
 })

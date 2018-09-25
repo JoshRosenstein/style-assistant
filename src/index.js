@@ -1,29 +1,49 @@
 import { path, mergeDeepRight } from '@roseys/futils'
-import defaultTheme from './defaultTheme'
-import { pxTo} from './utils'
-import toMqCreator from './toMqCreator'
-import switchProp from './switchProp'
-import responsivePropC from './responsiveProp'
-import responsiveBoolPropC from './responsiveBoolProp'
-import computeOptionsCreator from './computeOptions'
-import defaultLookups from './defaultLookups'
-import { getThemeCreate,normalize,lookupDefaultOptionsCreator } from './tempHolder'
-
+import PxTo from './pxTo'
+import ToMq from './toMq'
+import SwitchProp from './switchProp'
+import ResponsiveProp from './responsiveProp'
+import ResponsiveBoolProp from './responsiveBoolProp'
+import TransformStyle from './transformStyle'
+import GetTheme from './getTheme'
+import Normalize from './normalize'
+import Parser from './parser'
 
 const defaultOptions = {
-  defaultLookup: true,
-  defaultTransform: true,
-  defaultTheme,
-  defaultLookups,
+  defaultTheme: {},
   baseFontSize: 16,
   themeKey: 'theme',
   breakpointsKey: 'breakpoints',
-  computeOptionsDefaultKeys: defaultLookups.keys,
-  computeOptionsDefaultGetters: defaultLookups.getter,
-  computeOptionsGetterFunctions: defaultLookups.functions
+  alwaysTransform: false,
+  transformOptions: {
+    defaultLookup: false,
+    defaultTransform: false,
+    keys: {},
+    getter: {},
+    functions: {}
+  },
+  responsivePropOptions: {
+    transform: false
+  },
+  switchPropOptions: {
+    transform: false
+  }
 }
 
-export default class createStyler {
+const THEMEKEY = Symbol('theme key')
+const TRANFORMSTYLE = Symbol('TransformStyle')
+const BASEFONTSIZE = Symbol('baseFontSize')
+const BREAKPOINTSKEY = Symbol('breakpointsKey')
+const PXTO = Symbol('pxTo')
+const RESPONSIVEBOOLPROP = Symbol('ResponsiveBoolProp')
+const RESPONSIVEPROP = Symbol('ResponsiveProp')
+const DEFAULTTHEME = Symbol('DefaultTheme')
+const SWITCHPROP = Symbol('SWITCHPROP')
+const GETTHEME = Symbol('getTheme')
+const TOMQ = Symbol('TOMQ')
+const PARSER = Symbol('Parser')
+
+export default class Assistant {
   constructor(options) {
     const mergedOptions = { ...defaultOptions, ...options }
     const {
@@ -31,138 +51,116 @@ export default class createStyler {
       themeKey,
       baseFontSize,
       breakpointsKey,
-      defaultTransform,
-      defaultLookup,
-      computeOptionsDefaultKeys,
-      computeOptionsDefaultGetters,
-      computeOptionsGetterFunctions
+      alwaysTransform,
+      responsivePropOptions,
+      switchPropOptions
     } = mergedOptions
-    this.themeKey = themeKey
-    this.defaultTheme = defaultTheme
-    this.baseFontSize = baseFontSize
-    this.breakpointsKey = breakpointsKey
-    this.computeDefaults = { defaultLookup, defaultTransform }
+
+    this.responsivePropOptions = responsivePropOptions
+    this.switchPropOptions = switchPropOptions
+    this.alwaysTransform = alwaysTransform
+    this[THEMEKEY] = themeKey
+    this[DEFAULTTHEME] = defaultTheme
+    this[BASEFONTSIZE] = baseFontSize
+    this[BREAKPOINTSKEY] = breakpointsKey
+    this.computeDefaults = {
+      defaultLookup: path('transformOptions.defaultLookup', mergedOptions),
+      defaultTransform: path('transformOptions.defaultTransform', mergedOptions)
+    }
     this.defaultLookups = {
-      keys: computeOptionsDefaultKeys,
-      getter: computeOptionsDefaultGetters,
+      keys: path('transformOptions.keys', mergedOptions),
+      getter: path('transformOptions.getter', mergedOptions),
       functions: {
         pxToRem: this.pxToRem,
         pxToEm: this.pxToEm,
         pxToPct: this.pxToPct,
-        ...computeOptionsGetterFunctions
+        ...path('transformOptions.functions', mergedOptions)
       }
     }
-    this.defaultBreakpoints = this.defaultTheme[this.breakpointsKey]
 
-    this.debugger = false
-    this.log = (...args) =>
-      this.debugger && console.log(this.logPrefix, ...args)
-    this.logPrefix = 'Assistant Logger'
+    this[PXTO] = PxTo(this[BASEFONTSIZE])
+    this[GETTHEME] = GetTheme(this[THEMEKEY], this[DEFAULTTHEME])
+    this[TOMQ] = ToMq(this.pxToEm)
+
+    this[TRANFORMSTYLE] = TransformStyle(
+      this[GETTHEME],
+      this.defaultLookups,
+      this.computeDefaults
+    )
+    this[RESPONSIVEBOOLPROP] = ResponsiveBoolProp(
+      this[GETTHEME],
+      this[BREAKPOINTSKEY],
+      this[TOMQ],
+      this[TRANFORMSTYLE]
+    )
+    this[RESPONSIVEPROP] = ResponsiveProp(
+      this[GETTHEME],
+      this[BREAKPOINTSKEY],
+      this[TOMQ],
+      this[TRANFORMSTYLE]
+    )
+    this[SWITCHPROP] = SwitchProp(
+      this[RESPONSIVEPROP],
+      this[RESPONSIVEBOOLPROP],
+      this[TRANFORMSTYLE],
+      this.defaultLookups.functions
+    )
+
+    this[PARSER] = Parser(
+      this[SWITCHPROP],
+      this[RESPONSIVEPROP],
+      this[RESPONSIVEBOOLPROP],
+      this[TOMQ]
+    )
+  }
+
+  get defaultTheme() {
+    return this[DEFAULTTHEME]
   }
 
   /*
 Style UTILS
 
   */
+  pxToRem = pxValue => this[PXTO]('rem')(pxValue)
+  pxToEm = pxValue => this[PXTO]('em')(pxValue)
+  pxToPct = pxValue => this[PXTO]('%')(pxValue)
+  pxToRelative = pxValue => this[PXTO](false)(pxValue)
 
-  pxToRem = pxTo(this.baseFontSize, 'rem');
-  px = pxTo(1, 'px');
-  pxToEm = pxTo(this.baseFontSize, 'em');
-  pxToPct = pxTo(this.baseFontSize, '%');
-  pxToRelative = pxTo(this.baseFontSize, false);
-  normalize_em = (value, base) =>
-    normalize(this.pxToRelative(value), this.pxToRelative(base), 'em');
-  normalize_rem = (value, base) =>
-    normalize(this.pxToRelative(value), this.pxToRelative(base), 'rem');
+  normalize = Normalize(pxValue => this[PXTO](false)(pxValue))
+
+  normalizeToEm = (value, base) => this.normalize(value, base, 'em')
+  normalizeToRem = (value, base) => this.normalize(value, base, 'rem')
 
   // styler.toMq([{ screen: true  ,max: 16} => @media screen and (max-width:1em)
-  toMq = toMqCreator(this.pxToEm);
+  toMq = config => this[TOMQ](config)
+  parse = config => this[PARSER](config)
 
-  //  styler.getTheme('space.sm',{})
-  //  styler.getTheme([space.sm],{}) //returns defaultheme value if no props supplied
-  // getTheme = curryN(2, (key, props) => themeKeyCreate(this.themeKey, this.defaultTheme, key,props))
-  // getTheme =key=>props=> themeKeyCreate(this.themeKey, this.defaultTheme)(key)(props)
   getDefaultTheme = key =>
-    key ? path(key, this.defaultTheme) : this.defaultTheme;
+    key ? path(key, this[DEFAULTTHEME]) : this[DEFAULTTHEME]
 
-    mergeDefaultTheme = a => {
-      this.defaultTheme = mergeDeepRight(this.defaultTheme, a)
-    };
-        
-    /*
-  Dependent Tools
-
-    */
-
-  lookupDefaultOptions = (dictionaryKey, value) =>
-    lookupDefaultOptionsCreator(this.defaultLookups)(dictionaryKey, value);
-
-    /*
-  Temp Tools
-
-    */
-
-  toggleLogger(){this.debugger = !this.debugger}
-
-  setLogTitle (str) {this.logPrefix = str}
-
+  mergeDefaultTheme = a => {
+    this[DEFAULTTHEME] = mergeDeepRight(this[DEFAULTTHEME], a)
+  }
 
   /*
 PROP DEPENDEND
 
   */
 
-  getTheme = key => props =>
-    getThemeCreate(this.themeKey, this.defaultTheme)(key, props);
+  getTheme = key => this[GETTHEME](key)
 
   getThemeWithFallbackKey = (key, fallbackKey = 'default') => props =>
-    this.getTheme(key)(props) || this.getTheme(fallbackKey)(props);
+    this[GETTHEME](key)(props) || this[GETTHEME](fallbackKey)(props)
 
   getThemeOr = (key, defaultValue) => props =>
-    this.getTheme(key)(props) || defaultValue;
+    this[GETTHEME](key)(props) || defaultValue
 
-  responsiveProp = ({ defaultValue, prop, cssProp, transformValue }) => props =>
-    responsivePropC(this.getTheme, this.breakpointsKey, this.toMq)({
-      log: this.log,
-      defaultValue,
-      transformValue,
-      prop,
-      cssProp
-    })(props);
-
-  switchProp = (value, options) => props =>
-    switchProp({
-      responsiveBoolProp: this.responsiveBoolProp,
-      responsiveProp: this.responsiveProp
-    })({
-      value,
-      props,
-      options
-    })
-
-
-  responsiveBoolProp = ({ value, T, F, cssProp, prop }) => props =>
-    responsiveBoolPropC(this.getTheme, this.breakpointsKey, this.toMq)({
-      log: this.log,
-      value,
-      T,
-      F,
-      prop,
-      cssProp
-    })(props);
-
-  computeOptions = ({ val, options, selector }) => props =>
-    computeOptionsCreator({
-      getTheme: this.getTheme,
-      defaultLookups: this.defaultLookups,
-      lookupDefaultOptions: this.lookupDefaultOptions,
-      options: this.computeDefaults
-    })({
-      log: this.log,
-      val,
-      options,
-      selector,
-      props
-    });
-
+  responsiveProp = config => props =>
+    this[RESPONSIVEPROP]({ ...this.responsivePropOptions, ...config })(props)
+  responsiveBoolProp = config => this[RESPONSIVEBOOLPROP](config)
+  switchProp = (value, options) =>
+    this[SWITCHPROP](value, { ...this.switchPropOptions, ...options })
+  transformStyle = config =>
+    this[TRANFORMSTYLE]({ transform: this.alwaysTransform, ...config })
 }

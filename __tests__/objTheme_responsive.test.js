@@ -1,8 +1,8 @@
 import Assistant from '../src/index'
+import config from './__utils__/testDefaultConfig'
 
-import testThemeObj from './__utils__/testThemeObj'
 
-const styler = new Assistant({ defaultTheme: testThemeObj })
+const styler = new Assistant(config)
 
 describe('How responsiveBoolProp and can be equivlent to responsiveProp', () => {
   const TargetProp = 'isHidden'
@@ -40,7 +40,8 @@ describe('How responsiveBoolProp and can be equivlent to responsiveProp', () => 
     const FN = PV =>
       styler.responsiveProp({
         cssProp: 'display',
-        prop: TargetProp
+        prop: TargetProp,
+        transform: false
       })({ [TargetProp]: PV })
 
     expect(FN(StandardProps)).toEqual(StandardResult)
@@ -84,7 +85,8 @@ describe(' Basic responsiveProp', () => {
     const t = styler.responsiveProp({
       cssProp: 'paddingTop',
       defaultValue: '16px',
-      prop: 'Target'
+      prop: 'Target',
+      transform: false
     })({ Target: 'targetPropValue' })
 
     const e = { paddingTop: 'targetPropValue' }
@@ -96,7 +98,8 @@ describe(' Basic responsiveProp', () => {
     const t = styler.responsiveProp({
       cssProp: 'paddingTop',
       defaultValue: '16px',
-      prop: 'Target'
+      prop: 'Target',
+      transform: false
     })({ Target: ['targetPropValue'] })
 
     const e = { paddingTop: 'targetPropValue' }
@@ -108,7 +111,8 @@ describe(' Basic responsiveProp', () => {
     const t = styler.responsiveProp({
       cssProp: 'paddingTop',
       defaultValue: '16px',
-      prop: 'Target'
+      prop: 'Target',
+      transform: false
     })({ Target: { default: 'targetPropValue' } })
 
     const e = { paddingTop: 'targetPropValue' }
@@ -132,7 +136,8 @@ describe(' Basic responsiveProp', () => {
     const t = styler.responsiveProp({
       cssProp: 'paddingTop',
       defaultValue: '16px',
-      prop: 'Target'
+      prop: 'Target',
+      transform: false
     })({ Target: [false] })
 
     const e = { paddingTop: '16px' }

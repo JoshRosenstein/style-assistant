@@ -2,7 +2,10 @@ import Assistant from '../src/index'
 
 import testTheme from './__utils__/testThemeArr'
 
-const styler = new Assistant({ defaultTheme: testTheme })
+import config from './__utils__/testDefaultConfig'
+
+
+const styler = new Assistant({ ...config, defaultTheme: testTheme })
 
 describe('How responsiveBoolProp and can be equivlent to responsiveProp', () => {
   const TargetProp = 'isHidden'
@@ -36,7 +39,8 @@ describe('How responsiveBoolProp and can be equivlent to responsiveProp', () => 
     const FN = PV =>
       styler.responsiveProp({
         cssProp: 'display',
-        prop: TargetProp
+        prop: TargetProp,
+        transform: false
       })({ [TargetProp]: PV })
 
     expect(FN(StandardProps)).toEqual(StandardResult)

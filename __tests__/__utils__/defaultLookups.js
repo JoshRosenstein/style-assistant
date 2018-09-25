@@ -1,7 +1,14 @@
-import { identity } from '@roseys/futils'
-import { pxToEm, pxToRem, pxToPct, px, ms, pct } from './utils'
+import { identity, curry } from '@roseys/futils'
+import { appendUnit } from '../../src/utils'
+import PxTo from '../../src/pxTo'
+const pxToRem = v => PxTo(16)('rem')(v)
+const pxToEm = v => PxTo(16)('em')(v)
+const pxToPct = v => PxTo(16 / 100)('%')(v)
+const px = v => PxTo(1)('px')(v)
+const ms = appendUnit('ms')
+const pct = appendUnit('%')
 
-export default  {
+export default {
   keys: {
     margin: 'space',
     marginTop: 'space',

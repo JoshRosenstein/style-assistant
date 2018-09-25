@@ -7,61 +7,74 @@ import {
   nonBoolsToNil
 } from './responsiveHelpers'
 
-export const responsiveBooleanProp = (getTheme, breakpointsKey, toMq) => ({
-  log,
-  value,
-  T: trueValue,
-  F: falseValue,
-  cssProp,
-  prop: targetPropName
-}) => props => {
-  const css = cssProp || prop
-
-  const matchedProp = prop(targetPropName, props)
-  log('INPUTS', {
+export default function ResponsiveBoolProp(
+  getTheme,
+  breakpointsKey,
+  toMq,
+  transformStyle
+) {
+  return function responsiveBoolProp({
     value,
-    trueValue,
-    falseValue,
+    T: trueValue,
+    F: falseValue,
     cssProp,
-    targetPropName
-  })
+    prop: targetPropName,
+    transform
+  }) {
+    return function responsiveBool(props) {
+      const css = cssProp || prop
 
-  trueValue = value || trueValue
-  if (!isLikeBreakpoints(matchedProp)) {
-    if (isBool(matchedProp)) {
-      const v = isT(matchedProp)
-        ? trueValue
-        : isF(matchedProp)
-          ? falseValue
-          : false
-      return v ? { [css]: v } : {}
+      const matchedProp = prop(targetPropName, props)
+
+      trueValue = value || trueValue
+
+      let transformer = v => v
+
+      if (transform) {
+        transformer = v =>
+          transformStyle({
+            value: v,
+            cssProp: css
+          })(props)
+      }
+
+      if (!isLikeBreakpoints(matchedProp)) {
+        if (isBool(matchedProp)) {
+          const v = isT(matchedProp)
+            ? transformer(trueValue)
+            : isF(matchedProp)
+              ? transformer(falseValue)
+              : false
+
+          return v ? { [css]: v } : {}
+        }
+
+        return {}
+      }
+
+      const { breakpoints, getBp } = getBreakPoints(
+        matchedProp,
+        getTheme(breakpointsKey)(props),
+
+      )
+
+      const computedValFn = currentVal =>
+        isT(currentVal)
+          ? transformer(trueValue)
+          : isF(currentVal)
+            ? transformer(falseValue)
+            : null
+
+      if (breakpoints && getBp) {
+        return responsiveReducer({
+          breakpoints,
+          getBp,
+          css,
+          computedValFn,
+          toMq
+        })
+      }
+      
     }
-
-    return {}
   }
-
-  const { breakpoints, getBp } = getBreakPoints(
-    matchedProp,
-    getTheme(breakpointsKey)(props),
-
-    log
-  )
-  log('getBreakPoints Inputs', {
-    matchedProp,
-    BPS: getTheme(breakpointsKey)(props)
-  })
-  const computedValFn = currentVal =>
-    isT(currentVal) ? trueValue : isF(currentVal) ? falseValue : null
-
-  if (breakpoints && getBp) {
-    return responsiveReducer({
-      breakpoints,
-      getBp,
-      css,
-      computedValFn,
-      toMq
-    })
-  }
-  
 }
-export default responsiveBooleanProp

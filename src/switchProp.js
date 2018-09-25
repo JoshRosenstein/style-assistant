@@ -7,70 +7,94 @@ import {
   flip,
   defaultTo,
   flow
-} from "@roseys/futils";
+} from '@roseys/futils'
 
-import { whenFunctionCallWith, falseToNull, iterateUntilResult } from "./utils";
+import { whenFunctionCallWith, falseToNull, iterateUntilResult } from './utils'
 
-export default ({ responsiveProp, responsiveBoolProp, ...globalOptions }) => ({
-  value,
-  props,
-  options: externalOpt = {}
-}) => {
-  const { default: defaultValue, options: opt = {}, ...matchers } = value;
-  const options = { ...globalOptions, ...externalOpt, ...opt };
 
-  let { cssProp, responsive, responsiveBool } = options;
+export default (
+  responsiveProp,
+  responsiveBoolProp,
+  transformStyle,
+  mappedFunctions,
+  globalOptions
+) => (value, { valueOnly, cssProp, ...externalOpt }) => props => {
 
-  const intersectedMatchers = keys(pick(keys(matchers), props));
-  let matchedPropName;
+  const { default: defaultValue, options: opt = {}, ...matchers } = value
+  const options = { ...globalOptions, ...externalOpt, ...opt }
 
-  let computedValue;
+  const { responsive, responsiveBool, transform, transformOptions } = options
+
+  let transformer = v => v
+
+  if (transform || transformOptions) {
+    transformer = v =>
+      transformStyle({
+        value: v,
+        cssProp,
+        valueOnly: true,
+        options: transformOptions
+      })(props)
+  }
+
+  const intersectedMatchers = keys(pick(keys(matchers), props))
+  let matchedPropName
+
+
+  let computedValue
   if (isEmpty(intersectedMatchers) && isNil(defaultValue)) {
-    return cssProp ? { [cssProp]: computedValue } : computedValue;
+    return valueOnly ? computedValue : cssProp ? {} : computedValue
+    //  return cssProp ? { [cssProp]: computedValue } : computedValue
   }
 
   if (isEmpty(intersectedMatchers) && !isNil(defaultValue)) {
-    computedValue = whenFunctionCallWith(props)(defaultValue);
+    computedValue = transformer(whenFunctionCallWith(props)(defaultValue))
   }
 
   if (!isEmpty(intersectedMatchers)) {
     computedValue = flow(
       intersectedMatchers,
       iterateUntilResult((previous, propName) => {
-        matchedPropName = propName;
+        matchedPropName = propName
 
         return flow(
           propName,
           flip(prop)(matchers),
+          v => mappedFunctions[v] || v,
           whenFunctionCallWith(props[propName], props),
           whenFunctionCallWith(props)
-        );
+        )
       }),
       falseToNull,
       defaultTo(whenFunctionCallWith(props)(defaultValue))
-    );
+    )
   }
 
   if (!computedValue) {
-    return computedValue;
+    return computedValue
   }
 
   if (responsive) {
-    console.log("Checking If Responsive");
-    computedValue = responsiveProp({
-      defaultValue: computedValue,
-      cssProp,
-      prop: matchedPropName
-    })(props);
-  } else if (responsiveBool) {
-    computedValue = responsiveBoolProp({
+    return responsiveProp({
       value: computedValue,
       cssProp,
       prop: matchedPropName
-    })(props);
-  } else {
-    return cssProp ? { [cssProp]: computedValue } : computedValue;
+    })(props)
+  } else if (responsiveBool) {
+    return responsiveBoolProp({
+      value: computedValue,
+      cssProp,
+      prop: matchedPropName
+    })(props)
   }
+  // return cssProp ? { [cssProp]: computedValue } : computedValue
 
-  return computedValue;
-};
+
+  computedValue = transformer(computedValue)
+
+  return valueOnly
+    ? computedValue
+    : cssProp
+      ? { [cssProp]: computedValue }
+      : computedValue
+}

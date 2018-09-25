@@ -1,12 +1,8 @@
-import Assistant from '../src/index'
-import testTheme from './__utils__/testThemeObj'
-
-
-const styler = new Assistant({ defaultTheme: testTheme })
+import switchProp from './__utils__/switchProp'
 
 describe('How responsiveBoolProp and can be equivlent to responsiveProp', () => {
   it('switch Props Uses default key', () => {
-    const e = styler.switchProp(
+    const e = switchProp(
       {
         primary: 'primary',
         secondary: v => v,
@@ -21,7 +17,7 @@ describe('How responsiveBoolProp and can be equivlent to responsiveProp', () => 
   })
 
   it('switch Props with responsiveProp ', () => {
-    const e = styler.switchProp(
+    const e = switchProp(
       {
         primary: 'primary',
         secondary: v => v,
@@ -43,7 +39,7 @@ describe('How responsiveBoolProp and can be equivlent to responsiveProp', () => 
   })
 
   it('switch Props with responsiveBoolProp ', () => {
-    const e = styler.switchProp(
+    const e = switchProp(
       {
         primary: 'primary',
         secondary: v => v,
@@ -66,7 +62,7 @@ describe('How responsiveBoolProp and can be equivlent to responsiveProp', () => 
 
   // TODO: responsive Bool Enabled returns empty
   it('switchProps you can reference other props', () => {
-    const e = styler.switchProp(
+    const e = switchProp(
       {
         height: (heightPropValue, { heightScaleFactor }) =>
           heightScaleFactor
@@ -87,7 +83,7 @@ describe('How responsiveBoolProp and can be equivlent to responsiveProp', () => 
   })
 
   it('switchProp uses ComputeOptions', () => {
-    const e = styler.switchProp(
+    const e = switchProp(
       {
         height: v => v
       },
@@ -95,7 +91,7 @@ describe('How responsiveBoolProp and can be equivlent to responsiveProp', () => 
         cssProp: 'height',
         transformOptions: {
           key: 'space',
-          postFn: styler.pxToRem
+          postFn: v => v / 16 + 'rem'
         }
         //  key: 'space',
         // responsive: true,
