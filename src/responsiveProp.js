@@ -24,18 +24,13 @@ export const responsiveBooleanProp = (
   targetPropName = targetPropName || cssProp
 
   let matchedProp = value
+  // If no Value is Supplied, then do prop lookup
   if (!matchedProp) {
-    matchedProp = flow(
-      props,
-      prop(targetPropName),
-      safeMapValues(falseToNull)
-    )
+    matchedProp = prop(targetPropName, props)
   }
-  if (isLikeBreakpoints(matchedProp)) {
-    matchedProp = mapValues(falseToNull)(matchedProp)
-  }
+  // Convert Flase to Null
+  matchedProp = safeMapValues(falseToNull)(matchedProp)
 
-  // console.log(isDefined(matchedProp), matchedProp, boolsToNil(matchedProp));
   let transformer = v => v
   if (transform || transformOptions) {
     transformer = v =>
@@ -46,9 +41,10 @@ export const responsiveBooleanProp = (
         valueOnly: true
       })(props)
   }
-
+  // / run default Value thru transformer ??
   const defaultResult = defaultValue ? { [css]: defaultValue } : {}
 
+  // / if its not responsive value type, return
   if (!isLikeBreakpoints(matchedProp)) {
     return !matchedProp ? defaultResult : { [css]: transformer(matchedProp) }
   }
