@@ -48,9 +48,9 @@ describe('Styler', () => {
   describe('MQ Selector', () => {
     expect(
       styler({ mq_mobile: { marginTop: { margin: 'self' } } })({
-        margin: '1px'
+        margin: '16px'
       })
-    ).toEqual({ '@media screen and (min-width:mobile)': { marginTop: '1px' } })
+    ).toEqual({ '@media screen and (min-width:mobile)': { marginTop: '16px' } })
 
     expect(
       styler({
@@ -271,9 +271,7 @@ describe('Styler', () => {
       const testStyler = transformStyle({
         cssProp: 'margin',
         value: 'small',
-        options: {
-          key: 'customSpace'
-        }
+        key: 'customSpace'
       })
       const testProps = {
         theme: {
@@ -293,9 +291,7 @@ describe('Styler', () => {
         },
         {
           cssProp: 'margin',
-          transformOptions: {
-            key: 'customSpace'
-          }
+          key: 'customSpace'
         }
       )
       const testProps = {
@@ -315,9 +311,7 @@ describe('Styler', () => {
         margin: {
           isSmall: 'small',
           options: {
-            transformOptions: {
-              key: 'customSpace'
-            }
+            key: 'customSpace'
           }
         }
       })
@@ -668,10 +662,8 @@ describe('Styler', () => {
     StylerTest('Doesnt Compute Global', {
       args: {
         options: {
-          transformOptions: {
-            defaultTransform: false,
-            defaultLookup: false
-          }
+          defaultTransform: false,
+          defaultLookup: false
         },
         marginBottom: { default: '1px' },
         marginTop: { default: 'sm' }
@@ -685,19 +677,15 @@ describe('Styler', () => {
         marginBottom: {
           default: '1px',
           options: {
-            transformOptions: {
-              defaultTransform: false,
-              defaultLookup: false
-            }
+            defaultTransform: false,
+            defaultLookup: false
           }
         },
         marginTop: {
           default: 'sm',
           options: {
-            transformOptions: {
-              defaultTransform: false,
-              defaultLookup: false
-            }
+            defaultTransform: false,
+            defaultLookup: false
           }
         }
       },

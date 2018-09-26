@@ -1,4 +1,4 @@
-import { prop, flow, isObject, toArray, mapValues } from '@roseys/futils'
+import { prop} from '@roseys/futils'
 import { falseToNull, safeMapValues } from './utils'
 
 import {
@@ -7,7 +7,7 @@ import {
   responsiveReducer
 } from './responsiveHelpers'
 
-export const responsiveBooleanProp = (
+export const responsiveProp = (
   getTheme,
   breakpointsKey,
   toMq,
@@ -18,7 +18,7 @@ export const responsiveBooleanProp = (
   cssProp,
   prop: targetPropName,
   transform,
-  transformOptions
+  ...transformOptions
 }) => props => {
   const css = cssProp || targetPropName
   targetPropName = targetPropName || cssProp
@@ -32,13 +32,13 @@ export const responsiveBooleanProp = (
   matchedProp = safeMapValues(falseToNull)(matchedProp)
 
   let transformer = v => v
-  if (transform || transformOptions) {
+  if (transform !== false && (transform || transformOptions)) {
     transformer = v =>
       transformStyle({
         value: v,
         cssProp: css,
-        options: transformOptions,
-        valueOnly: true
+        valueOnly: true,
+        ...transformOptions
       })(props)
   }
   // / run default Value thru transformer ??
@@ -65,6 +65,5 @@ export const responsiveBooleanProp = (
       init: defaultResult
     })
   }
-  
 }
-export default responsiveBooleanProp
+export default responsiveProp

@@ -25,7 +25,7 @@ describe('How responsiveBoolProp and can be equivlent to responsiveProp', () => 
       },
       {
         cssProp: 'marginTop',
-        key: 'space',
+        transform: false,
         responsive: true
       }
     )({ primary: null, secondary: [1, 2] })
@@ -89,10 +89,9 @@ describe('How responsiveBoolProp and can be equivlent to responsiveProp', () => 
       },
       {
         cssProp: 'height',
-        transformOptions: {
-          key: 'space',
-          postFn: v => v / 16 + 'rem'
-        }
+        key: 'space',
+        postFn: v => `${v / 16  }rem`
+
         //  key: 'space',
         // responsive: true,
         //  responsiveBool: true

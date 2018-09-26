@@ -3,8 +3,7 @@ import { isT, isF, isBool } from './utils'
 import {
   isLikeBreakpoints,
   getBreakPoints,
-  responsiveReducer,
-  nonBoolsToNil
+  responsiveReducer
 } from './responsiveHelpers'
 
 export default function ResponsiveBoolProp(
@@ -34,7 +33,8 @@ export default function ResponsiveBoolProp(
         transformer = v =>
           transformStyle({
             value: v,
-            cssProp: css
+            cssProp: css,
+            valueOnly: true
           })(props)
       }
 
@@ -54,8 +54,7 @@ export default function ResponsiveBoolProp(
 
       const { breakpoints, getBp } = getBreakPoints(
         matchedProp,
-        getTheme(breakpointsKey)(props),
-
+        getTheme(breakpointsKey)(props)
       )
 
       const computedValFn = currentVal =>
@@ -74,7 +73,6 @@ export default function ResponsiveBoolProp(
           toMq
         })
       }
-      
     }
   }
 }

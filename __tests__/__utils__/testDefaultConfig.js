@@ -19,5 +19,8 @@ export default {
   },
   switchPropOptions: {
     transform: false
+  },
+  parserOptions: {
+    transform: false
   }
 }

@@ -1,8 +1,7 @@
 import Assistant from '../src/index'
 import testTheme from './__utils__/testThemeObj'
 
-
-const styler = new Assistant({ defaultTheme: testTheme })
+const styler = new Assistant({ defaultTheme: testTheme, alwaysTransform: true })
 
 describe('How responsiveBoolProp and can be equivlent to responsiveProp', () => {
   it('switch Props Uses default key', () => {
@@ -93,10 +92,9 @@ describe('How responsiveBoolProp and can be equivlent to responsiveProp', () => 
       },
       {
         cssProp: 'height',
-        transformOptions: {
-          key: 'space',
-          postFn: styler.pxToRem
-        }
+        key: 'space',
+        postFn: styler.pxToRem
+
         //  key: 'space',
         // responsive: true,
         //  responsiveBool: true

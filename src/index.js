@@ -27,6 +27,9 @@ const defaultOptions = {
   },
   switchPropOptions: {
     transform: false
+  },
+  parserOptions: {
+    transform: false
   }
 }
 
@@ -43,6 +46,7 @@ const GETTHEME = Symbol('getTheme')
 const TOMQ = Symbol('TOMQ')
 const PARSER = Symbol('Parser')
 
+
 export default class Assistant {
   constructor(options) {
     const mergedOptions = { ...defaultOptions, ...options }
@@ -53,9 +57,10 @@ export default class Assistant {
       breakpointsKey,
       alwaysTransform,
       responsivePropOptions,
-      switchPropOptions
+      switchPropOptions,
+      parserOptions
     } = mergedOptions
-
+    this.parserOptions = parserOptions
     this.responsivePropOptions = responsivePropOptions
     this.switchPropOptions = switchPropOptions
     this.alwaysTransform = alwaysTransform
@@ -87,6 +92,8 @@ export default class Assistant {
       this.defaultLookups,
       this.computeDefaults
     )
+
+
     this[RESPONSIVEBOOLPROP] = ResponsiveBoolProp(
       this[GETTHEME],
       this[BREAKPOINTSKEY],
@@ -103,14 +110,16 @@ export default class Assistant {
       this[RESPONSIVEPROP],
       this[RESPONSIVEBOOLPROP],
       this[TRANFORMSTYLE],
-      this.defaultLookups.functions
+      this.defaultLookups.functions,
+      this.switchPropOptions
     )
 
     this[PARSER] = Parser(
       this[SWITCHPROP],
       this[RESPONSIVEPROP],
       this[RESPONSIVEBOOLPROP],
-      this[TOMQ]
+      this[TOMQ],
+      this.parserOptions
     )
   }
 
@@ -159,8 +168,8 @@ PROP DEPENDEND
   responsiveProp = config => props =>
     this[RESPONSIVEPROP]({ ...this.responsivePropOptions, ...config })(props)
   responsiveBoolProp = config => this[RESPONSIVEBOOLPROP](config)
-  switchProp = (value, options) =>
-    this[SWITCHPROP](value, { ...this.switchPropOptions, ...options })
+  switchProp = (value, options) => this[SWITCHPROP](value, options)
   transformStyle = config =>
     this[TRANFORMSTYLE]({ transform: this.alwaysTransform, ...config })
+
 }

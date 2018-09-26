@@ -2,6 +2,7 @@ import transformStyle from './__utils__/transformStyle'
 
 describe('How responsiveBoolProp and can be equivlent to responsiveProp', () => {
   it('Works ', () => {
+    //  log.getLogger('transformStyle').setLevel(0)
     const e = transformStyle({
       value: 'sm',
       cssProp: 'margin',
@@ -11,7 +12,7 @@ describe('How responsiveBoolProp and can be equivlent to responsiveProp', () => 
     })({})
 
     const r = { margin: '0.5rem' }
-
+    // log.getLogger('transformStyle').setLevel(3)
     expect(e).toEqual(r)
   })
 

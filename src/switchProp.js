@@ -6,95 +6,152 @@ import {
   isNil,
   flip,
   defaultTo,
-  flow
+  flow,
 } from '@roseys/futils'
 
-import { whenFunctionCallWith, falseToNull, iterateUntilResult } from './utils'
+import {
+  whenFunctionCallWith,
+  firstNonNil,
+  falseToNull,
+  iterateUntilResult
+} from './utils'
 
-
-export default (
+export default function SwitchProp(
   responsiveProp,
   responsiveBoolProp,
   transformStyle,
   mappedFunctions,
-  globalOptions
-) => (value, { valueOnly, cssProp, ...externalOpt }) => props => {
+  SwitchPropOptions = {}
 
-  const { default: defaultValue, options: opt = {}, ...matchers } = value
-  const options = { ...globalOptions, ...externalOpt, ...opt }
+) {
+  const {
+    transform: globalTransform,
+    responsive: globalResponsive,
+    responsiveBool: globalResponsiveBool,
+    ...globalTransformOpt
+  } = SwitchPropOptions
+  return function switchProp(
+    value,
+    {
+      valueOnly,
+      cssProp,
+      transform: localTransform,
+      responsive: localResponsive,
+      responsiveBool: localResponsiveBool,
+      ...localTransformOpt
+    }
+  ) {
+    return function switch_(props) {
+      const { default: defaultValue, options: opt = {}, ...matchers } = value
+      const {
+        transform: parserTransform,
+        responsive: parserResponsive,
+        responsiveBool: parserResponsiveBool,
+        ...parserTransformOpt
+      } = opt
 
-  const { responsive, responsiveBool, transform, transformOptions } = options
+      const transformOptions = {
+        ...globalTransformOpt,
+        ...localTransformOpt,
+        ...parserTransformOpt
+      }
 
-  let transformer = v => v
+      const transform = firstNonNil([
+        parserTransform,
+        localTransform,
+        globalTransform
+      ])
 
-  if (transform || transformOptions) {
-    transformer = v =>
-      transformStyle({
-        value: v,
-        cssProp,
-        valueOnly: true,
-        options: transformOptions
-      })(props)
-  }
+      const responsive = firstNonNil([
+        parserResponsive,
+        localResponsive,
+        globalResponsive
+      ])
 
-  const intersectedMatchers = keys(pick(keys(matchers), props))
-  let matchedPropName
+      const responsiveBool = firstNonNil([
+        parserResponsiveBool,
+        localResponsiveBool,
+        globalResponsiveBool
+      ])
+
+      let transformer = v => v
 
 
-  let computedValue
-  if (isEmpty(intersectedMatchers) && isNil(defaultValue)) {
-    return valueOnly ? computedValue : cssProp ? {} : computedValue
-    //  return cssProp ? { [cssProp]: computedValue } : computedValue
-  }
+      if (
+        transform ||
+        !isEmpty(localTransformOpt) ||
+        !isEmpty(parserTransformOpt)
+      ) {
 
-  if (isEmpty(intersectedMatchers) && !isNil(defaultValue)) {
-    computedValue = transformer(whenFunctionCallWith(props)(defaultValue))
-  }
+        transformer = v =>
+          transformStyle({
+            value: v,
+            cssProp,
+            valueOnly: true,
+            ...transformOptions
+          })(props)
+      }
 
-  if (!isEmpty(intersectedMatchers)) {
-    computedValue = flow(
-      intersectedMatchers,
-      iterateUntilResult((previous, propName) => {
-        matchedPropName = propName
+      const intersectedMatchers = keys(pick(keys(matchers), props))
+      let matchedPropName
 
-        return flow(
-          propName,
-          flip(prop)(matchers),
-          v => mappedFunctions[v] || v,
-          whenFunctionCallWith(props[propName], props),
-          whenFunctionCallWith(props)
+      let computedValue
+      if (isEmpty(intersectedMatchers) && isNil(defaultValue)) {
+        return valueOnly ? computedValue : cssProp ? {} : computedValue
+        //  return cssProp ? { [cssProp]: computedValue } : computedValue
+      }
+
+      if (isEmpty(intersectedMatchers) && !isNil(defaultValue)) {
+        computedValue = transformer(whenFunctionCallWith(props)(defaultValue))
+      }
+
+      if (!isEmpty(intersectedMatchers)) {
+        computedValue = flow(
+          intersectedMatchers,
+          iterateUntilResult((previous, propName) => {
+            matchedPropName = propName
+
+            return flow(
+              propName,
+              flip(prop)(matchers),
+              v => mappedFunctions[v] || v,
+              whenFunctionCallWith(props[propName], props),
+              whenFunctionCallWith(props)
+            )
+          }),
+          falseToNull,
+          defaultTo(whenFunctionCallWith(props)(defaultValue))
         )
-      }),
-      falseToNull,
-      defaultTo(whenFunctionCallWith(props)(defaultValue))
-    )
+      }
+
+      if (!computedValue) {
+        return computedValue
+      }
+
+      if (responsive) {
+        return responsiveProp({
+          value: computedValue,
+          cssProp,
+          prop: matchedPropName,
+          transform
+        })(props)
+      } else if (responsiveBool) {
+        return responsiveBoolProp({
+          value: computedValue,
+          cssProp,
+          prop: matchedPropName,
+          transform
+        })(props)
+      }
+
+
+      computedValue = transformer(computedValue)
+
+      return valueOnly
+        ? computedValue
+        : cssProp
+          ? { [cssProp]: computedValue }
+          : computedValue
+    }
   }
-
-  if (!computedValue) {
-    return computedValue
-  }
-
-  if (responsive) {
-    return responsiveProp({
-      value: computedValue,
-      cssProp,
-      prop: matchedPropName
-    })(props)
-  } else if (responsiveBool) {
-    return responsiveBoolProp({
-      value: computedValue,
-      cssProp,
-      prop: matchedPropName
-    })(props)
-  }
-  // return cssProp ? { [cssProp]: computedValue } : computedValue
-
-
-  computedValue = transformer(computedValue)
-
-  return valueOnly
-    ? computedValue
-    : cssProp
-      ? { [cssProp]: computedValue }
-      : computedValue
 }

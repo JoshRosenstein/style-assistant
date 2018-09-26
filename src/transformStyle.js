@@ -1,22 +1,19 @@
-import { flow, isDefined, isString, pathOr,isNumber } from '@roseys/futils'
+import { flow, isDefined, isString, pathOr, isNumber } from '@roseys/futils'
 
 import { whenFunctionCallWith } from './utils'
-
 
 export default function TransformStyle(
   getTheme,
   defaultLookups,
   globalOptions
 ) {
-
   return function transformStyleProp({
     value: val,
-    options: localOptions,
     cssProp,
-    valueOnly
+    valueOnly,
+    ...localOptions
   }) {
     return function transformStyle(props) {
-
       const lookupDefaultOptions = (dictionary, value) =>
         pathOr(
           dictionary === 'getter' ? null : value,
@@ -57,9 +54,7 @@ export default function TransformStyle(
           // Check Strip Negative Before lookingUp
           const isNeg = /^-.+/.test(val)
           val = isNeg ? val.slice(1) : val
-          // const themeProp = isDefined(path)
-          //   ? `${themeKey}.${val}`
-          //   : `theme.${themeKey}.${val}`;
+
           val = getTheme([themeKey, val])(props) || val
 
           val = isNeg ? (isNumber(val) ? val * -1 : `-${val}`) : val
@@ -67,7 +62,6 @@ export default function TransformStyle(
 
         getter = getter || postFn || defaultGetter
         if (getter) {
-          //  console.log("getter", lookupDefaultOptions("functions" getter));
 
           val = flow(
             lookupDefaultOptions('functions', getter),

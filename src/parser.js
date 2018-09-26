@@ -30,7 +30,6 @@ import {
   extractTemplateValue
 } from './utils'
 
-
 export const PSUEDO_WITHOUT_SELECTOR = /(^|\s)(:{1,2})(\w)/g
 export const REFERENCE_SELECTOR = /&/g
 
@@ -160,12 +159,11 @@ const parseRulesC = (parseInlinePattern, toMq) => (
     return parseNested(res, parents, location)
   }
 
-
   if (isInlinePattern(value, selector, parents)) {
     value = parseInlinePattern(value, {
       cssProp: selector,
       valueOnly: true,
-      options
+      ...options
     })(props)
     // return parseNested(value, parents, location);
     if (isObject(value)) {
@@ -243,7 +241,8 @@ export function getRulesC(
   switchProp,
   responsiveProp,
   responsiveBoolProp,
-  toMq
+  toMq,
+  config
 ) {
   const parseRules = parseRulesC(switchProp, toMq)
   return function getRules({
@@ -258,7 +257,7 @@ export function getRulesC(
     }
 
     const { options: globalOptions, ...rules } = obj
-    options = { ...options, ...globalOptions }
+    options = { ...config, ...globalOptions, ...options }
     const getNested = (givenObj, givenParents, givenLocation) =>
       getRules({
         obj: givenObj,
@@ -267,7 +266,6 @@ export function getRulesC(
         options,
         props
       })
-
 
     return pipe(
       keys,
@@ -299,14 +297,16 @@ export default function stylerC(
   switchProp,
   responsiveProp,
   responsiveBoolProp,
-  toMq
+  toMq,
+  config
 ) {
   // //////Start Styler
   const getRules = getRulesC(
     switchProp,
     responsiveProp,
     responsiveBoolProp,
-    toMq
+    toMq,
+    config
   )
   return function stylerProp(obj, groupSelectors = true) {
     return function styler(props) {

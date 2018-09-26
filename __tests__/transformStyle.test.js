@@ -1,7 +1,6 @@
 import Assistant from '../src/index'
 import config from './__utils__/testDefaultConfig'
 
-
 const styler = new Assistant(config)
 
 describe('How responsiveBoolProp and can be equivlent to responsiveProp', () => {
