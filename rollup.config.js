@@ -26,27 +26,7 @@ const plugins = [
 
 ]
 
-const plugins2 = [
-  babel({
-    exclude: 'node_modules/**',
-    babelrc: false,
 
-    externalHelpers: true,
-    presets: [['env', {
-      'modules': false,
-    }], 'react', 'stage-0'],
-    plugins: ['external-helpers', ['transform-imports', {
-      '@roseys/futils': {
-        'transform': '@roseys/futils/src/${member}'
-      }
-    }]],
-  }),
-  replace({
-    exclude: 'node_modules/**',
-    ENV: JSON.stringify(process.env.NODE_ENV || 'development')
-  })
-
-]
 const external = Object.keys(pkg.dependencies)
 const treeshake={pureExternalModules:true,
 }

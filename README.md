@@ -282,143 +282,233 @@ export default {
   * [toMq](#toMq)
 
 
-### toMq
-**Deps:** | [pxToEm](#pxToEm) |
-Used in responsive utilties. quick helper to convert object to media query string. Currently depends on the 'pxToEm' functions.
-
-
-**Example**
-
-```javascript
-const toMq =
-```
-
-### transformStyle
-
-transformStyle Description
-
-**Example**
-
-```javascript
-const transformStyle =
-```
-
-### parser
-
-parser Description
-
-**Example**
-
-```javascript
-const parser =
-```
 
 ### pxTo
 **Deps:** | [config.baseFontSize.](#Config) |
-pxTo Description
+**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/units)
+......TODO
+
 
 **Example**
 
 ```javascript
-const pxTo =
+TODO...
 ```
 
 ### pxToEm
 **Deps:** | [pxTo](#pxTo) |
-pxToEm Description
+**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/units)
+......TODO
 
 **Example**
 
 ```javascript
-const pxToEm =
+const styler= new Assistant({baseFontSize:16})
+const example=styler.pxToEm(16) //=> '1em'
 ```
 
 ### pxToRem
 **Deps:** | [pxTo](#pxTo) |
-pxToRem Description
+**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/units)
+......TODO
 
 **Example**
 
 ```javascript
-const pxToRem =
+const styler= new Assistant({baseFontSize:16})
+const example=styler.pxToRem(16) //=> '1rem'
 ```
 
 ### pxToPct
 **Deps:** | [pxTo](#pxTo) |
-pxToPct Description
+**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/units)
+......TODO
 
 **Example**
 
 ```javascript
-const pxToPct =
+const styler= new Assistant({baseFontSize:16})
+const example=styler.pxToPct(16) //=> '1%'
 ```
 
 ### pxToRelative
 **Deps:** | [pxTo](#pxTo) |
-pxToRelative Description
-
+**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/units)
+......TODO
+Returns untiless relative number.
 **Example**
 
 ```javascript
-const pxToRelative =
+const styler= new Assistant({baseFontSize:16})
+const example=styler.pxToRelative(16) //=> 1
 ```
 
 ### normalize
 **Deps:** | [pxTo](#pxTo) |
-normalize Description
-
+**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/units)
+......TODO
 **Example**
 
 ```javascript
-const normalize =
+...TODO
 ```
+
 ### normalizeToEm
 **Deps:** | [normalize](#normalize) |
-normalizeToEm Description
-
+**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/units)
+......TODO
 **Example**
 
 ```javascript
-const normalizeToEm =
+const styler= new Assistant({baseFontSize:16})
+const example=styler.normalizeToEm(16,'.5rem') //=> '2em'
+const example2=styler.normalizeToEm(16, 8) //=> '2em'
 ```
+
 ### normalizeToRem
 **Deps:** | [normalize](#normalize) |
-normalizeToRem Description
-
+**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/units)
+......TODO
 **Example**
 
 ```javascript
-const normalizeToRem =
+const styler= new Assistant({baseFontSize:16})
+const example=styler.normalizeToEm(16,'.5rem') //=> '2rem'
+const example2=styler.normalizeToEm(16, 8) //=> '2rem'
 ```
 
-### toMq
-**Deps:** | [pxToEm](#pxToEm) |
-toMq Description
 
-**Example**
-
-```javascript
-const toMq =
-```
 
 ### getTheme
 **Deps:** | [config.themeKey](#Config) | [config.defaultTheme](#Config) |
-getTheme Description
+**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/getTheme)
 
+..TODO
 **Example**
 
 ```javascript
-const getTheme =
+const defaultTheme = { colors: { "red": "#f5222d" } }
+const { getTheme } = new Assistant({ defaultTheme })
+const emptyProps = {}
+const withProps = { theme: { colors: { blue: 'myBlueColor' } } }
+
+let o = {}
+o.withEmptyProps = getTheme('colors')(emptyProps) //=>"red": "#f5222d"
+o.withProps = getTheme('colors')(withProps) //=>"blue": "myBlueColor"
+o.dotNotation = getTheme('colors.red')(emptyProps) //=>"#f5222d",
+o.fallsBacktoDefaultTheme = getTheme('colors.red')(withProps) //=> "#f5222d"
+
+
+
 ```
+### toMq
+**Deps:** | [pxToEm](#pxToEm) |
+**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/toMq)
+Used in responsive utilties. quick helper to convert object to media query string. Currently depends on the 'pxToEm' functions.
+**Example**
+
+```jsx
+import React from 'react'
+import styled from './styled'
+import styler from './styler'
+
+const StyledExample = () => {
+  const Example = {
+    color: 'red',
+    [styler.toMq({ screen: true, min: 400 })]: { color: 'blue' },
+  }
+  //Example=>{"color":"red","@media screen and (min-width:25em)":{"color":"blue"}}
+  const Component = styled('div')(Example)
+  return (
+    <div>
+      <Component>{JSON.stringify(Example)}</Component>
+    </div>
+  )
+}
+
+```
+
 
 ### transformStyle
 **Deps:** | [getTheme](#getTheme) | [config.transformOptions](#Config) | [config.alwaysTransform](#Config) |
-getTheme Description
-
+**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/transformStyle)
+TODO
 **Example**
 
 ```javascript
-const transformStyle =
+const identity = x => x
+const transformOptions = {
+  keys: {},
+  getter: {},
+  functions: {
+    identity,
+    self: identity, //alias
+    px: x => parseFloat(x) + 'px',
+    ms: x => parseFloat(x) + 'ms',
+    pct: x => {
+      x = parseFloat(x)
+      x = Math.abs(x) < 1 ? x * 100 : x
+      return x + '%'
+    },
+  },
+}
+
+const defaultTheme = {
+  space: {
+    none: 0,
+    xxs: 2,
+    xs: 4,
+    sm: 8,
+    md: 16,
+    lg: 32,
+    xl: 64,
+    xxl: 128,
+  }
+}
+
+const { transformStyle } = new Assistant({ transformOptions, defaultTheme })
+const emptyProps = {}
+const withProps = { theme: { colors: { blue: 'myBlueColor' } } }
+const exampleOptions = {
+  key: 'space',
+  getter: 'pxToRem',
+}
+
+let o = {}
+/// EACH Function below returns '1rem'
+o.Converts = transformStyle({
+  cssProp: 'marginTop',
+  value: 16,
+  options: {
+    getter: 'pxToRem',
+  }
+})(emptyProps)
+o.looksUpValue = transformStyle({
+  cssProp: 'marginTop',
+  value: 'md',
+  options: {
+    key: 'space',
+    getter: 'pxToRem',
+  }
+})(emptyProps)
+o.postFnOrGetter = transformStyle({
+  cssProp: 'marginTop',
+  value: 'md',
+  options: {
+    key: 'space',
+    postFn: 'pxToRem',
+  }
+})(emptyProps)
+/// preFn options runs the raw value before applying theme lookup or getter/postfn
+o.preFn = transformStyle({
+  cssProp: 'marginTop',
+  value: 8,
+  options: {
+    key: 'space',
+    getter: 'pxToRem',
+    preFn: v => v * 2
+  }
+})(emptyProps)
 ```
 
 ### responsiveProp
@@ -512,15 +602,3 @@ Contributions are welcome! Feel free to open an issue or a pull request and part
 ## License
 
 The MIT License - see `LICENSE`.
-
-The Font Awesome icons are licensed under the [CC BY 4.0 License](https://github.com/FortAwesome/Font-Awesome/blob/master/LICENSE.txt).
-
-The Feather icons are licensed under the [MIT License](https://github.com/feathericons/feather/blob/master/LICENSE).
-
-The Material Design icons are licensed under the [Apache License Version 2.0](https://github.com/google/material-design-icons/blob/master/LICENSE).
-
-The Octicons are licensed under the [MIT License](https://github.com/primer/octicons/blob/master/LICENSE).
-
-The SimpleIcons are licensed under the [CC0 1.0 Universal License](https://github.com/simple-icons/simple-icons/blob/develop/LICENSE.md).
-
-The IonicIcons are licensed under the [MIT License](https://github.com/ionic-team/ionicons/blob/master/LICENSE).
