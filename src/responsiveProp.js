@@ -20,7 +20,8 @@ export const responsiveBooleanProp = (
   transform,
   transformOptions
 }) => props => {
-  const css = cssProp || prop
+  const css = cssProp || targetPropName
+  targetPropName = targetPropName || cssProp
 
   let matchedProp = value
   if (!matchedProp) {
@@ -34,31 +35,15 @@ export const responsiveBooleanProp = (
     matchedProp = mapValues(falseToNull)(matchedProp)
   }
 
-  //   when(
-  //     x => isDefined(x) && isLikeBreakpoints(x),
-  //     pipe(
-  //       boolsToNil,
-  //       when(x => isEmpty(compact(x)), always(undefined)),
-  //       when(
-  //         isDefined,
-  //         when(
-  //           x => isObject(x) && x.keys.length < 2,
-  //           when(x => x.keys[0] === "Default", prop("Default"))
-  //         ),
-  //         when(x => isArray(x) && x.keys.length < 2, prop("0"))
-  //       )
-  //     )
-  //   )
-  // );
-
-  //console.log(isDefined(matchedProp), matchedProp, boolsToNil(matchedProp));
+  // console.log(isDefined(matchedProp), matchedProp, boolsToNil(matchedProp));
   let transformer = v => v
   if (transform || transformOptions) {
     transformer = v =>
       transformStyle({
         value: v,
         cssProp: css,
-        options: transformOptions
+        options: transformOptions,
+        valueOnly: true
       })(props)
   }
 
@@ -68,7 +53,7 @@ export const responsiveBooleanProp = (
     return !matchedProp ? defaultResult : { [css]: transformer(matchedProp) }
   }
 
-  let { breakpoints, getBp } = getBreakPoints(
+  const { breakpoints, getBp } = getBreakPoints(
     matchedProp,
     getTheme(breakpointsKey)(props)
   )
@@ -84,6 +69,6 @@ export const responsiveBooleanProp = (
       init: defaultResult
     })
   }
-  return
+  
 }
 export default responsiveBooleanProp

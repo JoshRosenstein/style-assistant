@@ -88,4 +88,15 @@ describe(' Basic responsiveProp', () => {
 
     expect(t).toEqual(e)
   })
+
+  it('Returns Target Value', () => {
+    const t = responsiveProp({
+      cssProp: 'fontSize',
+      transform: true
+    })({ fontSize: 'targetPropValue' })
+
+    const e = { fontSize: 'targetPropValue' }
+
+    expect(t).toEqual(e)
+  })
 })

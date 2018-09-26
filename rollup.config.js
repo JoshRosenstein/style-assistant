@@ -38,7 +38,7 @@ const configBase = {
   output: [
     { file: pkg.browser, format: 'umd', name: 'name', sourcemap: false ,exports:'named'}
   ],
-  plugins:[  resolve(),...plugins2,terser(),filesize()]
+  plugins:[  resolve(),...plugins,terser(),filesize()]
 }
 
 
