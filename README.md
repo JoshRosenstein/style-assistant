@@ -5,7 +5,9 @@ style-assistant WIP
 [![Build Status](https://travis-ci.org/JoshRosenstein/style-assistant.svg?branch=master)](https://travis-ci.org/JoshRosenstein/style-assistant)
 [![npm](https://img.shields.io/npm/dm/style-assistant.svg)](https://www.npmjs.com/package/style-assistant)
 [![npm](https://img.shields.io/npm/v/style-assistant.svg)](https://www.npmjs.com/package/style-assistant)
-
+[![codecov](https://codecov.io/gh/JoshRosenstein/style-assistant/branch/master/graph/badge.svg)](https://codecov.io/gh/JoshRosenstein/styler)
+![core gzip size](http://img.badgesize.io/https://unpkg.com/style-assistant?compression=gzip&label=core%20gzip%20size)
+![core size](http://img.badgesize.io/https://unpkg.com/style-assistant?label=core%20size)
 
 ---
 ### Table of Contents
