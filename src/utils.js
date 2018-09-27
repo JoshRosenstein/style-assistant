@@ -34,10 +34,11 @@ export const safeMapValues = curryN(2, (func, item) =>
 export const isTemplate = test(/{!([^}]+)}/g)
 
 export function extractTemplateValue(template) {
-  const rx = new RegExp('{!(.*?)\\s+}')
+  const rx = new RegExp('{!(.*?)}')
   const values = rx.exec(template) // or: data.match(rx);
   return values && values[1].trim()
 }
+
 
 export const arrToObj = arr =>
   reduce((accumulated, value, key) => attach(key, value, accumulated), {}, arr)

@@ -121,6 +121,7 @@ export default class Assistant {
       this[TOMQ],
       this.parserOptions
     )
+
   }
 
   get defaultTheme() {

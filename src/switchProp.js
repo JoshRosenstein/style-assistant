@@ -6,7 +6,7 @@ import {
   isNil,
   flip,
   defaultTo,
-  flow,
+  flow
 } from '@roseys/futils'
 
 import {
@@ -22,7 +22,6 @@ export default function SwitchProp(
   transformStyle,
   mappedFunctions,
   SwitchPropOptions = {}
-
 ) {
   const {
     transform: globalTransform,
@@ -75,14 +74,12 @@ export default function SwitchProp(
       ])
 
       let transformer = v => v
-
-
+      let hasBeenTransformed = false
       if (
         transform ||
         !isEmpty(localTransformOpt) ||
         !isEmpty(parserTransformOpt)
       ) {
-
         transformer = v =>
           transformStyle({
             value: v,
@@ -103,6 +100,7 @@ export default function SwitchProp(
 
       if (isEmpty(intersectedMatchers) && !isNil(defaultValue)) {
         computedValue = transformer(whenFunctionCallWith(props)(defaultValue))
+        hasBeenTransformed = true
       }
 
       if (!isEmpty(intersectedMatchers)) {
@@ -144,8 +142,9 @@ export default function SwitchProp(
         })(props)
       }
 
-
-      computedValue = transformer(computedValue)
+      computedValue = hasBeenTransformed
+        ? computedValue
+        : transformer(computedValue)
 
       return valueOnly
         ? computedValue
@@ -154,4 +153,5 @@ export default function SwitchProp(
           : computedValue
     }
   }
+
 }
