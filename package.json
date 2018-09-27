@@ -1,6 +1,6 @@
 {
   "name": "style-assistant",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "css-jss helpers",
   "repository": "https://github.com/JoshRosenstein/style-assistant.git",
   "author": "Josh Rosenstein <32781407+JoshRosenstein@users.noreply.github.com>",
@@ -12,6 +12,11 @@
   "source": "src/index.js",
   "unpkg": "dist/index.umd.js",
   "jsdelivr": "dist/index.umd.js",
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ],
   "scripts": {
     "prepack": "yarn run build",
     "clean": "rimraf node_modules && rimraf dist",
