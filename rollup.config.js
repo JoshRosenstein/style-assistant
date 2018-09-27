@@ -2,57 +2,49 @@ import babel from 'rollup-plugin-babel'
 import {terser} from 'rollup-plugin-terser'
 import resolve from 'rollup-plugin-node-resolve'
 import commonjs from 'rollup-plugin-commonjs'
-import replace from 'rollup-plugin-replace'
 import filesize from 'rollup-plugin-filesize'
 import cleanup from 'rollup-plugin-cleanup'
 import pkg from './package.json'
 
 
-const plugins = [
-  babel({
-    exclude: 'node_modules/**',
-    babelrc: false,
-    presets: [['env', { loose: true, modules: false }], 'react', 'stage-0'],
-    plugins: ['external-helpers',        ['transform-imports', {
-      '@roseys/futils': {
-        'transform': '@roseys/futils/src/${member}'
-      }
-    }]],
-  }),
-  replace({
-    exclude: 'node_modules/**',
-    ENV: JSON.stringify(process.env.NODE_ENV || 'development')
-  })
-
-]
-
-
-const external = Object.keys(pkg.dependencies)
-const treeshake={pureExternalModules:true,
-}
-
-const configBase = {
+const config = {
   input: 'src/index.js',
-  external:'@roseys/futils',
-  treeshake,
   output: [
-    { file: pkg.browser, format: 'umd', name: 'name', sourcemap: false ,exports:'named'}
+    {
+      file: pkg.browser,
+      format: 'umd',
+      name: pkg.name,
+      globals: ['@roseys/futils'],
+    },
+    {
+      file: pkg.main,
+      format: 'cjs',
+      name: pkg.name,
+      globals: ['@roseys/futils'],
+    },
+    {
+      file: pkg.module,
+      format: 'es',
+      name: pkg.name,
+      globals: ['@roseys/futils'],
+    },
   ],
-  plugins:[  resolve(),...plugins,terser(),filesize()]
+  external: ['@roseys/futils'],
+  plugins: [
+    babel({ exclude: 'node_modules/**' }),
+    resolve({
+      module: true,
+      jsnext: true,
+      main: true,
+      preferBuiltins: true,
+      browser: true,
+      modulesOnly: true,
+    }),
+    cleanup(),
+    terser(),
+    commonjs(),
+    filesize(),
+  ],
 }
 
-
-const configES = {
-  input: 'src/index.js',
-  treeshake,
-  external,
-  output: [
-    { file: pkg.main, format: 'cjs',  exports:'named' },
-    { file: pkg.module, format: 'es', exports:'named'  },
-
-  ],
-  plugins:[...plugins,cleanup(),filesize()]
-}
-
-
-export default [configBase,configES]
+export default config
