@@ -1,4 +1,4 @@
-import { flow, isDefined, isString, pathOr, isNumber } from '@roseys/futils'
+import { flow, isString, pathOr, isNumber } from '@roseys/futils'
 
 import { whenFunctionCallWith } from './utils'
 
@@ -36,33 +36,28 @@ export default function TransformStyle(
         doDefaultLookup && lookupDefaultOptions('keys', cssProp)
       const defaultGetter =
         doDefaultTransform && lookupDefaultOptions('getter', cssProp)
+      themeKey = themeKey || path || defaultLookup
+      getter = getter || postFn || defaultGetter
 
-      if (
-        val &&
-        (defaultLookup || defaultGetter || getter || postFn || preFn || path)
-      ) {
+      if (val) {
         if (preFn) {
-          val = flow(
-            preFn,
-            whenFunctionCallWith(val, props)
-          )
+          val = whenFunctionCallWith(val, props)(preFn)
         }
 
-        themeKey = themeKey || path || defaultLookup
-
-        if (isDefined(themeKey) && isString(val)) {
+        if (themeKey) {
           // Check Strip Negative Before lookingUp
           const isNeg = /^-.+/.test(val)
-          val = isNeg ? val.slice(1) : val
+
+          if (isNeg) {
+            val = isString(val) ? val.slice(1) : Math.abs(val)
+          }
 
           val = getTheme([themeKey, val])(props) || val
 
           val = isNeg ? (isNumber(val) ? val * -1 : `-${val}`) : val
         }
 
-        getter = getter || postFn || defaultGetter
         if (getter) {
-
           val = flow(
             lookupDefaultOptions('functions', getter),
             whenFunctionCallWith(val, props)
