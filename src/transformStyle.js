@@ -1,6 +1,15 @@
-import { flow, isString, pathOr, isNumber } from '@roseys/futils'
+import {
+  flow,
+  isString,
+  isNumber,
+  when,
+  ifElse,
+  isDefined,
+  pipe,
+  objOf
+} from '@roseys/futils'
 
-import { whenFunctionCallWith } from './utils'
+import { whenFunctionCallWith, isTruthy } from './utils'
 
 export default function TransformStyle(
   getTheme,
@@ -14,57 +23,71 @@ export default function TransformStyle(
     ...localOptions
   }) {
     return function transformStyle(props) {
-      const lookupDefaultOptions = (dictionary, value) =>
-        pathOr(
-          dictionary === 'getter' ? null : value,
-          `${dictionary}.${value}`,
-          defaultLookups
-        )
-
       const options = { ...globalOptions, ...localOptions }
-      let { key: themeKey, getter } = options
-
-      const {
-        defaultLookup: doDefaultLookup = true,
-        defaultTransform: doDefaultTransform = true,
-        postFn,
-        preFn,
-        path
+      let {
+        key: themeKey,
+        getter,
+        defaultLookup: doDefaultLookup,
+        defaultTransform: doDefaultTransform
       } = options
 
-      const defaultLookup =
-        doDefaultLookup && lookupDefaultOptions('keys', cssProp)
-      const defaultGetter =
-        doDefaultTransform && lookupDefaultOptions('getter', cssProp)
+      const { postFn, preFn, path } = options
+      // cant lookup default transformations if no cssProp is provided
+      if (!cssProp) {
+        doDefaultLookup = false
+        doDefaultTransform = false
+        valueOnly = true
+      }
+      const defaultLookup = doDefaultLookup && defaultLookups.keys[cssProp]
+      const defaultGetter = doDefaultTransform && defaultLookups.getter[cssProp]
       themeKey = themeKey || path || defaultLookup
       getter = getter || postFn || defaultGetter
 
-      if (val) {
-        if (preFn) {
-          val = whenFunctionCallWith(val, props)(preFn)
-        }
+      const hasPreFn = () => isDefined(preFn)
+      const checkAndCallPreFn = when(hasPreFn, v =>
+        whenFunctionCallWith(v, props)(preFn)
+      )
 
-        if (themeKey) {
-          // Check Strip Negative Before lookingUp
-          const isNeg = /^-.+/.test(val)
+      const hasThemeKey = () => isDefined(themeKey)
+      const isNeg = v => /^-.+/.test(v)
+      const stripNeg = v => (isString(v) ? v.slice(1) : Math.abs(v))
+      const toNeg = v => (isNumber(v) ? v * -1 : `-${v}`)
+      const getThemeOr = v => getTheme([themeKey, v])(props) || v
 
-          if (isNeg) {
-            val = isString(val) ? val.slice(1) : Math.abs(val)
-          }
+      const checkAndCallgetTheme = when(
+        hasThemeKey,
+        ifElse(
+          isNeg,
+          pipe(
+            stripNeg,
+            getThemeOr,
+            toNeg
+          ),
+          getThemeOr
+        )
+      )
 
-          val = getTheme([themeKey, val])(props) || val
+      const hasGetter = () => isTruthy(getter)
+      const callGetter = v =>
+        flow(
+          getter,
+          when(isString, x => defaultLookups.functions[x]),
+          whenFunctionCallWith(v, props)
+        )
+      const checkAndCallGetter = when(hasGetter, callGetter)
+      const shouldReturnObj = () => !valueOnly
 
-          val = isNeg ? (isNumber(val) ? val * -1 : `-${val}`) : val
-        }
-
-        if (getter) {
-          val = flow(
-            lookupDefaultOptions('functions', getter),
-            whenFunctionCallWith(val, props)
+      return pipe(
+        when(
+          isDefined,
+          pipe(
+            checkAndCallPreFn,
+            checkAndCallgetTheme,
+            checkAndCallGetter
           )
-        }
-      }
-      return valueOnly ? val : { [cssProp]: val }
+        ),
+        when(shouldReturnObj, objOf(cssProp))
+      )(val)
     }
   }
 }

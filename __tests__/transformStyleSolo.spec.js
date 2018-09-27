@@ -6,9 +6,7 @@ describe('How responsiveBoolProp and can be equivlent to responsiveProp', () => 
     const e = transformStyle({
       value: 'sm',
       cssProp: 'margin',
-      options: {
-        key: 'space'
-      }
+      key: 'space'
     })({})
 
     const r = { margin: '0.5rem' }
