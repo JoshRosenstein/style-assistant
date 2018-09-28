@@ -35,16 +35,20 @@ style-assistant WIP
 * [Contributing](#contributing)
 * [License](#license)
 
->## Installation
+>## Quick Start
 
 ```
-yarn add style-assistant
+npm install --save style-assistant
+```
+```javascript
+import Assistant from 'style-assistant'
+const myAssistant= new Assistant({})
 ```
 
 or
 
 ```
-npm install style-assistant --save
+npm install --save style-assistant
 ```
 ## Examples
 | Link                                                                                                                                                         | Description                                                                          | Tools Used                                                    |
@@ -295,7 +299,9 @@ export default {
 >### pxTo
 >---
 >**Deps:** | [config.baseFontSize.](#config) |
+>
 >**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/units)
+>
  unit => pxNumber || pxString => converted
 >[Description Here]
 
@@ -310,7 +316,9 @@ TODO...
 >### pxToEm
 >---
 >**Deps:** | [pxTo](#pxto) |
+>
 >**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/units)
+>
 >[Description Here]
 
 **Example**
@@ -323,7 +331,9 @@ const example=styler.pxToEm(16) //=> '1em'
 >### pxToRem
 >---
 >**Deps:** | [pxTo](#pxto) |
+>
 >**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/units)
+>
 >[Description Here]
 
 **Example**
@@ -336,7 +346,9 @@ const example=styler.pxToRem(16) //=> '1rem'
 >### pxToPct
 >---
 >**Deps:** | [pxTo](#pxto) |
+>
 >**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/units)
+>
 >[Description Here]
 
 **Example**
@@ -349,7 +361,9 @@ const example=styler.pxToPct(16) //=> '1%'
 >### pxToRelative
 >---
 >**Deps:** | [pxTo](#pxto) |
+>
 >**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/units)
+>
 >[Description Here] Returns untiless relative number.
 
 **Example**
@@ -362,7 +376,9 @@ const example=styler.pxToRelative(16) //=> 1
 >### normalize
 >---
 >**Deps:** | [pxTo](#pxto) |
+>
 >**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/units)
+>
 >[Description Here]
 
 **Example**
@@ -388,7 +404,9 @@ const example2=styler.normalizeToEm(16, 8) //=> '2em'
 >### normalizeToRem
 >---
 >**Deps:** | [normalize](#normalize) |
+>
 >**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/units)
+>
 >[Description Here]
 
 **Example**
@@ -404,7 +422,9 @@ const example2=styler.normalizeToEm(16, 8) //=> '2rem'
 >### getTheme
 >---
 >**Deps:** | [config.themeKey](#config) | [config.defaultTheme](#config) |
+>
 >**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/getTheme)
+>
 >[Description Here]
 
 **Example**
@@ -427,7 +447,9 @@ o.fallsBacktoDefaultTheme = getTheme('colors.red')(withProps) //=> "#f5222d"
 >### toMq
 >---
 >**Deps:** | [pxToEm](#pxtoem) |
+>
 >**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/toMq)
+>
 >Used in responsive utilties. quick helper to convert object to media query string. Currently depends on the 'pxToEm' functions.
 
 **Example**
@@ -457,7 +479,9 @@ const StyledExample = () => {
 >### transformStyle
 >---
 >**Deps:** | [getTheme](#gettheme) | [config.transformOptions](#config) | [config.alwaysTransform](#config) |
+>
 >**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/transformStyle)
+>
 >[Description Here]
 
 **Example**
@@ -465,33 +489,14 @@ const StyledExample = () => {
 ```javascript
 const identity = x => x
 const transformOptions = {
-  keys: {},
-  getter: {},
   functions: {
-    identity,
+    identity, /// usefull in long switchProp Blocks
     self: identity, //alias
-    px: x => parseFloat(x) + 'px',
-    ms: x => parseFloat(x) + 'ms',
-    pct: x => {
-      x = parseFloat(x)
-      x = Math.abs(x) < 1 ? x * 100 : x
-      return x + '%'
-    },
+    px: x => parseFloat(x) + 'px'
   },
 }
 
-const defaultTheme = {
-  space: {
-    none: 0,
-    xxs: 2,
-    xs: 4,
-    sm: 8,
-    md: 16,
-    lg: 32,
-    xl: 64,
-    xxl: 128,
-  }
-}
+const defaultTheme = { space: { none: 0, xxs: 2, xs: 4, sm: 8, md: 16, lg: 32, xl: 64, xxl: 128, } }
 
 const { transformStyle } = new Assistant({ transformOptions, defaultTheme })
 const emptyProps = {}
@@ -502,38 +507,25 @@ const exampleOptions = {
 }
 //// *************************All below will result to {"marginTop": "1rem"}*******************************
 let o = {}
-o.Converts = transformStyle({
-  cssProp: 'marginTop',
-  value: 16,
-  getter: 'pxToRem',
-})(emptyProps)
-o.looksUpValue = transformStyle({
-  cssProp: 'marginTop',
-  value: 'md',
-    key: 'space',
-    getter: 'pxToRem',
-})(emptyProps)
-o.postFnOrGetter = transformStyle({
-  cssProp: 'marginTop',
-  value: 'md',
-    key: 'space',
-    postFn: 'pxToRem',
+o.Basic = transformStyle({ cssProp: 'marginTop', value: "1rem"})(emptyProps)
 
-})(emptyProps)
+o.Converts = transformStyle({ cssProp: 'marginTop', value: 16, getter: 'pxToRem', })(emptyProps)
+
+o.looksUpValue = transformStyle({ cssProp: 'marginTop', value: 'md', key: 'space', getter: 'pxToRem', })(emptyProps)
+
+o.postFnOrGetter = transformStyle({ cssProp: 'marginTop', value: 'md', key: 'space', postFn: 'pxToRem', })(emptyProps)
+
 /// preFn options runs the raw value before applying theme lookup or getter/postfn
-o.preFn = transformStyle({
-  cssProp: 'marginTop',
-  value: 8,
-    key: 'space',
-    postFn: 'pxToRem',
-    preFn: v => v * 2
-})(emptyProps)
+o.preFn = transformStyle({ cssProp: 'marginTop', value: 8, key: 'space', postFn: 'pxToRem', preFn: v => v * 2 })(emptyProps)
+
 ```
 
 >### responsiveProp
 >---
 >**Deps:** | [getTheme](#gettheme) | [toMq](#tomq) | [transformStyle](#transformstyle) | [config.breakpointsKey](#config) |
+>
 >**Live Example:**[Sandbox](https://nr15m67qzp.codesandbox.io/responsiveprop)
+>
 >[Description Here]
 
 **Example**
@@ -641,7 +633,9 @@ o.responsiveObjBP2=hidden2({isHidden:{default:true,sm:false}})
 >### switchProp
 >---
 >**Deps:** | [responsiveProp](#responsiveprop)| [responsiveBoolProp](#responsiveboolprop) | [transformStyle](#transformstyle) | [config.transformOptions.functions](#config) | [config.switchPropOptions](#config) |
+>
 >**Live Example:**[Sandbox](https://nr15m67qzp.codesandbox.io/switchprop)
+>
 >[Description Here] Useful SwitchStatement like style block.
 
 **Basic Example**
@@ -702,7 +696,9 @@ const padding = switchProp(
 >### parser
 >---
 >**Deps:** | [switchProp](#switchprop) | [responsiveProp](#responsiveprop) | [responsiveBoolProp](#responsiveboolprop) | [toMq](#tomq) |
+>
 >**Live Example:**
+>
 >[Description Here] parser aka styler.  
 
 **Example**
