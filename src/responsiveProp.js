@@ -1,11 +1,7 @@
 import { prop} from '@roseys/futils'
-import { falseToNull, safeMapValues } from './utils'
+import { falseToNull, safeMapValues, isResponsiveType } from './utils'
 
-import {
-  isLikeBreakpoints,
-  getBreakPoints,
-  responsiveReducer
-} from './responsiveHelpers'
+import { getBreakPoints, responsiveReducer } from './responsiveHelpers'
 
 export const responsiveProp = (
   getTheme,
@@ -45,7 +41,7 @@ export const responsiveProp = (
   const defaultResult = defaultValue ? { [css]: defaultValue } : {}
 
   // / if its not responsive value type, return
-  if (!isLikeBreakpoints(matchedProp)) {
+  if (!isResponsiveType(matchedProp)) {
     return !matchedProp ? defaultResult : { [css]: transformer(matchedProp) }
   }
 

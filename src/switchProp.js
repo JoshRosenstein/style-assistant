@@ -13,7 +13,8 @@ import {
   whenFunctionCallWith,
   firstNonNil,
   falseToNull,
-  iterateUntilResult
+  iterateUntilResult,
+  isResponsiveType
 } from './utils'
 
 export default function SwitchProp(
@@ -126,22 +127,25 @@ export default function SwitchProp(
         return computedValue
       }
 
-      if (responsive) {
-        return responsiveProp({
-          value: computedValue,
-          cssProp,
-          prop: matchedPropName,
-          transform
-        })(props)
-      } else if (responsiveBool) {
-        return responsiveBoolProp({
-          value: computedValue,
-          cssProp,
-          prop: matchedPropName,
-          transform
-        })(props)
+      if(isResponsiveType){
+        if (responsive) {
+          return responsiveProp({
+            value: computedValue,
+            cssProp,
+            prop: matchedPropName,
+            transform,
+            ...transformOptions
+          })(props)
+        } else if (responsiveBool) {
+          return responsiveBoolProp({
+            value: computedValue,
+            cssProp,
+            prop: matchedPropName,
+            transform,
+            ...transformOptions
+          })(props)
+        }
       }
-
       computedValue = hasBeenTransformed
         ? computedValue
         : transformer(computedValue)

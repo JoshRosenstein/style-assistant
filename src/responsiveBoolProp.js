@@ -1,10 +1,6 @@
 import { prop } from '@roseys/futils'
-import { isT, isF, isBool } from './utils'
-import {
-  isLikeBreakpoints,
-  getBreakPoints,
-  responsiveReducer
-} from './responsiveHelpers'
+import { isT, isF, isBool, isResponsiveType } from './utils'
+import { getBreakPoints, responsiveReducer } from './responsiveHelpers'
 
 export default function ResponsiveBoolProp(
   getTheme,
@@ -38,7 +34,7 @@ export default function ResponsiveBoolProp(
           })(props)
       }
 
-      if (!isLikeBreakpoints(matchedProp)) {
+      if (!isResponsiveType(matchedProp)) {
         if (isBool(matchedProp)) {
           const v = isT(matchedProp)
             ? transformer(trueValue)

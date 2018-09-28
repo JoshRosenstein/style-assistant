@@ -26,6 +26,7 @@ import {
 } from '@roseys/futils'
 
 export const firstNonNil = reduceWhile(isNil, (a, v) => v, null)
+export const isResponsiveType = x => isObject(x) || isArray(x)
 
 export const safeMapValues = curryN(2, (func, item) =>
   pipe(ifElse(either(isArray, isObject), mapValues(func), func))(item)

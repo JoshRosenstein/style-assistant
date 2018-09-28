@@ -1,5 +1,4 @@
 import {
-  isObject,
   isArray,
   values,
   prop,
@@ -8,22 +7,18 @@ import {
   mergeDeepRight,
   mapValues,
   when,
-  always
+  noop
 } from '@roseys/futils'
-import { arrToObj, isBool } from './utils'
+import { arrToObj, isBool, isResponsiveType } from './utils'
 
-export const nonBoolsToNil = mapValues(when(x => !isBool(x), always(undefined)))
+export const nonBoolsToNil = mapValues(when(x => !isBool(x), noop))
 
-export const boolsToNil = mapValues(when(isBool, always(undefined)))
+export const boolsToNil = mapValues(when(isBool, noop))
 
-export const isLikeBreakpoints = x => isObject(x) || isArray(x)
-export const getBreakPoints = (
-  matchedProp,
-  breakPointsFromTheme,
-) => {
+export const getBreakPoints = (matchedProp, breakPointsFromTheme) => {
   const Dummy = 0
   // /Prefer Arrays
-  if (isLikeBreakpoints(matchedProp)) {
+  if (isResponsiveType(matchedProp)) {
     let breakpoints = []
 
     const switchValue =
@@ -56,7 +51,6 @@ export const getBreakPoints = (
       }
     }
 
-
     const getBp = x => prop(x, breakPointsFromTheme)
 
     breakpoints = Object.keys(breakpoints)
@@ -68,8 +62,6 @@ export const getBreakPoints = (
 
     return { breakpoints, getBp }
   }
-
-
 }
 
 export const responsiveReducer = ({
