@@ -500,121 +500,204 @@ const exampleOptions = {
   key: 'space',
   getter: 'pxToRem',
 }
-
+//// *************************All below will result to {"marginTop": "1rem"}*******************************
 let o = {}
-/// EACH Function below returns '1rem'
 o.Converts = transformStyle({
   cssProp: 'marginTop',
   value: 16,
-  options: {
-    getter: 'pxToRem',
-  }
+  getter: 'pxToRem',
 })(emptyProps)
 o.looksUpValue = transformStyle({
   cssProp: 'marginTop',
   value: 'md',
-  options: {
     key: 'space',
     getter: 'pxToRem',
-  }
 })(emptyProps)
 o.postFnOrGetter = transformStyle({
   cssProp: 'marginTop',
   value: 'md',
-  options: {
     key: 'space',
     postFn: 'pxToRem',
-  }
+
 })(emptyProps)
 /// preFn options runs the raw value before applying theme lookup or getter/postfn
 o.preFn = transformStyle({
   cssProp: 'marginTop',
   value: 8,
-  options: {
     key: 'space',
-    getter: 'pxToRem',
+    postFn: 'pxToRem',
     preFn: v => v * 2
-  }
 })(emptyProps)
 ```
 
 >### responsiveProp
 >---
 >**Deps:** | [getTheme](#gettheme) | [toMq](#tomq) | [transformStyle](#transformstyle) | [config.breakpointsKey](#config) |
->**Live Example:**
+>**Live Example:**[Sandbox](https://nr15m67qzp.codesandbox.io/responsiveprop)
 >[Description Here]
 
 **Example**
 
 ```javascript
-const responsiveProp =
+const defaultTheme = {
+  fontSizes: [12, 14, 16, 20, 24, 32, 48, 64, 96, 128] ,
+  fontSizesObj: {xs:12,sm:14, md:16, lg:20} ,
+  breakpoints: [640, 832, 1024]
+}
+
+const responsivePropOptions={transform:true}
+const { responsiveProp,px } = new Assistant({ defaultTheme,responsivePropOptions })
+
+let o = {}
+o.basic=responsiveProp({
+  cssProp: "fontSize",
+  prop: "fontSize",
+})({fontSize:'2px'})  //=>{"fontSize": "2px"}
+
+o.themeLookup=responsiveProp({
+  cssProp: "fontSize",
+  key: "fontSizes",
+  prop: "fontSize",
+postFn:v=>v+'px',
+})({fontSize:1}) //=>"{fontSize": "14px"}
+
+o.responsivethemeLookup=responsiveProp({
+  cssProp: "fontSize",
+  key: "fontSizes",
+  prop: "fontSize",
+  postFn:v=>v+'px',
+})({fontSize:[1,2]})//=>{"fontSize": "14px","@media screen and (min-width:40em)": {"fontSize": "16px" }}
+
+o.usingBuiltInTransformation=responsiveProp({
+  cssProp: "fontSize",
+  key: "fontSizes",
+  prop: "fontSize",
+  postFn:'pxToRem',
+})({fontSize:[1,2]})//=>{ "fontSize": "0.875rem", "@media screen and (min-width:40em)": { "fontSize": "1rem" } }
+
+o.usingObjectStyleTheme=responsiveProp({
+  cssProp: "fontSize",
+  key: "fontSizesObj",
+  prop: "fontSize",
+ postFn:v=>v+'px',
+})({fontSize:["sm",'md']})//=>{ "fontSize": "14px", "@media screen and (min-width:40em)": { "fontSize": "16px" } }
 ```
 
 >### responsiveBoolProp
 >---
 >**Deps:** | [getTheme](#gettheme) | [toMq](#tomq) | [config.breakpointsKey](#config) |
->**Live Example:**
+>
+>**Live Example:**[Sandbox](https://nr15m67qzp.codesandbox.io/responsiveboolprop)
+>
 >This function is useful if you have a css property with a static default value, and want to apply to certain breakpoints
 
 **Example**
 
 ```javascript
 
-const isHiddenFunc=props=>  responsiveBoolProp({
-        T: 'none',// Value If targetProp is True
-        F: 'block', /// if not False value provided, value will be undefined and will return an empty {}
+const defaultTheme = {
+  breakpoints: [640, 832, 1024]
+}
+const defaultTheme2 = {
+  breakpoints: {'sm':640,'md':832, 'lg':1024}
+}
+
+const responsivePropOptions={transform:true}
+const { responsiveBoolProp } = new Assistant({ defaultTheme,responsivePropOptions })
+const { responsiveBoolProp:responsiveBoolProp2 } = new Assistant({ defaultTheme:defaultTheme2,responsivePropOptions })
+
+const hidden=responsiveBoolProp({
+        T: 'none',
+        F: 'block',
         cssProp: 'display',
-        prop: 'isHidden', /// If prop is not provided, the targetProp will default to cssProp
-      }) (props)
+        prop: 'isHidden'
+      })
 
-const propsAsObjectLit={ isHidden:{ default: false, tablet: true },
-                        theme:{breakpoints:{tablet:'40em'}} }
-const propsAsArray={isHidden:[false,true],
-                    theme:{breakpoints:{tablet:'40em'}} }
+const hidden2=responsiveBoolProp2({
+        T: 'none',
+        F: 'block',
+        cssProp: 'display',
+        prop: 'isHidden'
+      })
 
-const example1=isHiddenFunc(propsAsObjectLit)
-const example2=isHiddenFunc(propsAsArray)
-//result => {'@media screen and (min-width:40em)': { display: 'none' },display: 'block'}
+let o = {}
+o.basic=  hidden({isHidden:true})
+//=>{ "display": "none" }
+
+o.responsive=  hidden({isHidden:[true,false]})
+//=>{ "display": "none", "@media screen and (min-width:40em)": { "display": "block" } }
+
+o.basicObjBP=  hidden({isHidden:true})
+//=>{ "display": "none" }
+
+o.responsiveObjBP= hidden({isHidden:[true,false]})
+//=>{ "display": "none", "@media screen and (min-width:40em)": { "display": "block" } }
+
+o.responsiveObjBP2=hidden2({isHidden:{default:true,sm:false}})
+//=>{ "display": "none", "@media screen and (min-width:40em)": { "display": "block" } }
+
 ```
 
 >### switchProp
 >---
 >**Deps:** | [responsiveProp](#responsiveprop)| [responsiveBoolProp](#responsiveboolprop) | [transformStyle](#transformstyle) | [config.transformOptions.functions](#config) | [config.switchPropOptions](#config) |
->**Live Example:**
+>**Live Example:**[Sandbox](https://nr15m67qzp.codesandbox.io/switchprop)
 >[Description Here] Useful SwitchStatement like style block.
 
 **Basic Example**
 ```javascript
-///If needing just the value, no need to supply cssProp
-const getColor=props=>  switchProp({
-  color:(value,props)=>value,  /// can accept functions
-  primary:'blue',
-  secondary:'red',
-  default:'black'
-}) (props)
+const defaultTheme = {
+breakpoints: { tablet: 640, laptop: 832, desktop: 1024 },
+space: { none: 0, xxs: 2, xs: 4, sm: 8, md: 16, lg: 32, xl: 64, xxl: 128 },
+}
 
-const example1=getColor({primary:true}) //=> returns 'blue'
-const example2=getColor({secondary:true}) //=> returns 'red'
-// The order of keys within switchProps is important
-const example3=getColor({primary:true,color:'pink'}) //=> returns 'pink'  
+const transformOptions = { functions: { identity:x=>x, px: x => parseFloat(x) + 'px', }, }
 
-const example4=getColor({}) //=> returns 'black'
+const switchPropOptions={transform:true}
+const { switchProp,pxToRem } = new Assistant({ defaultTheme,switchPropOptions,transformOptions })
 
-///If needing just the value, no need to supply cssProp
-const getColorStyle=props=>  switchProp({
-  primary:'blue',
-  secondary:'red',
-  default:'black'
-},{cssProp:"backgroundColor"} ) (props)
+///Use switch props for alias prop Targets
+const padding = switchProp(
+  {
+    padding: "identity",
+    p: "identity",
+     default: '.25rem'
+  },
+  {
+    cssProp: "padding",
+    key: "space",
+    postFn:pxToRem,
+    responsive:true
+  }
+)
 
-const example11=getColorStyle({primary:true}) //=> returns {backgroundColor:'blue'}
-const example22=getColorStyle({secondary:true}) //=> returns {backgroundColor:'red'}
-const example33=getColorStyle({}) //=> returns {backgroundColor:'black'}
+  let o = {}
+  o.basic = padding({ p: '16px' })
+  //=>{ "padding": "1rem" }
+
+  o.basic2 = padding({ padding: 8 })
+  //=>{ "padding": "0.5rem" }
+
+  o.orderMatters = padding({ p: 8, padding: '16px' })
+  //=>{ "padding": "1rem" }
+
+  o.UsesDefault = padding({})
+  //=>{ "padding": ".25rem" }
+
+  o.responsive = padding({ p: [16, 8] })
+  //=>{ "padding": "1rem", "@media screen and (min-width:40em)": { "padding": "0.5rem" } }
+
+  o.responsiveWithObj = padding({ p: { desktop: 8 } })
+  //=>{ "@media screen and (min-width:64em)": { "padding": "0.5rem" } }
+
+  o.looksUpSpaceTheme = padding({ p: 'sm' })
+  //=>{ "padding": "0.5rem" }
+
+  o.responsiveThemeLookup = padding({ p: ['sm', 'md', 'lg'] })
+  //=>{ "padding": "0.5rem", "@media screen and (min-width:40em)": { "padding": "1rem" }, "@media screen and (min-width:52em)": { "padding": "2rem" } }
+
 ```
-**Responsive Example**
-```javascript
 
-```
 
 >### parser
 >---
