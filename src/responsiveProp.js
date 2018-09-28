@@ -1,5 +1,5 @@
 import { prop} from '@roseys/futils'
-import { falseToNull, safeMapValues, isResponsiveType } from './utils'
+import { falseToNull, safeMapValues, isResponsiveType,isTruthy } from './utils'
 
 import { getBreakPoints, responsiveReducer } from './responsiveHelpers'
 
@@ -42,7 +42,7 @@ export const responsiveProp = (
 
   // / if its not responsive value type, return
   if (!isResponsiveType(matchedProp)) {
-    return !matchedProp ? defaultResult : { [css]: transformer(matchedProp) }
+    return !isTruthy(matchedProp) ? defaultResult : { [css]: transformer(matchedProp) }
   }
 
   const { breakpoints, getBp } = getBreakPoints(

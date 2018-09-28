@@ -59,3 +59,36 @@ it('[switchProp] transformerOptions passes to responsiveProp', () => {
     padding: '0.5rem'
   })
 })
+
+it('[responsiveProp] value of 0 should not to the default', () => {
+  const defaultTheme = {
+    fontSizes: [12, 14, 16, 20, 24, 32, 48, 64, 96, 128],
+    fontSizesObj: { xs: 12, sm: 14, md: 16, lg: 20 },
+    breakpoints: [640, 832, 1024]
+  }
+
+  const responsivePropOptions = { transform: true }
+  const { responsiveProp } = new Assistant({
+    defaultTheme,
+    responsivePropOptions
+  })
+
+  const CSSPROP = 'debug'
+  const o = {}
+
+  o.themeLookup = responsiveProp({
+    cssProp: CSSPROP,
+    key: 'fontSizes',
+    prop: 'fontSize',
+    postFn: v => `${v  }px`
+  })({ fontSize: 0 }) //= >"{fontSize": "14px"}
+
+  // o.responsivethemeLookup = responsiveProp({
+  //   cssProp: CSSPROP,
+  //   key: 'fontSizes',
+  //   prop: 'fontSize',
+  //   postFn: v => v + 'px'
+  // })({ fontSize: [1, 2] }) //=>{"fontSize": "14px","@media screen and (min-width:40em)": {"fontSize": "16px" }}
+
+  expect(o.themeLookup).toEqual({ [CSSPROP]: '12px' })
+})

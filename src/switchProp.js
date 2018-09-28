@@ -123,7 +123,7 @@ export default function SwitchProp(
         )
       }
 
-      if (!computedValue) {
+      if (isNil(computedValue)) {
         return computedValue
       }
 
