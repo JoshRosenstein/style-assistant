@@ -13,6 +13,7 @@ style-assistant WIP
 ### Table of Contents
 
 * [Installation](#installation)
+*  [Examples](#examples)
 * [Usage](#usage)
   * [Config](#config)
   * [Function Dependecies](#function-dependecies)
@@ -34,7 +35,7 @@ style-assistant WIP
 * [Contributing](#contributing)
 * [License](#license)
 
-## Installation
+>## Installation
 
 ```
 yarn add style-assistant
@@ -45,7 +46,11 @@ or
 ```
 npm install style-assistant --save
 ```
-
+## Examples
+| Link                                                                                                                                                         | Description                                                                          | Tools Used                                                    |
+|--------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------|---------------------------------------------------------------|
+| [![Edit recreating styled-system-Rebass with style-assistant ](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/92w80j9ky4) | This Example shows how you can recreate styled-system and rebass with responsiveProp | [responsiveProp](#responsiveprop) & [switchProp](#switchprop) |
+| [![Edit nr15m67qzp](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/nr15m67qzp?view=preview)                               | **WIP**- demos for API usage below                                                     | ALL                                                           |
 
 ## Usage
 
@@ -92,6 +97,7 @@ config descriptions
 | transformOptions      | {defaultLookup: false,     defaultTransform: false,     keys: {},     getter: {},     functions: {`pxToRem`,`pxToEm`,`pxToPct`}   } | Set Global options for the transformStyle util               |    [transformStyle](#transformstyle)                                                                                       |
 | responsivePropOptions | {transform: false}                                                                                      | Set Global options for responsivePropOptions                                             |    [responsiveProp](#responsiveprop)                                                                                      |
 | switchPropOptions     | {transform: false}                                                                                      | Set Global options for switchPropOptions                                                 |        [switchProp](#switchprop)                                                                                  |
+| parserOptions     | {transform: false}                                                                                      | Set Global options for parserOptions                                                 |       [parser](#parser)                                                                                |
 
 ```javascript
 import Assistant from 'style-assistant'
@@ -103,7 +109,6 @@ const config = {
   baseFontSize: 16, /// Unitless value used for unit conversions Utils
   themeKey: 'theme', /// Unitless value used for unit conversions Utils
   breakpointsKey: 'breakpoints',
-  alwaysTransform: true,
   transformOptions: {
     defaultLookup: true,
     defaultTransform: true,
@@ -117,6 +122,9 @@ const config = {
   switchPropOptions: {
     transform: false,
   },
+    parserOptions: {
+    transform: false
+  }
 }
 
 export default new Assistant(config)
@@ -284,10 +292,13 @@ export default {
 
 
 
-### pxTo
-**Deps:** | [config.baseFontSize.](#config) |
-**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/units)
-......TODO
+>### pxTo
+>---
+>**Deps:** | [config.baseFontSize.](#config) |
+>**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/units)
+ unit => pxNumber || pxString => converted
+>[Description Here]
+
 
 
 **Example**
@@ -296,10 +307,11 @@ export default {
 TODO...
 ```
 
-### pxToEm
-**Deps:** | [pxTo](#pxto) |
-**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/units)
-......TODO
+>### pxToEm
+>---
+>**Deps:** | [pxTo](#pxto) |
+>**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/units)
+>[Description Here]
 
 **Example**
 
@@ -308,10 +320,11 @@ const styler= new Assistant({baseFontSize:16})
 const example=styler.pxToEm(16) //=> '1em'
 ```
 
-### pxToRem
-**Deps:** | [pxTo](#pxto) |
-**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/units)
-......TODO
+>### pxToRem
+>---
+>**Deps:** | [pxTo](#pxto) |
+>**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/units)
+>[Description Here]
 
 **Example**
 
@@ -320,10 +333,11 @@ const styler= new Assistant({baseFontSize:16})
 const example=styler.pxToRem(16) //=> '1rem'
 ```
 
-### pxToPct
-**Deps:** | [pxTo](#pxto) |
-**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/units)
-......TODO
+>### pxToPct
+>---
+>**Deps:** | [pxTo](#pxto) |
+>**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/units)
+>[Description Here]
 
 **Example**
 
@@ -332,11 +346,12 @@ const styler= new Assistant({baseFontSize:16})
 const example=styler.pxToPct(16) //=> '1%'
 ```
 
-### pxToRelative
-**Deps:** | [pxTo](#pxto) |
-**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/units)
-......TODO
-Returns untiless relative number.
+>### pxToRelative
+>---
+>**Deps:** | [pxTo](#pxto) |
+>**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/units)
+>[Description Here] Returns untiless relative number.
+
 **Example**
 
 ```javascript
@@ -344,20 +359,24 @@ const styler= new Assistant({baseFontSize:16})
 const example=styler.pxToRelative(16) //=> 1
 ```
 
-### normalize
-**Deps:** | [pxTo](#pxto) |
-**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/units)
-......TODO
+>### normalize
+>---
+>**Deps:** | [pxTo](#pxto) |
+>**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/units)
+>[Description Here]
+
 **Example**
 
 ```javascript
 ...TODO
 ```
 
-### normalizeToEm
-**Deps:** | [normalize](#normalize) |
-**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/units)
-......TODO
+>### normalizeToEm
+>---
+>**Deps:** | [normalize](#normalize) |
+>**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/units)
+>[Description Here]
+
 **Example**
 
 ```javascript
@@ -366,10 +385,12 @@ const example=styler.normalizeToEm(16,'.5rem') //=> '2em'
 const example2=styler.normalizeToEm(16, 8) //=> '2em'
 ```
 
-### normalizeToRem
-**Deps:** | [normalize](#normalize) |
-**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/units)
-......TODO
+>### normalizeToRem
+>---
+>**Deps:** | [normalize](#normalize) |
+>**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/units)
+>[Description Here]
+
 **Example**
 
 ```javascript
@@ -380,11 +401,12 @@ const example2=styler.normalizeToEm(16, 8) //=> '2rem'
 
 
 
-### getTheme
-**Deps:** | [config.themeKey](#config) | [config.defaultTheme](#config) |
-**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/getTheme)
+>### getTheme
+>---
+>**Deps:** | [config.themeKey](#config) | [config.defaultTheme](#config) |
+>**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/getTheme)
+>[Description Here]
 
-..TODO
 **Example**
 
 ```javascript
@@ -402,10 +424,12 @@ o.fallsBacktoDefaultTheme = getTheme('colors.red')(withProps) //=> "#f5222d"
 
 
 ```
-### toMq
-**Deps:** | [pxToEm](#pxtoem) |
-**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/toMq)
-Used in responsive utilties. quick helper to convert object to media query string. Currently depends on the 'pxToEm' functions.
+>### toMq
+>---
+>**Deps:** | [pxToEm](#pxtoem) |
+>**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/toMq)
+>Used in responsive utilties. quick helper to convert object to media query string. Currently depends on the 'pxToEm' functions.
+
 **Example**
 
 ```jsx
@@ -430,10 +454,12 @@ const StyledExample = () => {
 ```
 
 
-### transformStyle
-**Deps:** | [getTheme](#gettheme) | [config.transformOptions](#config) | [config.alwaysTransform](#config) |
-**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/transformStyle)
-TODO
+>### transformStyle
+>---
+>**Deps:** | [getTheme](#gettheme) | [config.transformOptions](#config) | [config.alwaysTransform](#config) |
+>**Live Example:** [Sandbox](https://nr15m67qzp.codesandbox.io/transformStyle)
+>[Description Here]
+
 **Example**
 
 ```javascript
@@ -512,9 +538,11 @@ o.preFn = transformStyle({
 })(emptyProps)
 ```
 
-### responsiveProp
-**Deps:** | [getTheme](#gettheme) | [toMq](#tomq) | [transformStyle](#transformstyle) | [config.breakpointsKey](#config) |
-responsiveProp Description
+>### responsiveProp
+>---
+>**Deps:** | [getTheme](#gettheme) | [toMq](#tomq) | [transformStyle](#transformstyle) | [config.breakpointsKey](#config) |
+>**Live Example:**
+>[Description Here]
 
 **Example**
 
@@ -522,10 +550,11 @@ responsiveProp Description
 const responsiveProp =
 ```
 
-### responsiveBoolProp
-**Deps:** | [getTheme](#gettheme) | [toMq](#tomq) | [config.breakpointsKey](#config) |
-
-This function is useful if you have a css property with a static default value, and want to apply to certain breakpoints
+>### responsiveBoolProp
+>---
+>**Deps:** | [getTheme](#gettheme) | [toMq](#tomq) | [config.breakpointsKey](#config) |
+>**Live Example:**
+>This function is useful if you have a css property with a static default value, and want to apply to certain breakpoints
 
 **Example**
 
@@ -548,10 +577,11 @@ const example2=isHiddenFunc(propsAsArray)
 //result => {'@media screen and (min-width:40em)': { display: 'none' },display: 'block'}
 ```
 
-### switchProp
-**Deps:** | [responsiveProp](#responsiveprop)| [responsiveBoolProp](#responsiveboolprop) | [transformStyle](#transformstyle) | [config.transformOptions.functions](#config) | [config.switchPropOptions](#config) |
-
-Useful SwitchStatement like style block.
+>### switchProp
+>---
+>**Deps:** | [responsiveProp](#responsiveprop)| [responsiveBoolProp](#responsiveboolprop) | [transformStyle](#transformstyle) | [config.transformOptions.functions](#config) | [config.switchPropOptions](#config) |
+>**Live Example:**
+>[Description Here] Useful SwitchStatement like style block.
 
 **Basic Example**
 ```javascript
@@ -586,9 +616,11 @@ const example33=getColorStyle({}) //=> returns {backgroundColor:'black'}
 
 ```
 
-### parser
-**Deps:** | [switchProp](#switchprop) | [responsiveProp](#responsiveprop) | [responsiveBoolProp](#responsiveboolprop) | [toMq](#tomq) |
-parser aka styler
+>### parser
+>---
+>**Deps:** | [switchProp](#switchprop) | [responsiveProp](#responsiveprop) | [responsiveBoolProp](#responsiveboolprop) | [toMq](#tomq) |
+>**Live Example:**
+>[Description Here] parser aka styler.  
 
 **Example**
 
