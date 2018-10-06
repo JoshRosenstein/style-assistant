@@ -33,7 +33,7 @@
     "clean:temp": "rimraf temp"
   },
   "dependencies": {
-    "@roseys/futils": "^0.0.21"
+    "@roseys/futils": "^0.0.22"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.0",

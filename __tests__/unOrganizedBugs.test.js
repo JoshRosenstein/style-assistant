@@ -1,4 +1,5 @@
 import Assistant from '../src/index'
+import { isNumber } from '@roseys/futils'
 
 it('[switchProp] transformerOptions passes to responsiveProp', () => {
   const defaultTheme = {
@@ -7,7 +8,7 @@ it('[switchProp] transformerOptions passes to responsiveProp', () => {
   }
 
   const transformOptions = {
-    functions: { identity: x => x, px: x => parseFloat(x) + 'px' }
+    functions: { identity: x => x, px: x => `${parseFloat(x)}px` }
   }
 
   const switchPropOptions = { transform: true }
@@ -17,7 +18,7 @@ it('[switchProp] transformerOptions passes to responsiveProp', () => {
     transformOptions
   })
 
-  ///Use switch props for alias prop Targets
+  // /Use switch props for alias prop Targets
   const padding = switchProp(
     {
       padding: 'identity',
@@ -31,7 +32,7 @@ it('[switchProp] transformerOptions passes to responsiveProp', () => {
       responsive: true
     }
   )
-  let o = {}
+  const o = {}
   o.basic = padding({ p: '16px' })
   o.basic2 = padding({ padding: 8 })
   o.orderMatters = padding({ p: 8, padding: '16px' })
@@ -72,17 +73,16 @@ it('[responsiveProp] value of 0 should not to the default', () => {
     defaultTheme,
     responsivePropOptions
   })
-  const emptyProps = {}
-  const withProps = { theme: { colors: { blue: 'myBlueColor' } } }
+
   const CSSPROP = 'CSSPROP'
-  let o = {}
+  const o = {}
 
   o.themeLookup = responsiveProp({
     cssProp: CSSPROP,
     key: 'fontSizes',
     prop: 'fontSize',
-    postFn: v => v + 'px'
-  })({ fontSize: 0 }) //=>"{fontSize": "14px"}
+    postFn: v => `${v}px`
+  })({ fontSize: 0 }) //= >"{fontSize": "14px"}
 
   // o.responsivethemeLookup = responsiveProp({
   //   cssProp: CSSPROP,
@@ -104,18 +104,18 @@ it('[switchProp] SpaceProp', () => {
     functions: {
       identity: x => x,
       returnAsIs: x => x,
-      px: x => parseFloat(x) + 'px'
+      px: x => `${parseFloat(x)}px`
     }
   }
 
   const switchPropOptions = { transform: true }
-  const { switchP: switchProp, pxToRem } = new Assistant({
+  const { switchP: switchProp } = new Assistant({
     defaultTheme,
     switchPropOptions,
     transformOptions
   })
-  const num = n => typeof n === 'number' && !isNaN(n)
-  const px = n => (num(n) ? n + 'px' : n)
+  const num = n => isNumber(n)
+  const px = n => (num(n) ? `${n}px` : n)
   const merge = (a, b) =>
     Object.assign(
       {},
@@ -270,31 +270,8 @@ it('[switchProp] SpaceProp', () => {
     }
   )
 
-  const space = compose(
-    marginTop,
-    marginBottom,
-    marginLeft,
-    marginRight,
-    margin,
-    paddingTop,
-    paddingBottom,
-    paddingRight,
-    paddingLeft,
-    padding
-  )
+  const o = {}
 
-  let o = {}
-  const debugg = switchProp(
-    {
-      margin: 'returnAsIs',
-      m: 'returnAsIs'
-    },
-    {
-      cssProp: 'margin',
-      key: 'space',
-      postFn: px
-    }
-  )
   o.marginZero = margin({ margin: 0 })
   // o.responsivethemeLookup = responsiveProp({
   //   cssProp: CSSPROP,

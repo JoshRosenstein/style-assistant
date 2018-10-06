@@ -1,8 +1,7 @@
 import { path, mergeDeepRight } from '@roseys/futils'
 import PxTo from './pxTo'
 import ToMq from './toMq'
-import SwitchProp from './switchProp'
-// import SwitchPropValue from './switchPropValue'
+import SwitchProp from './switchP'
 import ResponsiveProp from './responsiveP'
 import ResponsiveBoolP from './responsiveBoolP'
 import TransformStyleP from './transformStyleP'
@@ -49,7 +48,7 @@ const RESPONSIVE = Symbol('responsive')
 const RESPONSIVEPROP = Symbol('ResponsiveProp')
 const DEFAULTTHEME = Symbol('DefaultTheme')
 const SWITCHPROP = Symbol('SWITCHPROP')
-const SWITCHPROPVALUE = Symbol('SWITCHPROPVALUE')
+// const SWITCHPROPVALUE = Symbol('SWITCHPROPVALUE')
 const GETTHEMEP = Symbol('getThemeP')
 const GETTHEME = Symbol('getTheme')
 const TOMQ = Symbol('TOMQ')
@@ -185,8 +184,8 @@ PROP DEPENDEND
   responsiveProp = config => props =>
     this[RESPONSIVEPROP]({ ...this.responsivePropOptions, ...config })(props)
   responsiveBoolP = config => this[RESPONSIVEBOOLPROP](config)
-  switchProp = (value, options) => this[SWITCHPROP](value, options)
-  switchPropValue = (value, options) => this[SWITCHPROPVALUE](value, options)
+  switchP = (value, options) => this[SWITCHPROP](value, options)
+  // switchPropValue = (value, options) => this[SWITCHPROPVALUE](value, options)
   transformStyle = config =>
     this[TRANFORMSTYLEP]({ transform: this.alwaysTransform, ...config })
 }

@@ -41,7 +41,7 @@ export default function TransformStyle(
       doDefaultLookup = false
       doDefaultTransform = false
       valueOnly = true
-    } 
+    }
     const defaultLookup = doDefaultLookup && defaultLookups.keys[cssProp]
     const defaultGetter = doDefaultTransform && defaultLookups.getter[cssProp]
     const themeKey = path || defaultLookup

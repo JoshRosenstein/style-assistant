@@ -14,11 +14,10 @@ import {
   reject,
   either,
   all,
-  contains,
+  contains,isString,split,toArray,
   props as getprops
 } from '@roseys/futils'
-import splitWhenNoSpace_ from '@roseys/futils/es/splitWhenNoSpace_'
-   
+
 import {
   whenFunctionCallWith,
   isTruthy,
@@ -26,6 +25,7 @@ import {
   cleanAndSort
 } from './utils'
 
+const splitWhenNoSpace =(keys,delim) => isString(keys)?/\s/g.test(keys)?[keys]:split(delim,keys):toArray(keys)
 export const NestKey = '$nest'
   
 // const logger = (prefix, overide) =>
@@ -53,7 +53,7 @@ export const NestKey = '$nest'
 
 export default value => props => 
 // const values = keys(value)
-// console.log(map(v=>splitWhenNoSpace_(v, ','))(values) )
+// console.log(map(v=>splitWhenNoSpace(v, ','))(values) )
   flow(
     value,
     // logger('Value'),
@@ -62,7 +62,7 @@ export default value => props =>
       let value
       if (contains(',', propName)) {
         value = flow(
-          splitWhenNoSpace_(propName, ','),
+          splitWhenNoSpace(propName, ','),
           // logger('propNames'),
           x => getprops(x, props)
           //   logger('propValues'),
