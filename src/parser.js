@@ -6,28 +6,22 @@ import {
   reduce,
   isEmpty,
   last,
-  always,
   pipe,
-  mergeDeepRight,
-  ifElse,
-  prop,
   flow,
   toArray,
   isObject,
-  pathOr,
   objOf,
   when
-} from '@roseys/futils'
-
+} from '@roseys/futils' 
+import matchBlockP from './matchBlockP'
 import {
   whenFunctionCallWith,
   falseToNull,
   splitSelectors,
   isAtRule,
-  isTruthy,
   isMQ,
   isTemplate,
-  extractTemplateValue
+  extractTemplateValue,
 } from './utils'
 
 export const PSUEDO_WITHOUT_SELECTOR = /(^|\s)(:{1,2})(\w)/g
@@ -94,7 +88,7 @@ const isInlinePattern = (value, selector, location) =>
   !isNestable(last(location) || []) &&
   !isPatternBlock(selector)
 
-const parseRulesC = (parseInlinePattern, toMq) => (
+const parseRulesC = (parseInlinePattern, initSelectorTransform) => (
   parseNested,
   selector,
   value,
@@ -103,8 +97,16 @@ const parseRulesC = (parseInlinePattern, toMq) => (
   props,
   options
 ) => {
-  selector = selector.replace(/__.$/, '')
+  selector = initSelectorTransform(selector, props)
   let next = selector
+  // / If theres a parent selector- prep next selector
+  if (parents.length) {
+    next = next.replace(PSUEDO_WITHOUT_SELECTOR, '$1&$2$3')
+    if (hasReference(next)) {
+      next = next.replace(REFERENCE_SELECTOR, parents.pop())
+    }
+  }
+
   value = flow(
     value,
     whenFunctionCallWith(props),
@@ -112,51 +114,12 @@ const parseRulesC = (parseInlinePattern, toMq) => (
     when(isTemplate, template => objOf(extractTemplateValue(template), 'self'))
   )
 
-  if (parents.length) {
-    next = next.replace(PSUEDO_WITHOUT_SELECTOR, '$1&$2$3')
-    if (hasReference(next)) {
-      next = next.replace(REFERENCE_SELECTOR, parents.pop())
-    }
-  }
   if (selector === '@font-face') {
     return { location: [], selector: '', property: selector, value }
   }
 
-  if (isMQ(selector)) {
-    const bp = selector.replace(/^MQ_|mq_+/, '')
-    selector = flow(
-      pathOr(
-        bp,
-        ['theme', 'breakpoints', selector.replace(/^MQ_|mq_+/, '')],
-        props
-      ),
-      toMq
-    )
-  }
-
   if (isPatternBlock(selector)) {
-    const res = flow(
-      value,
-      reduce(
-        (accumulated, rulesForProp, propName) =>
-          flow(
-            props,
-            ifElse(
-              x => isTruthy(prop(propName, x)),
-              pipe(
-                always(rulesForProp),
-                whenFunctionCallWith(props[propName], props),
-                whenFunctionCallWith(props),
-                mergeDeepRight(accumulated)
-              ),
-              always(accumulated)
-            )
-          ),
-        {}
-      )
-    )
-
-    return parseNested(res, parents, location)
+    return parseNested(matchBlockP(value)(props), parents, location)
   }
 
   if (isInlinePattern(value, selector, parents)) {
@@ -172,8 +135,7 @@ const parseRulesC = (parseInlinePattern, toMq) => (
   }
 
   if (isObject(value)) {
-    const nestable = isNestable(selector)
-    if (nestable) {
+    if (isNestable(selector)) {
       location = location.concat(selector)
     } else if (isAtRule(selector)) {
       parents = [next]
@@ -190,7 +152,6 @@ const parseRulesC = (parseInlinePattern, toMq) => (
 
     return parseNested(value, parents, location)
   }
-  // value = computeGetter({ val: value, options, selector, props });
 
   return {
     location,
@@ -237,14 +198,8 @@ const groupRules = (group = true) => rules => {
   )
 }
 
-export function getRulesC(
-  switchProp,
-  responsiveProp,
-  responsiveBoolProp,
-  toMq,
-  config
-) {
-  const parseRules = parseRulesC(switchProp, toMq)
+export function getRulesC(ruleParser, config) {
+  // const parseRules = parseRulesC(switchProp, toMq)
   return function getRules({
     obj,
     parents = [],
@@ -274,7 +229,7 @@ export function getRulesC(
           pipe(
             splitSelectors,
             reduce((res, selector) => {
-              const parsed = parseRules(
+              const parsed = ruleParser(
                 getNested,
                 selector,
                 rules[selectors],
@@ -293,21 +248,22 @@ export function getRulesC(
   }
 }
 
-export default function stylerC(
-  switchProp,
-  responsiveProp,
-  responsiveBoolProp,
-  toMq,
-  config
-) {
+export default function stylerC(switchProp, toMq, breakpointsP, config) {
+  const initSelectorTransform = (selector, props) => {
+    // / Duplicate overidable keys
+    selector = selector.replace(/__.$/, '')
+    // / Check if Selector is MQ shorthand MQ_mobile || mq_1
+    if (isMQ(selector)) {
+      const bp = selector.replace(/^MQ_|mq_+/, '')
+      selector = toMq(breakpointsP(bp)(props) || bp)
+    }
+    return selector
+  }
+
+  const parseRules = parseRulesC(switchProp, initSelectorTransform)
+
   // //////Start Styler
-  const getRules = getRulesC(
-    switchProp,
-    responsiveProp,
-    responsiveBoolProp,
-    toMq,
-    config
-  )
+  const getRules = getRulesC(parseRules, config)
   return function stylerProp(obj, groupSelectors = true) {
     return function styler(props) {
       let rules
@@ -325,6 +281,7 @@ export default function stylerC(
         rules,
         groupRules(groupSelectors),
         formatOutput
+        //  cleanAndSort
       )
     }
   }

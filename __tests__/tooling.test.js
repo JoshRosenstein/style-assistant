@@ -38,15 +38,15 @@ describe('Quick Helpers', () => {
     styler.mergeDefaultTheme({ colors: { customColor: 'MycustomColor' } })
     expect(getDefaultTheme('colors.customColor')).toEqual('MycustomColor')
   }),
-  it('GetTheme', () => {
-    const { getTheme } = styler
+    it('GetTheme', () => {
+      const { getTheme } = styler
 
-    expect(getTheme('colors.black')({})).toEqual('#000')
+      expect(getTheme('colors.black')({})).toEqual('#000')
 
-    expect(
-      getTheme('customColors.black')({
-        theme: { customColors: { black: 'customBlack' } }
-      })
-    ).toEqual('customBlack')
-  })
+      expect(
+        getTheme('customColors.black')({
+          theme: { customColors: { black: 'customBlack' } }
+        })
+      ).toEqual('customBlack')
+    })
 })

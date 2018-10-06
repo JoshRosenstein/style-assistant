@@ -1,10 +1,12 @@
 import Assistant from '../src/index'
 import config from './__utils__/testDefaultConfig'
 
-
-const { parse: styler, getTheme, transformStyle, switchProp } = new Assistant(
-  config
-)
+const {
+  parse: styler,
+  getTheme,
+  transformStyle,
+  switchP: switchProp
+} = new Assistant(config)
 
 const StylerEq = ({ args, props, result }) => {
   expect(styler(args)(props)).toEqual(result)
@@ -25,6 +27,26 @@ const stylerTest = (Name, args) =>
   })
 
 describe('Styler', () => {
+  it('Sorted Keys', () => {
+    expect(
+      styler({
+        backgroundRepeat: 4,
+        backgroundColor: 2,
+        backgroundImage: 3,
+        background: 1,
+        borderLeft: 6,
+        border: 5
+      })({})
+    ).toEqual({
+      background: 1,
+      backgroundColor: 2,
+      backgroundImage: 3,
+      backgroundRepeat: 4,
+      border: 5,
+      borderLeft: 6
+    })
+  })
+
   describe('Duplicate Keys Issue', () => {
     it('Template', () => {
       expect(styler({ border: 1, border__2: 2 })({})).toEqual({ border: 2 })
@@ -35,9 +57,9 @@ describe('Styler', () => {
         styler({
           mq_mobile__1: { border: 1 },
           mq_mobile__2: { borderTop__2: 2 }
-        })({})
+        })({ theme: { breakpoints: { mobile: 'BpFromProps' } } })
       ).toEqual({
-        '@media screen and (min-width:mobile)': {
+        '@media screen and (min-width:BpFromProps)': {
           border: 1,
           borderTop: 2
         }
@@ -47,10 +69,12 @@ describe('Styler', () => {
 
   describe('MQ Selector', () => {
     expect(
-      styler({ mq_mobile: { marginTop: { margin: 'self' } } })({
+      styler({ mq_mobilee: { marginTop: { margin: 'self' } } })({
         margin: '16px'
       })
-    ).toEqual({ '@media screen and (min-width:mobile)': { marginTop: '16px' } })
+    ).toEqual({
+      '@media screen and (min-width:mobilee)': { marginTop: '16px' }
+    })
 
     expect(
       styler({
@@ -61,7 +85,8 @@ describe('Styler', () => {
           marginLeft: 'auto'
         }
       })({
-        margin: '1px'
+        margin: '1px',
+        theme: { breakpoints: { desktop: 'desktop' } }
       })
     ).toEqual({
       '@media screen and (min-width:desktop)': {
@@ -290,7 +315,9 @@ describe('Styler', () => {
           isSmall: 'small'
         },
         {
-          cssProp: 'margin',
+          cssProp: 'this',
+
+          transform: true,
           key: 'customSpace'
         }
       )
@@ -301,7 +328,7 @@ describe('Styler', () => {
         }
       }
       const result = {
-        margin: 'returnThis'
+        this: 'returnThis'
       }
       expect(testStyler(testProps)).toEqual(result)
     })
@@ -311,7 +338,8 @@ describe('Styler', () => {
         margin: {
           isSmall: 'small',
           options: {
-            key: 'customSpace'
+            key: 'customSpace',
+            transform: true
           }
         }
       })
@@ -526,8 +554,8 @@ describe('Styler', () => {
   })
 
   describe('Strings on Matchers are responsive', () => {
-    StylerTest('Should lookup key Functions using "returnAsIs', {
-      args: {
+    it('Should lookup key Functions using "returnAsIs', () => {
+      const testStyler = styler({
         flexDirection: {
           flexDirection: 'returnAsIs',
           direction: 'returnAsIs',
@@ -537,16 +565,18 @@ describe('Styler', () => {
           rowReverse: 'row-reverse',
           columnReverse: 'column-reverse'
         }
-      },
-      props: {
+      })
+
+      const props = {
         column: { mobile: true, tablet: true },
         row: { mobile: true }
-      },
-      result: { flexDirection: 'row' }
-    })
+      }
+      const res = { flexDirection: 'row' }
 
-    stylerTest('Should Works With Arrays', {
-      args: {
+      expect(testStyler(props)).toEqual(res)
+    })
+    it('Should Works With Arrays', () => {
+      const testStyler = styler({
         flexDirection: {
           flexDirection: 'returnAsIs',
           direction: 'returnAsIs',
@@ -555,16 +585,19 @@ describe('Styler', () => {
           column: 'column',
           rowReverse: 'row-reverse',
           columnReverse: 'column-reverse',
-          options: { responsiveBool: true }
+          options: { responsiveBool: true, transform: true }
         }
-      },
-      props: {
+      })
+
+      const props = {
         column: [true, true]
-      },
-      result: {
+      }
+      const res = {
         '@media screen and (min-width:1BP_Test)': { flexDirection: 'column' },
         flexDirection: 'column'
       }
+
+      expect(testStyler(props)).toEqual(res)
     })
   })
 

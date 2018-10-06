@@ -18,12 +18,10 @@ describe('How responsiveBoolProp and can be equivlent to responsiveProp', () => 
     const e = transformStyle({
       cssProp: 'marginTop',
       value: 16,
-      options: {
-        key: 'space',
-        getter: 'pxToRem',
-        defaultLookup: false,
-        defaultTransform: false
-      }
+      key: 'space',
+      getter: 'pxToRem',
+      defaultLookup: false,
+      defaultTransform: false
     })({})
     const r = { marginTop: '1rem' }
 

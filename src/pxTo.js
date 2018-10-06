@@ -6,13 +6,12 @@ import {
   when,
   defaultTo,
   round,
-  always
+  always,
+  isNumber,
+  isNil
 } from '@roseys/futils'
 
-import {
-  isNonZeroNumber,
-  appendString
-} from './utils'
+import { isNonZeroNumber, appendString } from './utils'
 
 const divideBy = flip(divide)
 
@@ -21,10 +20,10 @@ const stripUnit = (value, returnUnit) => {
 
   if (returnUnit) {
     const cssRegex = /^([+-]?(?:\d+|\d*\.\d+))([a-z]*|%)$/
-    if (typeof value === 'number' || !value.match(cssRegex)) return [value, 0]
+    if (isNumber(value) || !value.match(cssRegex)) return [value, 0]
     return [unitlessValue, value.match(cssRegex)[2]]
   }
-  if (Number.isNaN(unitlessValue)) return value
+  if (isNil(unitlessValue)) return value
   return unitlessValue
 }
 

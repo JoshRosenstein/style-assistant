@@ -13,7 +13,7 @@ describe('Switch Prop', () => {
   const CSSPROP = 'margin'
 
   describe('SwitchProp Without Transformer', () => {
-    const { switchProp } = new Assistant({ defaultTheme: testTheme })
+    const { switchP: switchProp } = new Assistant({ defaultTheme: testTheme })
 
     it('[Fallsback to default] when has empty Props', () => {
       const e = switchProp(switchConfig, { cssProp: CSSPROP })({})
@@ -122,7 +122,7 @@ describe('Switch Prop', () => {
   describe('SwitchProp With Transformer', () => {
     const defaultTransformer = v => v + 1
     const defaultThemeKey = 'space'
-    const { switchProp } = new Assistant({
+    const { switchP: switchProp } = new Assistant({
       defaultTheme: testTheme,
       switchPropOptions: {
         transform: true
@@ -269,7 +269,7 @@ describe('Switch Prop', () => {
       })
 
       const r = {
-        [CSSPROP]: defaultTransformer(testTheme[defaultThemeKey].sm)
+        [CSSPROP]: defaultTransformer(testTheme[defaultThemeKey]['sm'])
       }
 
       expect(e).toEqual(r)
@@ -301,9 +301,9 @@ describe('Switch Prop', () => {
 
       const r = {
         '@media screen and (min-width:1BP_Test)': {
-          [CSSPROP]: defaultTransformer(testTheme[defaultThemeKey].md)
+          [CSSPROP]: defaultTransformer(testTheme[defaultThemeKey]['md'])
         },
-        [CSSPROP]: defaultTransformer(testTheme[defaultThemeKey].sm)
+        [CSSPROP]: defaultTransformer(testTheme[defaultThemeKey]['sm'])
       }
 
       expect(e).toEqual(r)

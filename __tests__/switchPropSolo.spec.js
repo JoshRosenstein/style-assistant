@@ -90,7 +90,7 @@ describe('How responsiveBoolProp and can be equivlent to responsiveProp', () => 
       {
         cssProp: 'height',
         key: 'space',
-        postFn: v => `${v / 16  }rem`
+        postFn: v => v / 16 + 'rem'
 
         //  key: 'space',
         // responsive: true,

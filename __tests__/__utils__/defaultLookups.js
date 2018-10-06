@@ -1,7 +1,6 @@
-import { identity } from '@roseys/futils'
+import { identity, curry } from '@roseys/futils'
 import { appendUnit } from '../../src/utils'
 import PxTo from '../../src/pxTo'
-
 const pxToRem = v => PxTo(16)('rem')(v)
 const pxToEm = v => PxTo(16)('em')(v)
 const pxToPct = v => PxTo(16 / 100)('%')(v)

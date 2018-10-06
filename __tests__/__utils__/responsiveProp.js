@@ -1,6 +1,11 @@
-import ResponsiveProp from '../../src/responsiveProp'
-import getTheme from './getTheme'
+import ResponsiveProp from '../../src/responsiveP'
+import getThemeP from './getThemeP'
 import transformStyle from './transformStyle'
-import toMq from './toMq'
+import responsive from './responsive'
 
-export default ResponsiveProp(getTheme, 'breakpoints', toMq, transformStyle)
+export default ResponsiveProp(
+  responsive,
+  getThemeP,
+  'breakpoints',
+  transformStyle
+)

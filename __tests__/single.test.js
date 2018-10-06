@@ -3,9 +3,7 @@ import Assistant from '../src/index'
 import testTheme from './__utils__/testThemeObj'
 import config from './__utils__/testDefaultConfig'
 
-
 const styler = new Assistant({ ...config, defaultTheme: testTheme })
-
 
 describe('Parser', () => {
   it('Works ', () => {
@@ -32,11 +30,12 @@ describe('Parser', () => {
   })
 
   it('with MQ', () => {
-
     const e = styler.parse({
       mq_mobile__1: { border: 1 },
       mq_mobile__2: { borderTop__2: 2 }
-    })({})
+    })({
+      theme: { breakpoints: { mobile: 'mobile' } }
+    })
 
     const r = {
       '@media screen and (min-width:mobile)': { border: 1, borderTop: 2 }
@@ -49,11 +48,10 @@ describe('Parser', () => {
   //     cssProp,
   //     valueOnly
   it('transformStyle Default Transform', () => {
-
     const e = styler.transformStyle({
       value: 'sm',
       cssProp: 'margin'
-    })({ debug: '1px', debug: true })
+    })({})
 
     const r = { margin: '0.5rem' }
 
@@ -61,20 +59,18 @@ describe('Parser', () => {
   })
 
   it('SwitchProp transformStyle Default Transform', () => {
-
-    const e = styler.switchProp(
+    const e = styler.switchP(
       {
         marginKey: 'self'
       },
       { cssProp: 'margin', transform: true }
-    )({ marginKey: 'sm', debug: true })
+    )({ marginKey: 'sm' })
 
     const r = { margin: '0.5rem' }
 
     expect(e).toEqual(r)
   })
   it('MQ Selector', () => {
-
     const e = styler.parse({
       mq_mobile: {
         marginTop: {
@@ -85,7 +81,7 @@ describe('Parser', () => {
     })({ margin: '1px' })
 
     const r = {
-      '@media screen and (min-width:mobile)': { marginTop: '0.063rem' }
+      '@media screen and (min-width:1BP_Test)': { marginTop: '0.063rem' }
     }
 
     expect(e).toEqual(r)

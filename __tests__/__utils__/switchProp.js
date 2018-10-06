@@ -1,4 +1,4 @@
-import SwitchProp from '../../src/switchProp'
+import SwitchProp from '../../src/switchP'
 import responsiveProp from './responsiveProp'
 import responsiveBoolProp from './responsiveBoolProp'
 import transformStyle from './transformStyle'

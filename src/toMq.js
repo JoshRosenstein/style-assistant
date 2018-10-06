@@ -19,6 +19,7 @@ import {
   isString,
   isNumber,
   isArray,
+  isNil
 } from '@roseys/futils'
 import { isAtRule } from './utils'
 
@@ -61,6 +62,7 @@ const objParserCreator = pxToEm => obj => {
 export default function ToMQ(pxToEm) {
   const objParser = objParserCreator(pxToEm)
   return function toMq(config) {
+    if (isNil(config)) return undefined
     return pipe(
       cond([
         [both(isString, isAtRule), identity],

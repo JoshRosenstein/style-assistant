@@ -2,11 +2,15 @@ import {
   isEmpty,
   keys,
   prop,
+  propOr,
   pick,
   isNil,
-  flip,
   defaultTo,
-  flow
+  flow,
+  when,
+  isString,
+  filter,
+  isDefined
 } from '@roseys/futils'
 
 import {
@@ -14,7 +18,9 @@ import {
   firstNonNil,
   falseToNull,
   iterateUntilResult,
-  isResponsiveType
+  isResponsiveType,
+  isTruthy,
+  pipeIfDefined
 } from './utils'
 
 export default function SwitchProp(
@@ -77,9 +83,10 @@ export default function SwitchProp(
       let transformer = v => v
       let hasBeenTransformed = false
       if (
-        transform ||
-        !isEmpty(localTransformOpt) ||
-        !isEmpty(parserTransformOpt)
+        transform !== false &&
+        (transform ||
+          isDefined(localTransformOpt) ||
+          isDefined(parserTransformOpt))
       ) {
         transformer = v =>
           transformStyle({
@@ -89,9 +96,12 @@ export default function SwitchProp(
             ...transformOptions
           })(props)
       }
-
-      const intersectedMatchers = keys(pick(keys(matchers), props))
+      // /Isuue with Pick when value is 0, fix FUTILS
+      const intersectedMatchers = keys(
+        pick(keys(matchers), filter(isTruthy, props))
+      )
       let matchedPropName
+      // let matchedPropValue
 
       let computedValue
       if (isEmpty(intersectedMatchers) && isNil(defaultValue)) {
@@ -103,20 +113,18 @@ export default function SwitchProp(
         computedValue = transformer(whenFunctionCallWith(props)(defaultValue))
         hasBeenTransformed = true
       }
-
+      // / NEW BUGGG NOT REMOVING FALSE PROPS
       if (!isEmpty(intersectedMatchers)) {
         computedValue = flow(
           intersectedMatchers,
           iterateUntilResult((previous, propName) => {
             matchedPropName = propName
 
-            return flow(
-              propName,
-              flip(prop)(matchers),
-              v => mappedFunctions[v] || v,
+            return pipeIfDefined(
+              when(isString, x => propOr(x, x, mappedFunctions)),
               whenFunctionCallWith(props[propName], props),
               whenFunctionCallWith(props)
-            )
+            )(prop(propName, matchers))
           }),
           falseToNull,
           defaultTo(whenFunctionCallWith(props)(defaultValue))
@@ -127,17 +135,21 @@ export default function SwitchProp(
         return computedValue
       }
 
-      if(isResponsiveType){
-        if (responsive) {
-          return responsiveProp({
+      if (
+        isResponsiveType(computedValue) ||
+        isResponsiveType(prop(matchedPropName, props))
+      ) {
+        if (responsiveBool) {
+          return responsiveBoolProp({
             value: computedValue,
             cssProp,
             prop: matchedPropName,
             transform,
             ...transformOptions
           })(props)
-        } else if (responsiveBool) {
-          return responsiveBoolProp({
+        }
+        if (responsive) {
+          return responsiveProp({
             value: computedValue,
             cssProp,
             prop: matchedPropName,
@@ -157,5 +169,4 @@ export default function SwitchProp(
           : computedValue
     }
   }
-
 }

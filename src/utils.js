@@ -12,7 +12,6 @@ import {
   reduceWhile,
   either,
   concat,
-  isEmpty,
   is,
   when,
   both,
@@ -22,32 +21,47 @@ import {
   ifElse,
   isArray,
   isObject,
-  mapValues
+  mapValues,
+  isDefined,
+  isPopulated
 } from '@roseys/futils'
+
+export const cleanAndSort = unordered => {
+  const ordered = {}
+  Object.keys(unordered)
+    .sort()
+    .forEach((key) => {
+      const val = unordered[key]
+      if (isPopulated(val)) {
+        if (isObject(val)) {
+          ordered[key] = cleanAndSort(val)
+        } else {
+          ordered[key] = val
+        }
+      }
+    })
+  return ordered
+}
 
 export const firstNonNil = reduceWhile(isNil, (a, v) => v, null)
 export const isResponsiveType = x => isObject(x) || isArray(x)
-
 export const safeMapValues = curryN(2, (func, item) =>
   pipe(ifElse(either(isArray, isObject), mapValues(func), func))(item)
 )
 
 export const isTemplate = test(/{!([^}]+)}/g)
-
+export const pipeIfDefined = (...fns) => when(isDefined, pipe(...fns))
 export function extractTemplateValue(template) {
   const rx = new RegExp('{!(.*?)}')
   const values = rx.exec(template) // or: data.match(rx);
   return values && values[1].trim()
 }
 
-
 export const arrToObj = arr =>
   reduce((accumulated, value, key) => attach(key, value, accumulated), {}, arr)
 
-
 export const isBool = is('Boolean')
 export const isTruthy = either(Boolean, simplyEquals(0))
-
 
 export const isF = x => x === false
 export const isT = x => x === true
@@ -67,8 +81,8 @@ export const appendUnit = unit =>
     )
   )
 
-export const isNilOrEmpty = either(isNil, isEmpty)
-export const isNotNilOrEmpty = complement(isNilOrEmpty)
+// export const isNilOrEmpty = either(isNil, isEmpty)
+// export const isNotNilOrEmpty = complement(isNilOrEmpty)
 
 const isUndefinedOrFalse = either(isNil, simplyEquals(false))
 
@@ -107,8 +121,7 @@ export const splitSelectors = selectors => {
       if (!parens && !brackets) {
         splitted.push(current.trim())
         current = ''
-        char=''
-
+        char = ''
       }
     }
     current += char

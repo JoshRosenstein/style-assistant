@@ -1,15 +1,15 @@
 import Assistant from '../src/index'
 
-import testThemeArr from './__utils__/testThemeArr'
+import testTheme from './__utils__/testThemeArr'
 import testThemeObj from './__utils__/testThemeObj'
 
 import config from './__utils__/testDefaultConfig'
 
-const styler1 = new Assistant({ ...config, defaultTheme: testThemeArr })
+const styler1 = new Assistant({ ...config, defaultTheme: testTheme })
 const styler2 = new Assistant({ ...config, defaultTheme: testThemeObj })
 
 describe('Array Theme Keys and Object Theme Keys', () => {
-  describe('How responsiveBoolProp and can be equivlent to responsiveProp', () => {
+  describe('How responsiveBoolP and can be equivlent to responsiveProp', () => {
     const TargetProp = 'isHidden'
     const StandardResult = { display: 'block' }
     const ArrayResult = {
@@ -23,7 +23,7 @@ describe('Array Theme Keys and Object Theme Keys', () => {
     const Func = (func, FNconfig) => propValue =>
       func(FNconfig)({ [TargetProp]: propValue })
 
-    it('responsiveBoolProp ', () => {
+    it('responsiveBoolP ', () => {
       const StandardProps = false
       const ArrayProps = [false, true]
       const ObjProps = { default: false, mobile: true }
@@ -34,8 +34,8 @@ describe('Array Theme Keys and Object Theme Keys', () => {
         prop: TargetProp
       }
 
-      const FN1 = Func(styler1.responsiveBoolProp, config)
-      const FN2 = Func(styler2.responsiveBoolProp, config)
+      const FN1 = Func(styler1.responsiveBoolP, config)
+      const FN2 = Func(styler2.responsiveBoolP, config)
 
       expect(FN1(StandardProps)).toEqual(StandardResult)
       expect(FN1(ArrayProps)).toEqual(ArrayResult)
