@@ -9,6 +9,7 @@ packages/site/build
 package-lock.json
 .DS_Store
 .cache
+.vsCode
 public/
 notes/
 dist/
