@@ -83,7 +83,7 @@ export default function ToMQ(pxToEm) {
         ],
         [T, objParser]
       ]),
-      x => `@media ${x}`
+      when(x=>!isAtRule(x),x => `@media ${x}`)
     )(config)
   }
 }
