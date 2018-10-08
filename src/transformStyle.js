@@ -19,7 +19,7 @@ export default function TransformStyle(
   defaultLookups,
   globalOptions
 ) {
-  return function transformStyleProp({
+  return function transformStyle({
     value,
     cssProp,
     valueOnly,

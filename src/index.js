@@ -1,4 +1,4 @@
-import { path, mergeDeepRight } from '@roseys/futils'
+import { path } from '@roseys/futils'
 import PxTo from './pxTo'
 import ToMq from './toMq'
 import SwitchProp from './switchP'
@@ -26,14 +26,14 @@ const defaultOptions = {
     getter: {},
     functions: {}
   },
-  responsivePropOptions: {
-    //  transform: false
+  responsivePOptions: {
+ 
   },
-  switchPropOptions: {
-    //   transform: false
+  switchPOptions: {
+
   },
   parserOptions: {
-    //  transform: false
+
   }
 }
 
@@ -48,7 +48,6 @@ const RESPONSIVE = Symbol('responsive')
 const RESPONSIVEPROP = Symbol('ResponsiveProp')
 const DEFAULTTHEME = Symbol('DefaultTheme')
 const SWITCHPROP = Symbol('SWITCHPROP')
-// const SWITCHPROPVALUE = Symbol('SWITCHPROPVALUE')
 const GETTHEMEP = Symbol('getThemeP')
 const GETTHEME = Symbol('getTheme')
 const TOMQ = Symbol('TOMQ')
@@ -64,13 +63,13 @@ export default class Assistant {
       baseFontSize,
       breakpointsKey,
       alwaysTransform,
-      responsivePropOptions,
-      switchPropOptions,
+      responsivePOptions,
+      switchPOptions,
       parserOptions
     } = mergedOptions
     this.parserOptions = parserOptions
-    this.responsivePropOptions = responsivePropOptions
-    this.switchPropOptions = switchPropOptions
+    this.responsivePOptions = responsivePOptions
+    this.switchPOptions = switchPOptions
     this.alwaysTransform = alwaysTransform
     this[THEMEKEY] = themeKey
     this[DEFAULTTHEME] = defaultTheme
@@ -100,6 +99,7 @@ export default class Assistant {
 
     this[TOMQ] = ToMq(this.pxToEm)
     this.media = Media(this[DEFAULTTHEME].breakpoints, this[TOMQ])
+    
     this[TRANFORMSTYLE] = TransformStyle(
       this[GETTHEME],
       this.defaultLookups,
@@ -126,7 +126,7 @@ export default class Assistant {
       this[RESPONSIVEBOOLPROP],
       this[TRANFORMSTYLEP],
       this.defaultLookups.functions,
-      this.switchPropOptions
+      this.switchPOptions
     )
 
     this[PARSER] = Parser(
@@ -147,59 +147,32 @@ Style UTILS
   */
   pxToRem = pxValue => this[PXTO]('rem')(pxValue)
   pxToEm = pxValue => this[PXTO]('em')(pxValue)
-  pxToPct = pxValue => this[PXTO]('%')(pxValue)
+  pxToPct = pxValue => this[PXTO]('%')(pxValue*100)
   pxToRelative = pxValue => this[PXTO](false)(pxValue)
 
   normalize = Normalize(pxValue => this[PXTO](false)(pxValue))
-
   normalizeToEm = (value, base) => this.normalize(value, base, 'em')
   normalizeToRem = (value, base) => this.normalize(value, base, 'rem')
 
-  // styler.toMq([{ screen: true  ,max: 16} => @media screen and (max-width:1em)
   toMq = config => this[TOMQ](config)
+
   parse = config => this[PARSER](config)
 
-  getDefaultTheme = key =>
-    key ? path(key, this[DEFAULTTHEME]) : this[DEFAULTTHEME]
-
-  mergeDefaultTheme = a => {
-    this[DEFAULTTHEME] = mergeDeepRight(this[DEFAULTTHEME], a)
-  }
-
-  /*
-PROP DEPENDEND
-
-  */
-
-  getTheme = key => this[GETTHEMEP](key)
-
-  getThemeWithFallbackKey = (key, fallbackKey = 'default') => props =>
-    this[GETTHEMEP](key)(props) || this[GETTHEMEP](fallbackKey)(props)
-
-  getThemeOr = (key, defaultValue) => props =>
-    this[GETTHEMEP](key)(props) || defaultValue
+  getThemeP = key => this[GETTHEMEP](key)
+  getTheme = key => this[GETTHEME](key)
 
   responsive = config => this[RESPONSIVE](config)
+  responsiveP = config => props =>
+    this[RESPONSIVEPROP]({ ...this.responsivePOptions, ...config })(props)
 
-  responsiveProp = config => props =>
-    this[RESPONSIVEPROP]({ ...this.responsivePropOptions, ...config })(props)
   responsiveBoolP = config => this[RESPONSIVEBOOLPROP](config)
   switchP = (value, options) => this[SWITCHPROP](value, options)
   // switchPropValue = (value, options) => this[SWITCHPROPVALUE](value, options)
   transformStyle = config =>
-    this[TRANFORMSTYLEP]({ transform: this.alwaysTransform, ...config })
+    this[TRANFORMSTYLE](config)
+
+
+transformStyleP = config =>
+  this[TRANFORMSTYLEP](config)
 }
 
-// const styler = new Assistant({
-//   defaultTheme: {
-//     breakpoints: {
-//       mobile: 599,
-//       tablet: 768,
-//       desktop: 1200,
-//       hd: 1800
-//     }
-//   }
-// })
-
-// console.log(styler.breakPointsP('desktop')({}))
-// console.log(styler.media.hd({ a: 1 }, v => ({ min: v-1000 })))

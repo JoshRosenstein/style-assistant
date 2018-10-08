@@ -1,5 +1,4 @@
 import Assistant from '../src/index'
-import testTheme from './__utils__/testThemeObj'
 
 describe('media', () => {
   const baseFontSize = 16
@@ -8,7 +7,7 @@ describe('media', () => {
     tablet: 768,
     desktop: 1200,
     hd: 1800
-  }
+  } 
   const { media } = new Assistant({
     baseFontSize,
     defaultTheme: {
@@ -21,7 +20,8 @@ describe('media', () => {
         a: 1
       }
     })
-  })
+  }) 
+   
   test('Can Overide toMq', () => {
     expect(media.hd({ a: 1 }, v => ({ min: v - 1000 }))).toEqual({
       [`@media (min-width:${(breakpoints.hd - 1000) / baseFontSize}em)`]: {

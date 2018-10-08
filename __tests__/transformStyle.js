@@ -12,7 +12,7 @@ describe('How responsiveBoolProp and can be equivlent to responsiveProp', () => 
       options: {
         key: 'space'
       }
-    })({})
+    })
 
     const r = { margin: '0.5rem' }
     // log.getLogger('transformStyle').setLevel(3)
@@ -29,7 +29,7 @@ describe('How responsiveBoolProp and can be equivlent to responsiveProp', () => 
         defaultLookup: false,
         defaultTransform: false
       }
-    })({})
+    })
     const r = { marginTop: '1rem' }
 
     expect(e).toEqual(r)

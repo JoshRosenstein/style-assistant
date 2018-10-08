@@ -3,8 +3,8 @@ import config from './__utils__/testDefaultConfig'
 
 const {
   parse: styler,
-  getTheme,
-  transformStyle,
+  getThemeP,
+  transformStyleP,
   switchP: switchProp
 } = new Assistant(config)
 
@@ -17,14 +17,6 @@ const StylerTest = (Name, args) =>
     StylerEq(args)
   })
 
-const stylerEq = ({ args, props, result }) => {
-  expect(styler(args)(props)).toEqual(result)
-}
-
-const stylerTest = (Name, args) =>
-  it(Name, () => {
-    stylerEq(args)
-  })
 
 describe('Styler', () => {
   it('Sorted Keys', () => {
@@ -156,7 +148,7 @@ describe('Styler', () => {
         returnPropValue: v => v,
         returnAsIs: 'returnAsIs',
         dependsOnOtherProp: (value, p) => p.otherProp,
-        getThemeColor: (value, p) => getTheme(`colors.${value}`)(p),
+        getThemePColor: (value, p) => getThemeP(`colors.${value}`)(p),
         default: 'white'
       }
     })
@@ -257,9 +249,9 @@ describe('Styler', () => {
       }
       expect(testStyler(testProps)).toEqual(result)
     })
-    it('Can use getThemeAttr', () => {
+    it('Can use getThemePAttr', () => {
       const testProps = {
-        getThemeColor: 'blue',
+        getThemePColor: 'blue',
         theme: {
           colors: { blue: 'Themedblue' }
         }
@@ -292,8 +284,8 @@ describe('Styler', () => {
     })
   })
   describe('DEFAULT_RULE_KEY_LOOKUP', () => {
-    it('transformStyle Test', () => {
-      const testStyler = transformStyle({
+    it('transformStyleP Test', () => {
+      const testStyler = transformStyleP({
         cssProp: 'margin',
         value: 'small',
         key: 'customSpace'
@@ -309,7 +301,7 @@ describe('Styler', () => {
       expect(testStyler(testProps)).toEqual(result)
     })
 
-    it('SwitchProp to transformStyle Test', () => {
+    it('SwitchProp to transformStyleP Test', () => {
       const testStyler = switchProp(
         {
           isSmall: 'small'

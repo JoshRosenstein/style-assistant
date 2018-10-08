@@ -2,14 +2,13 @@ import matchBlockP from '../src/matchBlockP'
 import getTheme from './__utils__/getTheme'
 import getThemeP from './__utils__/getThemeP'
 import switchProp from './__utils__/switchProp'
-import { NestKey } from '../src/matchBlockP'
 
 describe('matchBlockP', () => {
   const basic = {
     color: 'blue',
     fontSize: 2
   }
-  const canReturnArray = size => [{ height: getTheme(['space', size]) + 'px' }]
+  const canReturnArray = size => [{ height: `${getTheme(['space', size])  }px` }]
   const funcOuterAndInner = c => ({
     color: props => getThemeP(['colors', c])(props) || c
   })
@@ -35,7 +34,7 @@ describe('matchBlockP', () => {
     color: funcOuterAndInner,
     bg: ArrayWithFuncs
   }
-
+ 
   test('Basic', () => {
     const switchConfig = {
       basic: {
@@ -93,7 +92,8 @@ describe('matchBlockP', () => {
     expect(matchBlockP(switchConfig)(props)).toEqual(res)
   })
 
-  ///combos
+
+  // /combos
   // test('Basic', () => {
 
   //   const Type = matchBlockP({

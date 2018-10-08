@@ -14,5 +14,5 @@ export default SwitchProp(
   responsiveProp,
   responsiveBoolProp,
   transformStyle,
-  defaultLookups['functions']
+  defaultLookups.functions
 )

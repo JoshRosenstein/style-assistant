@@ -7,17 +7,17 @@ const styler = new Assistant({ ...config, defaultTheme: testTheme })
 
 describe('Parser', () => {
   it('Works ', () => {
-    // log.getLogger('transformStyle').setLevel(0)
+    // log.getLogger('transformStyleP').setLevel(0)
     const e = styler.parse({
       width: '1px'
     })({})
 
     const r = { width: '1px' }
-    // log.getLogger('transformStyle').setLevel(3)
+    // log.getLogger('transformStyleP').setLevel(3)
     expect(e).toEqual(r)
   })
   it('Works 2', () => {
-    // log.getLogger('transformStyle').setLevel(0)
+    // log.getLogger('transformStyleP').setLevel(0)
     const e = styler.parse({
       width: {
         w: v => v
@@ -25,7 +25,7 @@ describe('Parser', () => {
     })({ w: '1px' })
 
     const r = { width: '1px' }
-    // log.getLogger('transformStyle').setLevel(3)
+    // log.getLogger('transformStyleP').setLevel(3)
     expect(e).toEqual(r)
   })
 
@@ -47,8 +47,8 @@ describe('Parser', () => {
   //   options: localOptions,
   //     cssProp,
   //     valueOnly
-  it('transformStyle Default Transform', () => {
-    const e = styler.transformStyle({
+  it('transformStyleP Default Transform', () => {
+    const e = styler.transformStyleP({
       value: 'sm',
       cssProp: 'margin'
     })({})
@@ -58,7 +58,7 @@ describe('Parser', () => {
     expect(e).toEqual(r)
   })
 
-  it('SwitchProp transformStyle Default Transform', () => {
+  it('SwitchProp transformStyleP Default Transform', () => {
     const e = styler.switchP(
       {
         marginKey: 'self'

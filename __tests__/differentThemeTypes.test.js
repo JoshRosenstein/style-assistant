@@ -9,7 +9,7 @@ const styler1 = new Assistant({ ...config, defaultTheme: testTheme })
 const styler2 = new Assistant({ ...config, defaultTheme: testThemeObj })
 
 describe('Array Theme Keys and Object Theme Keys', () => {
-  describe('How responsiveBoolP and can be equivlent to responsiveProp', () => {
+  describe('How responsiveBoolP and can be equivlent to responsiveP', () => {
     const TargetProp = 'isHidden'
     const StandardResult = { display: 'block' }
     const ArrayResult = {
@@ -45,7 +45,7 @@ describe('Array Theme Keys and Object Theme Keys', () => {
       expect(FN2(ObjProps)).toEqual(ObjResult)
     })
 
-    it('responsiveProp', () => {
+    it('responsiveP', () => {
       const StandardProps = 'block'
       const ArrayProps = ['block', 'none']
       const ObjProps = { default: 'block', mobile: 'none' }
@@ -56,8 +56,8 @@ describe('Array Theme Keys and Object Theme Keys', () => {
         transform: false
       }
 
-      const FN1 = Func(styler2.responsiveProp, config)
-      const FN2 = Func(styler2.responsiveProp, config)
+      const FN1 = Func(styler2.responsiveP, config)
+      const FN2 = Func(styler2.responsiveP, config)
 
       expect(FN1(StandardProps)).toEqual(StandardResult)
       expect(FN1(ArrayProps)).toEqual(ArrayResult)
@@ -68,7 +68,7 @@ describe('Array Theme Keys and Object Theme Keys', () => {
     })
   })
 
-  describe('Basic responsiveProp', () => {
+  describe('Basic responsiveP', () => {
     const Func = (func, FNconfig) => props => func(FNconfig)(props)
 
     it('Returns Target Value', () => {
@@ -81,8 +81,8 @@ describe('Array Theme Keys and Object Theme Keys', () => {
       const props = { Target: 'targetPropValue' }
       const result = { paddingTop: 'targetPropValue' }
 
-      const FN1 = Func(styler1.responsiveProp, FNconfig)(props)
-      const FN2 = Func(styler2.responsiveProp, FNconfig)(props)
+      const FN1 = Func(styler1.responsiveP, FNconfig)(props)
+      const FN2 = Func(styler2.responsiveP, FNconfig)(props)
 
       expect(FN1).toEqual(result)
       expect(FN2).toEqual(result)
@@ -98,8 +98,8 @@ describe('Array Theme Keys and Object Theme Keys', () => {
       const props = { Target: ['targetPropValue'] }
       const result = { paddingTop: 'targetPropValue' }
 
-      const FN1 = Func(styler1.responsiveProp, FNconfig)(props)
-      const FN2 = Func(styler2.responsiveProp, FNconfig)(props)
+      const FN1 = Func(styler1.responsiveP, FNconfig)(props)
+      const FN2 = Func(styler2.responsiveP, FNconfig)(props)
 
       expect(FN1).toEqual(result)
       expect(FN2).toEqual(result)
@@ -115,8 +115,8 @@ describe('Array Theme Keys and Object Theme Keys', () => {
       const props = { Target: { default: 'targetPropValue' } }
       const result = { paddingTop: 'targetPropValue' }
 
-      const FN1 = () => Func(styler1.responsiveProp, FNconfig)(props)
-      const FN2 = Func(styler2.responsiveProp, FNconfig)(props)
+      const FN1 = () => Func(styler1.responsiveP, FNconfig)(props)
+      const FN2 = Func(styler2.responsiveP, FNconfig)(props)
 
       expect(FN1).toThrow()
       expect(FN2).toEqual(result)
@@ -131,8 +131,8 @@ describe('Array Theme Keys and Object Theme Keys', () => {
       const props = { Target: false }
       const result = { paddingTop: '16px' }
 
-      const FN1 = Func(styler1.responsiveProp, FNconfig)(props)
-      const FN2 = Func(styler2.responsiveProp, FNconfig)(props)
+      const FN1 = Func(styler1.responsiveP, FNconfig)(props)
+      const FN2 = Func(styler2.responsiveP, FNconfig)(props)
 
       expect(FN1).toEqual(result)
       expect(FN2).toEqual(result)
@@ -149,8 +149,8 @@ describe('Array Theme Keys and Object Theme Keys', () => {
       const props = { Target: [false] }
       const result = { paddingTop: '16px' }
 
-      const FN1 = Func(styler1.responsiveProp, FNconfig)(props)
-      const FN2 = Func(styler2.responsiveProp, FNconfig)(props)
+      const FN1 = Func(styler1.responsiveP, FNconfig)(props)
+      const FN2 = Func(styler2.responsiveP, FNconfig)(props)
 
       expect(FN1).toEqual(result)
       expect(FN2).toEqual(result)
@@ -166,8 +166,8 @@ describe('Array Theme Keys and Object Theme Keys', () => {
       const props = { Target: { default: 'targetPropValue' } }
       const result = { paddingTop: 'targetPropValue' }
 
-      const FN1 = () => Func(styler1.responsiveProp, FNconfig)(props)
-      const FN2 = Func(styler2.responsiveProp, FNconfig)(props)
+      const FN1 = () => Func(styler1.responsiveP, FNconfig)(props)
+      const FN2 = Func(styler2.responsiveP, FNconfig)(props)
 
       expect(FN1).toThrow()
       expect(FN2).toEqual(result)
@@ -183,8 +183,8 @@ describe('Array Theme Keys and Object Theme Keys', () => {
       const props = { Target: undefined }
       const result = { paddingTop: '16px' }
 
-      const FN1 = Func(styler1.responsiveProp, FNconfig)(props)
-      const FN2 = Func(styler2.responsiveProp, FNconfig)(props)
+      const FN1 = Func(styler1.responsiveP, FNconfig)(props)
+      const FN2 = Func(styler2.responsiveP, FNconfig)(props)
 
       expect(FN1).toEqual(result)
       expect(FN2).toEqual(result)

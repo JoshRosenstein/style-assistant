@@ -14,10 +14,10 @@ export default {
     getter: defaultLookups.getter,
     functions: defaultLookups.functions
   },
-  responsivePropOptions: {
+  responsivePOptions: {
     transform: false
   },
-  switchPropOptions: {
+  switchPOptions: {
     transform: false
   },
   parserOptions: {
