@@ -1,8 +1,6 @@
 import {
   isEmpty,
   keys,
-  prop,
-  propOr,
   pick,
   isNil,
   defaultTo,
@@ -10,7 +8,9 @@ import {
   when,
   isString,
   filter,
-  isDefined
+  isDefined,
+  path,
+  pathOr
 } from '@roseys/futils'
 
 import {
@@ -121,10 +121,10 @@ export default function SwitchProp(
             matchedPropName = propName
 
             return pipeIfDefined(
-              when(isString, x => propOr(x, x, mappedFunctions)),
+              when(isString, x => pathOr(x, x, mappedFunctions)),
               whenFunctionCallWith(props[propName], props),
               whenFunctionCallWith(props)
-            )(prop(propName, matchers))
+            )(path(propName, matchers))
           }),
           falseToNull,
           defaultTo(whenFunctionCallWith(props)(defaultValue))
@@ -137,7 +137,7 @@ export default function SwitchProp(
 
       if (
         isResponsiveType(computedValue) ||
-        isResponsiveType(prop(matchedPropName, props))
+        isResponsiveType(path(matchedPropName, props))
       ) {
         if (responsiveBool) {
           return responsiveBoolProp({
