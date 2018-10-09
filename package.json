@@ -19,7 +19,7 @@
   ],
   "scripts": {
     "docz": "docz dev",
-    "docz:build": "docz build",
+    "docz:build": "cross-env NODE_ENV=docz BABEL_ENV=docz docz build",
     "prepack": "yarn run build",
     "clean": "rimraf node_modules && rimraf dist",
     "build": "cross-env NODE_ENV=production && rollup -c",

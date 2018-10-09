@@ -17,7 +17,12 @@ module.exports = function babelConfig(api){
           '@babel/preset-react'
         ]
       },
-  
+      'docz': {
+        'presets': [
+          '@babel/preset-env',
+          '@babel/preset-react'
+        ]
+      },
     }
   }}
    
