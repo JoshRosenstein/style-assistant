@@ -8,7 +8,7 @@ const DOCS = path.resolve(__dirname, 'docz')
 
 export default {
   dest: './docs',
-  files: './docz/**/*.mdx',
+ // files: './docz/**/*.mdx',
   ordering: 'ascending',
   src: './docz',
   title: 'style-assistant',
