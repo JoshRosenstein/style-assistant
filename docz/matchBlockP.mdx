@@ -1,6 +1,6 @@
 ---
 name: matchBlockP
-order: -3
+order: 3
 ---
 import { Playground } from 'docz'
 import Assistant from 'style-assistant'
@@ -13,10 +13,23 @@ import Assistant from 'style-assistant'
 ## getTheme Example
 <Playground>
    {() => {
-  const defaultTheme = { colors: { "red": "#f5222d" } }
-const { matchBlockP } = new Assistant({ defaultTheme })
+  const defaultTheme = { colors: { "red": "#f5222d" }, space:{} }
+const { matchBlockP , switchP, getThemeP} = new Assistant({ defaultTheme })
 let o = {}
-
+const matchBlockFunc= matchBlockP({
+basicBoolProp:{
+    color: 'blue',
+    fontSize: 2
+  },
+  size:size=>[{height:size+'px'},{width:size/2+'px'}], //Can use arrays
+  c:c => ({
+    color: getThemeP(['colors', c]) // props are passed to functions
+  })
+})
+o.BasicProp=matchBlockFunc({basicBoolProp:true})
+o.ColorC=matchBlockFunc({c:'red'})
+o.size=matchBlockFunc({size:8})
+o.OrderMatters=matchBlockFunc({basicBoolProp:true,c:'red',size:8})
     return <pre style={{fontSize:'.8rem'}}>{JSON.stringify(o, undefined, 2)}</pre>
   }}
 

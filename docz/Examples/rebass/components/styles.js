@@ -443,7 +443,7 @@ export const margin = switchP(
     key: "space",
     postFn: px
   }
-);
+)
 
 export const marginLeft = switchP(
   {
@@ -456,7 +456,7 @@ export const marginLeft = switchP(
     key: "space",
     postFn: px
   }
-);
+)
 
 export const marginRight = switchP(
   {

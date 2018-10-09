@@ -12,6 +12,7 @@ import Normalize from './normalize'
 import Parser from './parser'
 import Responsive from './responsive'
 import Media from './media'
+import matchBlockP from './matchBlockP'
 
 const defaultOptions = {
   defaultTheme: {},
@@ -135,6 +136,7 @@ export default class Assistant {
       this.breakPointsP,
       this.parserOptions
     )
+    this.matchBlockP=matchBlockP
   }
 
   get defaultTheme() {

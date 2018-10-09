@@ -1,36 +1,44 @@
 ---
-name: Home
+name: Introduction
 route: /
-order: -1
+order: 0
 fullpage: false
 ---
 
-# Style Assistant
+# Introduction
 
-style-assistant and DOCS are WIP
 
-[![Build Status](https://travis-ci.org/JoshRosenstein/style-assistant.svg?branch=master)](https://travis-ci.org/JoshRosenstein/style-assistant)
-[![npm](https://img.shields.io/npm/dm/style-assistant.svg)](https://www.npmjs.com/package/style-assistant)
-[![npm](https://img.shields.io/npm/v/style-assistant.svg)](https://www.npmjs.com/package/style-assistant)
-[![codecov](https://codecov.io/gh/JoshRosenstein/style-assistant/branch/master/graph/badge.svg)](https://codecov.io/gh/JoshRosenstein/styler)
-![core gzip size](http://img.badgesize.io/https://unpkg.com/style-assistant?compression=gzip&label=core%20gzip%20size)
-![core size](http://img.badgesize.io/https://unpkg.com/style-assistant?label=core%20size)
+[![npm](https://img.shields.io/npm/v/style-assistant.svg?style=flat-square)](https://www.npmjs.com/package/style-assistant)&nbsp;
+[![npm](https://img.shields.io/npm/dm/style-assistant.svg?style=flat-square)](https://www.npmjs.com/package/style-assistant)&nbsp;
+![core gzip size](http://img.badgesize.io/https://unpkg.com/style-assistant?compression=gzip&label=core%20gzip%20siz&style=flat-squaree)&nbsp;
+![core size](http://img.badgesize.io/https://unpkg.com/style-assistant?label=core%20size&style=flat-square)&nbsp;
+[![Travis branch](https://img.shields.io/travis/JoshRosenstein/style-assistant/master.svg?style=flat-square)](https://travis-ci.org/JoshRosenstein/style-assistant)&nbsp;
+[![Codecov branch](https://img.shields.io/codecov/c/github/JoshRosenstein/style-assistant/master.svg?style=flat-square)](https://codecov.io/gh/JoshRosenstein/style-assistant)&nbsp;
+[![docz](https://img.shields.io/badge/docs%20with-docz-1F2D3D.svg?style=flat-square)](https://JoshRosenstein.github.io/style-assistant)
 
----
+
+>style-assistant and DOCS are WIP
 
 
 ## Usage
 
+```sh
+$ npm i style-assistant -S
+```
+and import Assistant from `style-assistant` and you are ready to go.
 
+```jsx
+import Assistant from 'style-assistant';
+```
+`style-assistant` provides common and complex styling tools for css-js object-oriented styling.
 
-Usage Here
 
 ```javascript
 import Assistant from 'style-assistant'
 const config={}
-const styler= new Assistant(config)
+export const styler= new Assistant(config) 
 //OR
-const {
+export const {
   pxToRem,
   pxToEm,
   pxToPct,
@@ -51,9 +59,13 @@ const {
   transformStyle,
 }= new Assistant(config)
 ```
+Functions with suffix of 'P', means they depend on props and may use other prop dependent helpers within. For example `transformStyleP` uses `getThemeP` which lookups any matching value in props.theme.key || config.defaultTheme
+```
+transformStyleP
+```
 ## Config
-### Config
-config descriptions
+
+There is not need to pass through a intial config, however to get the most of out of the library it is highly recomended to pass in your theme with at least some breakpoints.
 
 
 | Key                   | Default Value                                                                                           | Description                                                                              | Used in                                                                                  |
@@ -63,10 +75,11 @@ config descriptions
 | themeKey              | 'theme'                                                                                                 | Although 'theme' is the norm, some other libraries pass theme as '$theme'                |  [getTheme](#gettheme)                                                                                  |
 | breakpointsKey        | 'breakpoints'                                                                                           | This is used for responsive utils and toMq util                                          |   [responsiveProp](#responsiveprop),[responsiveBoolProp](#responsiveboolprop)            |
 | transformOptions      | {defaultLookup: false,     defaultTransform: false,     keys: {},     getter: {},     functions: {`pxToRem`,`pxToEm`,`pxToPct`}   } | Set Global options for the transformStyle util               |    [transformStyle](#transformstyle)                                                                                       |
-| responsivePropOptions | {transform: false}                                                                                      | Set Global options for responsivePropOptions                                             |    [responsiveProp](#responsiveprop)                                                                                      |
-| switchPropOptions     | {transform: false}                                                                                      | Set Global options for switchPropOptions                                                 |        [switchProp](#switchprop)                                                                                  |
+| responsivePOptions | {transform: false}                                                                                      | Set Global options for responsivePropOptions                                             |    [responsiveProp](#responsiveprop)                                                                                      |
+| switchPOptions     | {transform: false}                                                                                      | Set Global options for switchPropOptions                                                 |        [switchProp](#switchprop)                                                                                  |
 | parserOptions     | {transform: false}                                                                                      | Set Global options for parserOptions                                                 |       [parser](#parser)                                                                                |
 
+## Example Config
 ```javascript
 import Assistant from 'style-assistant'
 import defaultTheme from './theme'
@@ -99,7 +112,7 @@ export default new Assistant(config)
 
 
 ```
-
+### config.theme
 **Example**
 Theme
 ```javascript
@@ -138,7 +151,8 @@ export default {
 };
 
 ```
-defaultLookUps
+### config.defaultLookUps
+
 ```javascript
 const identity = x => x
 
@@ -205,3 +219,37 @@ export default {
 
 
 ```
+defaultLookUps has direct impact on transformer switchP helpers. [switchP](switch-p) uses functions key for default lookup table inorder simply style defintions that can easily be used data-driven styling techniques. 
+
+Below is simple example of using switchP for mapping alias props to a cssProp.
+You can pass the function into switchP directly or you can pass that in the intial config and reference it as a string within switchP.
+> Example if not utilizing config.defaultLookUps
+
+```javascript
+export const margin = switchP(
+  {
+    margin: marginValue=> marginValue,
+    m: mValue=> mValue
+  },
+  {
+    cssProp: "margin", 
+    key: "space", // Key to perform getTheme lookup, if a value passed to props margin or m matches any key in theme.space, that value is used
+    postFn: px   //postFn: if a function performed after getThemeP. This As a custom function
+  }
+)
+```
+> Example utilizing config.defaultLookUps
+
+```javascript
+export const margin = switchP(
+  {
+    margin: "returnAsIs",
+    m: "returnAsIs",
+  },
+  {
+    cssProp: "marginLeft",
+    postFn: 'px' // As a custom function within intial config
+  }
+)
+```
+*Note: Key Option is Not needed if your provided defaultLookUp:true and marginLeft mapped correctly in defaultLookUps.keys
