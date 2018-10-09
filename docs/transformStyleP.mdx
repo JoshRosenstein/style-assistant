@@ -1,0 +1,29 @@
+---
+name: transformStyleP
+order: -6
+---
+import { Playground } from 'docz'
+import Assistant from 'style-assistant'
+
+
+# transformStyleP
+
+>**Dependencies:** | |
+
+## Basic usage
+[add Usage Here]
+## Example Output
+<Playground>
+   {() => {
+const defaultTheme = {
+    breakpoints: { tablet: 640, laptop: 832, desktop: 1024 },
+  }
+  const styler = new Assistant({defaultTheme})
+  const o = {}
+  o.One=styler.toMq({ screen: true, min: 1500 })
+  o.Two=styler.toMq({ max: 1500, min: 1200 })
+  o.Three=styler.toMq({ screen: true, orientation: 'landscape', 'min-device-width': 639 })
+  return <pre style={{fontSize:'.8rem'}}>{JSON.stringify(o, undefined, 2)}</pre>
+  }}
+
+</Playground>

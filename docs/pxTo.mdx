@@ -1,0 +1,34 @@
+---
+name: pxTo
+order: -3
+---
+import { Playground } from 'docz'
+import Assistant from 'style-assistant'
+
+
+# pxTo
+
+>**Dependencies:** | [config.baseFontSize](config#basefontsize) |
+
+## Basic usage
+[add Usage Here]
+## Example Output
+<Playground>
+   {() => {
+const styler1= new Assistant({baseFontSize:16})
+let o1 = {}
+ o1.pxToRem=styler1.pxToRem(16)
+ o1.pxToEm=styler1.pxToEm(16)
+ o1.pxToPct=styler1.pxToPct(16)
+ o1.pxToRelative=styler1.pxToRelative(16)
+const styler2= new Assistant({baseFontSize:18})
+let o2 = {}
+ o2.pxToRem=styler2.pxToRem(16)
+ o2.pxToEm=styler2.pxToEm(16)
+ o2.pxToPct=styler2.pxToPct(16)
+ o2.pxToRelative=styler2.pxToRelative(16)
+    return <pre style={{fontSize:'.8rem'}}>{JSON.stringify({'baseFontSize16':o1,'baseFontSize18':o2}, undefined, 2)}</pre>
+  }}
+
+</Playground>
+

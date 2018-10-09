@@ -1,0 +1,30 @@
+---
+name: Function Dependecies
+order: -1.2
+---
+
+### Function Dependecies
+| Function                | Depends On                                          |
+|-------------------------|-----------------------------------------------------|
+| [  pxTo  ](px-to)       | [ **config.baseFontSize** ](config#breakpointskey)  |
+| [  pxToEm  ](px-to-em)  | [  pxTo  ](px-to)                                   |
+| [  pxToRem ](px-to-rem) | [  pxTo  ](px-to)                                   |
+| [  pxToPct ](px-to-pct) | [  pxTo  ](px-to)                                   |
+| [  pxToRelative ](px-to-pct) | [  pxTo  ](px-to)                              |
+| [  normalize ](normalize) | [  pxTo  ](px-to)                              |
+| [  normalizeToEm ](normalize) | [  normalize  ](normalize)                              |
+| [  normalizeToRem ](normalize-to-rem) | [  normalize  ](normalize)                              |
+| [  toMq ](px-to-pct) | [  pxToEm  ](px-to-em)                              |
+| [  getTheme](get-theme) | [ **config.themeKey** ](config#themeKey) <br />[ **config.defaultTheme** ](config#defaultTheme)   |
+| [  getThemeP](get-theme-p) | [ getTheme](get-theme)   |
+| [  transformStyle ](transform-style) | [ **config.transformOptions** ](config#transformOptions)  |
+| [  transformStyleP ](transform-style) | [transformStyle ](transform-style)  |
+| [  responsive ](responsive) |  [getThemeP](get-theme-p) <br /> [ **config.responsivePOptions** ](config#responsive-p-options) <br /> [ **config.breakpointsKey** ](config#breakpointsKey) <br /> [  toMq ](px-to-pct) <br />  [  transformStyleP ](transform-style) |
+| [  responsiveP ](responsive-p) |   |
+| [  responsiveBool ](responsive-bool) |  [getThemeP](get-theme-p) <br /> [ **config.responsivePOptions** ](config#responsive-p-options) <br /> [ **config.breakpointsKey** ](config#breakpointsKey) <br /> [  toMq ](px-to-pct) <br />  [  transformStyleP ](transform-style) |
+| [  responsiveBoolP ](responsiveBool-p) |   |
+| [  switchP ](responsiveBool-p) | [  responsiveBoolP ](responsiveBool-p) <br /> [responsiveP ](responsive-p)   <br />[  transformStyleP ](transform-style) <br />  [ **config.transformOptions.functions** ](config#transformOptions)   |
+| [  parser ](parser) | TODO |
+
+
+

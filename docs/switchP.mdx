@@ -1,0 +1,53 @@
+---
+name: switchP
+order: -6
+---
+import { Playground } from 'docz'
+import Assistant from 'style-assistant'
+
+
+# switchP
+
+>**Dependencies:** | [responsiveProp](responsive-p)| [responsiveBoolP](responsive-bool-p) | [transformStyle](transformstyle) | [config.transformOptions.functions](config) | [config.switchPropOptions](config) |
+
+## Basic usage
+[add Usage Here]
+## Example Output
+<Playground>
+   {() => {
+const defaultTheme = {
+    breakpoints: { tablet: 640, laptop: 832, desktop: 1024 },
+    space: { none: 0, xxs: 2, xs: 4, sm: 8, md: 16, lg: 32, xl: 64, xxl: 128 },
+  }
+  const transformOptions = { functions: { identity:x=>x, px: x => parseFloat(x) + 'px', }, }
+  const switchPOptions={transform:true}
+  const { responsiveP, switchP, pxToRem  } = new Assistant({ defaultTheme,switchPOptions,transformOptions })
+  const appendPx= v => v+'px'
+  
+  const padding = switchP(
+  {
+    padding: "identity",
+    p: "identity",
+     default: '.25rem'
+  },
+  {
+    cssProp: "padding",
+    key: "space",
+    postFn:pxToRem,
+    responsive:true
+  }
+)
+  const o = {}
+  o.basic = padding({ p: '16px' })
+  o.basic2 = padding({ padding: 8 })
+  o.orderMatters = padding({ p: 8, padding: '16px' })
+  o.UsesDefault = padding({})
+  o.responsive = padding({ p: [16, 8] })
+  o.responsiveWithObj = padding({ p: { desktop: 8 } })
+  o.looksUpSpaceTheme = padding({ p: 'sm' })
+  o.responsiveThemeLookup = padding({ p: ['sm', 'md', 'lg'] })
+  
+  return <pre style={{fontSize:'.8rem'}}>{JSON.stringify(o, undefined, 2)}</pre>
+  }}
+
+</Playground>

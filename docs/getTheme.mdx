@@ -1,0 +1,29 @@
+---
+name: getTheme
+order: -2
+---
+import { Playground } from 'docz'
+import Assistant from 'style-assistant'
+
+
+# getTheme
+
+## Basic usage
+[add Usage Here]
+## Example Output
+<Playground>
+   {() => {
+  const defaultTheme = { colors: { "red": "#f5222d" } }
+const { getTheme } = new Assistant({ defaultTheme })
+const emptyProps = {}
+const withProps = { theme: { colors: { blue: 'myBlueColor' } } }
+let o = {}
+o.withEmptyProps = getTheme('colors') //=>"red": "#f5222d"
+o.dotNotation = getTheme('colors.red') //=>"#f5222d",
+
+
+    return <pre style={{fontSize:'.8rem'}}>{JSON.stringify(o, undefined, 2)}</pre>
+  }}
+
+</Playground>
+

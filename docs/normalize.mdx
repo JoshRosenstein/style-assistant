@@ -1,0 +1,31 @@
+---
+name: normalize
+order: -3
+---
+import { Playground } from 'docz'
+import Assistant from 'style-assistant'
+
+
+# normalize
+>**Dependencies:** | [pxTo](px-to) |
+
+## Basic usage
+[add Usage Here]
+## Example Output
+<Playground>
+   {() => {
+const styler1= new Assistant({baseFontSize:16})
+let o1 = {}
+ o1.normalizeToEm=styler1.normalizeToEm(16,'.5rem')
+ o1.normalizeToRem=styler1.normalizeToRem(16,'.5rem')
+ o1.normalizeToRem2=styler1.normalizeToRem('.5rem','1rem')
+const styler2= new Assistant({baseFontSize:18})
+let o2 = {}
+ o2.normalizeToEm=styler2.normalizeToEm(18,'.5rem')
+ o2.normalizeToRem=styler2.normalizeToRem(18,'.5rem')
+o2.normalizeToRem2=styler2.normalizeToRem('.5rem','1rem')
+    return <pre style={{fontSize:'.8rem'}}>{JSON.stringify({'baseFontSize16':o1,'baseFontSize18':o2}, undefined, 2)}</pre>
+  }}
+
+</Playground>
+

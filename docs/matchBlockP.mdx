@@ -1,0 +1,24 @@
+---
+name: matchBlockP
+order: -3
+---
+import { Playground } from 'docz'
+import Assistant from 'style-assistant'
+
+
+# matchBlockP
+
+## Basic usage
+[add Usage Here]
+## getTheme Example
+<Playground>
+   {() => {
+  const defaultTheme = { colors: { "red": "#f5222d" } }
+const { matchBlockP } = new Assistant({ defaultTheme })
+let o = {}
+
+    return <pre style={{fontSize:'.8rem'}}>{JSON.stringify(o, undefined, 2)}</pre>
+  }}
+
+</Playground>
+

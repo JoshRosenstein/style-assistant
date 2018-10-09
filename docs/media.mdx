@@ -1,0 +1,53 @@
+---
+name: media
+order: -3
+---
+import { Playground } from 'docz'
+import Assistant from 'style-assistant'
+
+
+# media
+
+## Basic usage
+[add Usage Here]
+## Example Output
+<Playground>
+   {() => {
+  const baseFontSize = 16
+  const breakpoints = {
+    mobile: 599,
+    tablet: 768,
+    desktop: 1200,
+    hd: 1800
+  } 
+const breakpointsArrays = [599,768,1200,1800]
+ 
+  
+  const { media } = new Assistant({
+    baseFontSize,
+    defaultTheme: {
+      breakpoints
+    }
+  })
+    const { media:mediaArrays } = new Assistant({
+    baseFontSize,
+    defaultTheme: {
+      breakpoints:breakpointsArrays
+    }
+  })
+  const o = {}
+     o.Basic0_WithArray=mediaArrays[0]({ a: 1 })
+         o.Basic1_WithArray=mediaArrays[1]({ a: 1 })
+             o.Basic2_WithArray=mediaArrays[2]({ a: 1 })
+                 o.Basic3_WithArray=mediaArrays[3]({ a: 1 })
+     o.BasicMobile=media.mobile({ a: 1 })
+   o.BasicTablet=media.tablet({ a: 1 })
+    o.BasicDesktop=media.desktop({ a: 1 })
+    o.BasicHD=media.hd({ a: 1 })
+  o.Can_Overide_toMq=media.hd({ a: 1 }, v => ({ min: v - 1000 }))
+  o.Returns_Empty_if_noStyles=media.hd(null)
+  return <pre style={{fontSize:'.8rem'}}>{JSON.stringify(o, undefined, 2)}</pre>
+  }}
+
+</Playground>
+

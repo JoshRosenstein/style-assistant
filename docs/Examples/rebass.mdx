@@ -1,0 +1,652 @@
+---
+name: ExampleRebass
+order: -99
+---
+import { Playground } from 'docz'
+import Assistant from 'style-assistant'
+import { Box, Flex, Heading, Text, Button, Link, Image, Card } from "./rebass/index";
+
+
+# rebassExample
+
+## Config
+### Initialize Assistant
+```js
+  export const {
+    responsiveP, 
+    switchP,
+  } = new Assistant(config)
+```
+### config.defaultTheme
+
+```js
+ const defaultTheme = {
+    breakpoints: {
+      tablet: 640,
+      laptop: 832,
+      desktop: 1024
+    },
+    space: [0, 4, 8, 16, 32, 64, 128, 256, 512],
+    fontSizes: [12, 14, 16, 20, 24, 32, 48, 64, 96, 128],
+    lineHeights: [1, 1.125, 1.25, 1.5],
+    fontWeights: {
+      normal: 500,
+      bold: 'bold'
+    },
+    letterSpacings: {
+      normal: 'normal',
+      caps: '0.25em'
+    },
+    radii: [0, 2, 4, 8],
+    borders: [0, '1px solid', '2px solid'],
+    shadows: {
+      small: '0 0 4px rgba(0, 0, 0, .125)',
+      large: '0 0 24px rgba(0, 0, 0, .125)'
+    },
+    colors: {
+      blue: 'blue',
+      lightgray: '#f6f6ff'
+    }
+  }
+```
+### config.defaultLookups
+```js
+import {identity} from '@roseys/futils'
+
+ const defaultLookups = {
+    keys: {},
+    getter: {},
+    functions: {
+      // Shorthand lookup functions. used in switchP. If value is a string of one of the keys below, then will call corresponding function with corresponding prop value
+      identity,
+      returnAsIs: identity, // Can add aliases
+      propValue: identity, // alias
+      self: identity, // alias
+      px,
+      ms: x => `${parseFloat(x)}ms`,
+      pct: x => {
+        x = parseFloat(x)
+        x = Math.abs(x) < 1 ? x * 100 : x
+        return `${x}%`
+      }
+    }
+  }
+```
+
+### config
+```js
+export const config={
+    defaultTheme,
+    baseFontSize: 16, // / Unitless value used for unit conversions Utils
+    themeKey: 'theme', // / Unitless value used for unit conversions Utils
+    breakpointsKey: 'breakpoints',
+    alwaysTransform: true,
+    transformOptions: {
+      defaultLookup: true,
+      defaultTransform: true,
+      keys: defaultLookups.keys,
+      getter: defaultLookups.getter,
+      functions: defaultLookups.functions
+    },
+    responsivePOptions: {
+      transform: true
+    },
+    switchPOptions: {
+      transform: true,
+      responsive:true
+    },
+    parserOptions: {
+      transform: true
+    }
+  }
+  
+
+```
+
+
+## styles
+
+```js
+
+import {
+    mergeAllDeepRight,
+    flow,
+    when,
+    map,
+    isNumber,
+    ifElse,
+    either,lt,
+    complement,
+    whenFunctionCallWith,
+    identity,
+    prop,
+    compact
+  } from '@roseys/futils'
+  import Assistant from '../../src/index'
+  
+  const isNotNumber = complement(isNumber)
+  export const compose = (...funcs) => {
+    const fn = props =>
+      flow(
+        funcs,
+        map(whenFunctionCallWith(props)),
+        compact,
+        mergeAllDeepRight
+      )
+  
+    return fn
+  }
+  
+  export const px = when(isNumber, num => `${num  }px`)
+  
+  const css = props => props.css
+  const themed = key => props => prop(key,prop('theme',props))
+  
+  export const getWidth = ifElse(
+    either(isNotNumber, lt(1)),
+    px,
+    decimal => `${decimal * 100  }%`
+  )
+  // export const getWidth = n => (!isNumber(n) || n > 1 ? px(n) : n * 100 + "%");
+  export const width = responsiveP({
+    prop: 'width',
+    postFn: getWidth
+  })
+  
+  export const fontSize = responsiveP({
+    cssProp: 'fontSize',
+    key: 'fontSizes',
+    prop: 'fontSize',
+    postFn: px
+  })
+  
+  // flexbox
+  export const alignItems = responsiveP({
+    prop: 'alignItems'
+  })
+  
+  export const alignContent = responsiveP({
+    prop: 'alignContent'
+  })
+  
+  export const justifyItems = responsiveP({
+    prop: 'justifyItems'
+  })
+  
+  export const justifyContent = responsiveP({
+    prop: 'justifyContent'
+  })
+  
+  export const flexWrap = responsiveP({
+    prop: 'flexWrap'
+  })
+  
+  export const flexBasis = responsiveP({
+    prop: 'flexBasis',
+    postFn: getWidth
+  })
+  
+  export const flexDirection = responsiveP({
+    prop: 'flexDirection'
+  })
+  
+  export const flex = responsiveP({
+    prop: 'flex'
+  })
+  
+  export const justifySelf = responsiveP({
+    prop: 'justifySelf'
+  })
+  
+  export const alignSelf = responsiveP({
+    prop: 'alignSelf'
+  })
+  
+  export const order = responsiveP({
+    prop: 'order'
+  })
+  
+  export const textColor = responsiveP({
+    prop: 'color',
+    key: 'colors'
+  })
+  
+  export const bgColor = responsiveP({
+    prop: 'bg',
+    cssProp: 'backgroundColor',
+    key: 'colors'
+  })
+  
+  export const color = compose(
+    textColor,
+    bgColor
+  )
+  
+  export const padding = switchP(
+    {
+      padding: 'returnAsIs',
+      p: 'returnAsIs'
+    },
+    {
+      cssProp: 'padding',
+      key: 'sizing',
+      postFn: px
+    }
+  )
+  
+  export const paddingLeft = switchP(
+    {
+      paddingLeft: 'returnAsIs',
+      pl: 'returnAsIs',
+      px: 'returnAsIs'
+    },
+    {
+      cssProp: 'paddingLeft',
+      key: 'sizing',
+      postFn: px
+    }
+  )
+  
+  export const paddingRight = switchP(
+    {
+      paddingRight: 'returnAsIs',
+      pr: 'returnAsIs',
+      px: 'returnAsIs'
+    },
+    {
+      cssProp: 'paddingRight',
+      key: 'sizing',
+      postFn: px
+    }
+  )
+  
+  export const paddingTop = switchP(
+    {
+      paddingTop: 'returnAsIs',
+      pt: 'returnAsIs',
+      py: 'returnAsIs'
+    },
+    {
+      cssProp: 'paddingTop',
+      key: 'sizing',
+      postFn: px
+    }
+  )
+  
+  export const paddingBottom = switchP(
+    {
+      paddingBottom: 'returnAsIs',
+      pb: 'returnAsIs',
+      py: 'returnAsIs'
+    },
+    {
+      cssProp: 'paddingBottom',
+      key: 'sizing',
+      postFn: px
+    }
+  )
+  
+  export const margin = switchP(
+    {
+      margin: 'returnAsIs',
+      m: 'returnAsIs'
+    },
+    {
+      cssProp: 'margin',
+      key: 'sizing',
+      postFn: px,
+  
+    }
+  )
+  
+  export const marginLeft = switchP(
+    {
+      marginLeft: 'returnAsIs',
+      ml: 'returnAsIs',
+      mx: 'returnAsIs'
+    },
+    {
+      cssProp: 'marginLeft',
+      key: 'sizing',
+      postFn: px
+    }
+  )
+  
+  export const marginRight = switchP(
+    {
+      marginRight: 'returnAsIs',
+      mr: 'returnAsIs',
+      mx: 'returnAsIs'
+    },
+    {
+      cssProp: 'marginRight',
+      key: 'sizing',
+      postFn: px
+    }
+  )
+  
+  export const marginTop = switchP(
+    {
+      marginTop: 'returnAsIs',
+      mt: 'returnAsIs',
+      my: 'returnAsIs'
+    },
+    {
+      cssProp: 'marginTop',
+      key: 'sizing',
+      postFn: px
+    }
+  )
+  
+  export const marginBottom = switchP(
+    {
+      marginBottom: 'returnAsIs',
+      mb: 'returnAsIs',
+      my: 'returnAsIs'
+    },
+    {
+      cssProp: 'marginBottom',
+      key: 'sizing',
+      postFn: px
+    }
+  )
+  
+  export const space = compose(
+    marginTop,
+    marginBottom,
+    marginLeft,
+    marginRight,
+    margin,
+    paddingTop,
+    paddingBottom,
+    paddingRight,
+    paddingLeft,
+    padding
+  )
+  
+
+```
+
+## components
+```js
+import styled from "../../shared/styled/styled-base"
+import { responsiveP } from "./styler";
+import {
+  space,
+  color,
+  width,
+  height,
+  flex,
+  order,
+  alignSelf,
+  flexWrap,
+  flexDirection,
+  alignItems,
+  justifyContent,
+  fontSize,
+  fontFamily,
+  fontWeight,
+  textAlign,
+  lineHeight,
+  letterSpacing,
+  borders,
+  borderColor,
+  borderRadius,
+  buttonStyle,
+  boxShadow,
+  backgroundImage,
+  backgroundSize,
+  backgroundPosition,
+  backgroundRepeat,
+  opacity,
+} from "./styled-system";
+
+import {path} from '@roseys/futils'
+
+export const css = path('css')
+export const themed = key =>path(['theme',key])
+
+export const Box = styled("div")(
+  space,
+  width,
+  fontSize,
+  color,
+  flex,
+  order,
+  alignSelf,
+  themed("Box"),
+  css
+);
+
+export const Flex = styled(Box)(
+  {
+    display: "flex"
+  },
+  flexWrap,
+  flexDirection,
+  alignItems,
+  justifyContent,
+  themed("Flex")
+);
+
+export const Text = styled(Box)(
+  fontFamily,
+  fontWeight,
+  textAlign,
+  lineHeight,
+  letterSpacing,
+  themed("Text")
+);
+
+export const Heading = styled(Text)(themed("Heading"));
+
+Heading.defaultProps = {
+  as: "h2",
+  m: 0,
+  fontSize: 4,
+  fontWeight: "bold"
+};
+export const Link = styled(Box)(themed("Link"));
+
+Link.defaultProps = {
+  as: "a",
+  color: "blue"
+};
+
+export const Button = styled(Box)(
+  {
+    appearance: "none",
+    display: "inline-block",
+    textAlign: "center",
+    lineHeight: "inherit",
+    textDecoration: "none"
+  },
+  fontWeight,
+  borders,
+  borderColor,
+  borderRadius,
+  buttonStyle,
+  themed("Button")
+);
+
+Button.defaultProps = {
+  as: "button",
+  fontSize: "inherit",
+  fontWeight: "bold",
+  m: 0,
+  px: 3,
+  py: 2,
+  color: "white",
+  bg: "blue",
+  border: "0",
+  borderRadius: 4
+};
+
+export const Image = styled(Box)(
+  {
+    maxWidth: "100%",
+    height: "auto"
+  },
+  height,
+  borderRadius,
+  themed("Image")
+);
+
+Image.defaultProps = {
+  as: "img",
+  m: 0
+};
+
+const cards = responsiveP({ key: "cards", prop: "variant" });
+
+export const Card = styled(Box)(
+  borders,
+  borderColor,
+  borderRadius,
+  boxShadow,
+  backgroundImage,
+  backgroundSize,
+  backgroundPosition,
+  backgroundRepeat,
+  opacity,
+  themed("Card"),
+  cards
+);
+
+
+```
+
+
+## Example Box
+<Playground>
+    <Box bg='grey' p={3}>
+        <Box bg='red'>Box</Box>
+        <Box bg='white'>Box</Box> 
+        <Box bg='blue'>Box</Box>
+        </Box>
+
+
+</Playground>
+
+## Example Flex
+<Playground>
+    <Flex bg='grey' p={3}>
+        <Box bg='red'>Box</Box>
+        <Box bg='white'>Box</Box> 
+        <Box bg='blue'>Box</Box>
+        </Flex>
+
+
+</Playground>
+
+## Example Card
+<Playground>
+    <Card bg='grey' p={3}>
+        <Box bg='red'>Box</Box>
+        <Box bg='white'>Box</Box> 
+        <Box bg='blue'>Box</Box>
+        </Card>
+
+
+</Playground>
+
+## Example Full
+<Playground>
+  <Text fontFamily="system-ui,sans-serif">
+          <Box px={3} py={5} color="white" bg="blue">
+            <Heading as="h1" fontSize={[4, 5, 6]}>
+              Hello, Rebass
+            </Heading>
+          </Box>
+          <Flex px={3} py={4} alignItems="center">
+            <Heading color="blue">Beep</Heading>
+            <Box mx="auto" />
+            <Button>Boop</Button>
+          </Flex>
+        </Text>
+</Playground>
+
+## Example Two
+<Playground>
+ <Box>
+        <Flex px={4} py={4} alignItems="center">
+          <Heading fontSize={[4, 5]} color="blue">
+            Live Demo
+          </Heading>
+          <Box mx="auto" />
+          <Button>Beep</Button>
+          <Button ml={2}>Boop</Button>
+        </Flex>
+        <Box px={3} py={5} color="white" bg="blue">
+          <Heading is="h1" fontSize={[4, 5, 6]}>
+            Hello, Rebass
+          </Heading>
+        </Box>
+         </Box>
+</Playground>
+
+## Example Three
+<Playground>
+<Flex px={3} py={4} alignItems="center">
+          <Heading color="blue">Beep</Heading>
+          <Box mx="auto" />
+          <Button>Boop</Button>
+        </Flex>
+</Playground>
+
+## Example4 Full
+<Playground>
+       <Box
+          p={5}
+          fontSize={4}
+          width={[1, 1, 1 / 2]}
+          color="white"
+          bg="magenta"
+        >
+          Box
+        </Box>
+</Playground>
+
+## Example5 Full
+<Playground>
+        <Flex>
+          <Box p={3} width={1 / 2} color="magenta" bg="black">
+            Flex
+          </Box>
+          <Box p={3} width={1 / 2} color="white" bg="magenta">
+            Box
+          </Box>
+        </Flex>
+</Playground>
+
+## Example6 Full
+<Playground>
+     <Text fontSize={[3, 4, 5]} fontWeight="bold" color="magenta">
+          Text
+        </Text>
+</Playground>
+
+## Example7 Full
+<Playground>
+     <Image
+          width={[1, 1, 1 / 2]}
+          src="https://source.unsplash.com/random/1280x720"
+          borderRadius={8}
+        />
+</Playground>
+
+## Example8 Full
+<Playground>
+        <Card
+          fontSize={6}
+          fontWeight="bold"
+          width={[1, 1, 1 / 2]}
+          p={5}
+          my={5}
+          bg="#f6f6ff"
+          borderRadius={8}
+          boxShadow="0 2px 16px rgba(0, 0, 0, 0.25)"
+        > 
+        Hello
+        </Card>
+</Playground>

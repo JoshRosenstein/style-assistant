@@ -1,5 +1,52 @@
 import Assistant from '../src/index'
 
+it('t',()=>{
+
+  const defaultTheme = {
+    fontSizes: [12, 14, 16, 20, 24, 32, 48, 64, 96, 128],
+    fontSizesObj: { xs: 12, sm: 14, md: 16, lg: 20 },
+    breakpoints: [640, 832, 1024],
+  }
+  
+  const responsivePOptions = { transform: true }
+  const { responsiveP } = new Assistant({ defaultTheme, responsivePOptions })
+  
+  const o = {}
+  o.basic = responsiveP({
+    cssProp: 'fontSize',
+    prop: 'fontSize',
+  })({ fontSize: '2px' }) 
+  
+  o.themeLookup = responsiveP({
+    cssProp: 'fontSize',
+    key: 'fontSizes',
+    prop: 'fontSize',
+    postFn: v => `${v  }px`,
+  })({ fontSize: 1 }) 
+  
+  o.responsivethemeLookup = responsiveP({
+    cssProp: 'fontSize',
+    key: 'fontSizes',
+    prop: 'fontSize',
+    postFn: v => `${v  }px`,
+  })({ fontSize: [1, 2] }) 
+  
+  o.usingBuiltInTransformation = responsiveP({
+    cssProp: 'fontSize',
+    key: 'fontSizes',
+    prop: 'fontSize',
+    postFn: 'pxToRem',
+  })({ fontSize: [1, 2] }) 
+  
+  o.usingObjectStyleTheme = responsiveP({
+    cssProp: 'fontSize',
+    key: 'fontSizesObj',
+    prop: 'fontSize',
+    postFn: v => `${v  }px`,
+  })({ fontSize: ['sm', 'md'] })
+
+  expect(o).toEqual({'basic': {'fontSize': '2px'}, 'responsivethemeLookup': {'@media screen and (min-width:40em)': {'fontSize': '16px'}, 'fontSize': '14px'}, 'themeLookup': {'fontSize': '14px'}, 'usingBuiltInTransformation': {'@media screen and (min-width:40em)': {'fontSize': '1rem'}, 'fontSize': '0.875rem'}, 'usingObjectStyleTheme': {'@media screen and (min-width:40em)': {'fontSize': '16px'}, 'fontSize': '14px'}})
+})
 
 it('[switchProp] transformerOptions passes to responsiveP', () => {
   const defaultTheme = {

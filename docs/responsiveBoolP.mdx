@@ -1,0 +1,34 @@
+---
+name: responsiveBoolP
+order: -5.1
+---
+import { Playground } from 'docz'
+import Assistant from 'style-assistant'
+
+
+# responsiveBoolP
+
+>**Dependencies:** | |
+
+## Basic usage
+[add Usage Here]
+## Example Output
+<Playground>
+   {() => {
+const defaultTheme = {
+  fontSizes: [12, 14, 16, 20, 24, 32, 48, 64, 96, 128],
+  fontSizesObj: { xs: 12, sm: 14, md: 16, lg: 20 },
+  breakpoints: [640, 832, 1024],
+}
+
+const responsivePOptions = { transform: true }
+const { responsive } = new Assistant({ defaultTheme, responsivePOptions })
+let o = {}
+
+o.basic = responsive({})
+
+    return <pre style={{fontSize:'.8rem'}}>{JSON.stringify(o, undefined, 2)}</pre>
+  }}
+
+</Playground>
+
