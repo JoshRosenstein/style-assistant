@@ -4,3 +4,10 @@ node_js:
 script: "npm run test:coverage"
 after_success:
   - cat ./coverage/lcov.info | ./node_modules/codecov/bin/codecov
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GH_TOKEN
+  local_dir: ./docz/dist
+  on:
+    branch: master
