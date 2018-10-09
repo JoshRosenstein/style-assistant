@@ -1,15 +1,20 @@
 import * as path from 'path'
-import pkg from './package.json';
+import pkg from './package.json'
 
-const libName = pkg.name;
+const libName = pkg.name
 // const PUBLIC = path.resolve(__dirname, 'public')
 const SRC = path.resolve(__dirname, 'src')
-const DOCS = path.resolve(__dirname, 'docs')
+const DOCS = path.resolve(__dirname, 'docz')
 
 export default {
-  dest:'./docs/dist',
-  src: './docs',
+  dest: './docs',
+  files: './docz/**/*.mdx',
+  ordering: 'ascending',
+    src: './docs',
   title: 'style-assistant',
+  description: pkg.description,
+  base: `/${libName}/`,
+
   //  description: 'assist',
   // indexHtml: 'src/index.html',
   //  theme: 'src/theme/index',
@@ -19,9 +24,7 @@ export default {
   // htmlContext: {
   //   favicon: '/public/favicon.ico',
   // },
-  base: `/${libName}/`,
-  //hashRouter: true,
-  description: pkg.description,
+
   modifyBundlerConfig: config => {
     config.resolve.alias = Object.assign({}, config.resolve.alias, {
       //  '@fonts': `${PUBLIC}/fonts`,
