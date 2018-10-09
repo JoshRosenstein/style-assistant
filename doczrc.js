@@ -20,7 +20,7 @@ export default {
   //   favicon: '/public/favicon.ico',
   // },
   base: `/${libName}/`,
-  hashRouter: true,
+  //hashRouter: true,
   description: pkg.description,
   modifyBundlerConfig: config => {
     config.resolve.alias = Object.assign({}, config.resolve.alias, {
