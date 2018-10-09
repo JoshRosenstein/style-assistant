@@ -10,7 +10,7 @@ export default {
   dest: './docs',
   files: './docz/**/*.mdx',
   ordering: 'ascending',
-    src: './docs',
+  src: './docz',
   title: 'style-assistant',
   description: pkg.description,
   base: `/${libName}/`,

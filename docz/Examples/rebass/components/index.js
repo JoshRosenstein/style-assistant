@@ -1,5 +1,5 @@
-import styled from "@shared/styled/styled-base"
-import { responsiveP } from "./styler";
+import styled from '../../../shared/styled-base'
+import { responsiveP } from './styler'
 import {
   space,
   color,
@@ -28,14 +28,14 @@ import {
   backgroundPosition,
   backgroundRepeat,
   opacity,
-} from "./styles";
+} from './styles'
  
 import {path} from '@roseys/futils'
 
 export const css = path('css')
 export const themed = key =>path(['theme',key])
 
-export const Box = styled("div")(
+export const Box = styled('div')(
   space,
   width,
   fontSize,
@@ -43,20 +43,20 @@ export const Box = styled("div")(
   flex,
   order,
   alignSelf,
-  themed("Box"),
+  themed('Box'),
   css
-);
+)
 
 export const Flex = styled(Box)(
   {
-    display: "flex"
+    display: 'flex'
   },
   flexWrap,
   flexDirection,
   alignItems,
   justifyContent,
-  themed("Flex")
-);
+  themed('Flex')
+)
 
 export const Text = styled(Box)(
   fontFamily,
@@ -64,69 +64,69 @@ export const Text = styled(Box)(
   textAlign,
   lineHeight,
   letterSpacing,
-  themed("Text")
-);
+  themed('Text')
+)
 
-export const Heading = styled(Text)(themed("Heading"));
+export const Heading = styled(Text)(themed('Heading'))
 
 Heading.defaultProps = {
-  as: "h2",
+  as: 'h2',
   m: 0,
   fontSize: 4,
-  fontWeight: "bold"
-};
-export const Link = styled(Box)(themed("Link"));
+  fontWeight: 'bold'
+}
+export const Link = styled(Box)(themed('Link'))
 
 Link.defaultProps = {
-  as: "a",
-  color: "blue"
-};
+  as: 'a',
+  color: 'blue'
+}
 
 export const Button = styled(Box)(
   {
-    appearance: "none",
-    display: "inline-block",
-    textAlign: "center",
-    lineHeight: "inherit",
-    textDecoration: "none"
+    appearance: 'none',
+    display: 'inline-block',
+    textAlign: 'center',
+    lineHeight: 'inherit',
+    textDecoration: 'none'
   },
   fontWeight,
   borders,
   borderColor,
   borderRadius,
   buttonStyle,
-  themed("Button")
-);
+  themed('Button')
+)
 
 Button.defaultProps = {
-  as: "button",
-  fontSize: "inherit",
-  fontWeight: "bold",
+  as: 'button',
+  fontSize: 'inherit',
+  fontWeight: 'bold',
   m: 0,
   px: 3,
   py: 2,
-  color: "white",
-  bg: "blue",
-  border: "0",
+  color: 'white',
+  bg: 'blue',
+  border: '0',
   borderRadius: 4
-};
+}
 
 export const Image = styled(Box)(
   {
-    maxWidth: "100%",
-    height: "auto"
+    maxWidth: '100%',
+    height: 'auto'
   },
   height,
   borderRadius,
-  themed("Image")
-);
+  themed('Image')
+)
 
 Image.defaultProps = {
-  as: "img",
+  as: 'img',
   m: 0
-};
+}
 
-const cards = responsiveP({ key: "cards", prop: "variant" });
+const cards = responsiveP({ key: 'cards', prop: 'variant' })
 
 export const Card = styled(Box)(
   borders,
@@ -138,6 +138,6 @@ export const Card = styled(Box)(
   backgroundPosition,
   backgroundRepeat,
   opacity,
-  themed("Card"),
+  themed('Card'),
   cards
-);
+)
