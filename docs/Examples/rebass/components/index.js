@@ -1,4 +1,4 @@
-import styled from "../../shared/styled/styled-base"
+import styled from "@shared/styled/styled-base"
 import { responsiveP } from "./styler";
 import {
   space,

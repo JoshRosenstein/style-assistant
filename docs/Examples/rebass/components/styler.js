@@ -1,4 +1,4 @@
-import Assistant from "../../../src/";
+import Assistant from "style-assistant";
 import config from "./assistantConfig";
 
 export const {

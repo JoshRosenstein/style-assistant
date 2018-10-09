@@ -2,8 +2,10 @@ import * as path from 'path'
 
 // const PUBLIC = path.resolve(__dirname, 'public')
 const SRC = path.resolve(__dirname, 'src')
+const DOCS = path.resolve(__dirname, 'docs')
 
 export default {
+  dest:'./docs/dist',
   src: './docs',
   //  title: 'style-assisstnat',
   //  description: 'assist',
@@ -19,8 +21,9 @@ export default {
     config.resolve.alias = Object.assign({}, config.resolve.alias, {
       //  '@fonts': `${PUBLIC}/fonts`,
       // '@images': `${PUBLIC}/images`,
+      '@examples': `${DOCS}/Examples`,
       'style-assistant': `${SRC}/index`,
-      'styled': './docs/styled',
+      '@shared': `${DOCS}/shared`,
     })
   
     return config
