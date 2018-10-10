@@ -134,6 +134,7 @@ export default class Assistant {
       this[SWITCHPROP],
       this[TOMQ],
       this.breakPointsP,
+      this[RESPONSIVEPROP],
       this.parserOptions
     )
     this.matchBlockP=matchBlockP

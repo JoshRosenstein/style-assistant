@@ -1,7 +1,7 @@
 import Assistant from '../src/index'
 import config from './__utils__/testDefaultConfig'
 
-const {
+const { 
   parse: styler,
   getThemeP,
   transformStyleP,
@@ -37,6 +37,30 @@ describe('Styler', () => {
       border: 5,
       borderLeft: 6
     })
+  })
+
+  it('Responsive Array', () => {
+    expect(
+      styler({
+        border: [5,4,3,2]
+      })({})
+    ).toEqual({'@media screen and (min-width:1BP_Test)': {'border': 4}, '@media screen and (min-width:2BP_Test)': {'border': 3}, '@media screen and (min-width:3BP_Test)': {'border': 2}, 'border': 5})
+
+  })
+
+
+  it('Responsive Object', () => {
+    expect(
+      styler({
+        border: {
+          'default':5,
+          'mobile':4,
+          'tablet':3,
+          'laptop':2
+        }
+      })({})
+    ).toEqual({'@media screen and (min-width:1BP_Test)': {'border': 4}, '@media screen and (min-width:2BP_Test)': {'border': 3}, '@media screen and (min-width:3BP_Test)': {'border': 2}, 'border': 5})
+
   })
 
   describe('Duplicate Keys Issue', () => {
