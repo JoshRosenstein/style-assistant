@@ -1,4 +1,7 @@
-import GetTheme from '../../src/getTheme'
+import {createGetDefaultTheme} from '../../src/getDefaultTheme'
 import defaultTheme from './testThemeObj'
+//import GetTheme from '../../src/getTheme_a'
 
-export default GetTheme(defaultTheme)
+export default createGetDefaultTheme({defaultTheme})
+
+//export default GetTheme(defaultTheme)

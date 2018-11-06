@@ -13,7 +13,12 @@ import ResponsiveBoolP from './responsiveBoolP'
 import TransformStyleP from './transformStyleP'
 import {TransformStyle, name as TRANSFORMSTYLE} from './TransformStyle'
 //import GetThemeP from './getThemeP'
-import GetTheme from './getTheme'
+import GetTheme from './getTheme_a'
+import {
+  createGetDefaultTheme,
+  ASSISTANTID as GETDEFAULTTHEME,
+} from './getDefaultTheme'
+
 import Normalize from './normalize'
 import Parser from './parser'
 import {createResponsive, ASSISTANTID as RESPONSIVE} from './responsive'
@@ -62,7 +67,7 @@ const defaultOptions = {
 
 const TRANSFORMSTYLEP = 'transformStyleP'
 const RBOOLP = 'responsiveBoolP'
-const GETTHEME_ = 'getTheme'
+
 const BREAKPOINTSP_ = 'breakPointsP'
 const TRANSFORMSTYLEP_ = 'transformStyleP'
 const BASEFONTSIZE = 'baseFontSize'
@@ -88,15 +93,13 @@ const defaultM = [
   [NORMALIZETOEM_, x => x[NORMALIZE_](EM)],
   [NORMALIZETOREM_, x => x[NORMALIZE_](REM)],
   createToMq,
-  // [TOMQ, m => ToMq(m[PXTOEM_])],
   createGetThemeP,
   [
     BREAKPOINTSP_,
     (m, {breakpointsKey}) => key =>
       m[GETTHEMEP]([breakpointsKey, key].filter(Boolean)),
   ],
-
-  [GETTHEME_, (m, {defaultTheme}) => GetTheme(defaultTheme)],
+  createGetDefaultTheme,
   [TRANSFORMSTYLE, TransformStyle],
   [TRANSFORMSTYLEP_, TransformStyleP],
   [

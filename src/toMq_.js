@@ -20,6 +20,7 @@ import {
   isNumber,
   isArray,
   isNil,
+  prop,
 } from '@roseys/futils'
 import {isAtRule} from './utils'
 
