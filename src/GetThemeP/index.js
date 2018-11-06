@@ -1,2 +1,2 @@
-export {default as GetThemeP} from './GetThemeP'
-export {default as name} from './constants'
+export {default as createGetThemeP} from './GetThemeP'
+export {ASSISTANTID} from './constants'

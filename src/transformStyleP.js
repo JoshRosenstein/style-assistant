@@ -1,4 +1,4 @@
-export default function TransformStyleProp(transformStyle, getThemeP) {
+export default function TransformStyleProp({transformStyle, getThemeP}) {
   return function transformStyleProp({postFn, getter, key, path, ...rest}) {
     return function transformStyleP(props) {
       return transformStyle({

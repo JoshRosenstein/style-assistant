@@ -7,18 +7,34 @@ import {
   isDefined,
   pipe,
   objOf,
+  path,
 } from '@roseys/futils'
 
 import {whenFunctionCallWith, isTruthy} from './utils'
 
+const PXTOREM_ = 'pxToRem'
+const PXTOEM_ = 'pxToEm'
+const PXTOPCT_ = 'pxToPct'
+
 const isNeg = v => /^-.+/.test(v)
 const stripNeg = v => (isString(v) ? v.slice(1) : Math.abs(v))
 const toNeg = v => (isNumber(v) ? v * -1 : `-${v}`)
-export default function TransformStyle(
-  getTheme,
-  defaultLookups,
-  globalOptions,
-) {
+export default function TransformStyle(m, o) {
+  let getTheme = m.getTheme
+  let defaultLookups = {
+    keys: path('transformOptions.keys', o),
+    getter: path('transformOptions.getter', o),
+    functions: {
+      [PXTOREM_]: m[PXTOREM_],
+      [PXTOEM_]: m[PXTOEM_],
+      [PXTOPCT_]: m[PXTOPCT_],
+      ...path('transformOptions.functions', o),
+    },
+  }
+  let globalOptions = {
+    defaultLookup: path('transformOptions.defaultLookup', o),
+    defaultTransform: path('transformOptions.defaultTransform', o),
+  }
   return function transformStyle({
     value,
     cssProp,

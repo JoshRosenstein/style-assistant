@@ -1,2 +1,1 @@
-const name = 'getThemeP'
-export default name
+export const ASSISTANTID = 'getThemeP'

@@ -3,24 +3,24 @@ import warning from 'warning'
 import {path} from '@roseys/futils'
 import {PxTo, PXTO} from './PxTo'
 import type {pxToT, pxToStr, pxToNum} from './PxTo/types'
-import {GetThemeP, name as GETTHEMEP} from './GetThemeP'
-import type {getThemePT} from './GetThemeP/types'
+import {createGetThemeP, ASSISTANTID as GETTHEMEP} from './getThemeP'
+import type {getThemePT} from './getThemeP/types'
 
-import ToMq from './toMq'
+import {createToMq, ASSISTANTID as TOMQ} from './toMq'
 import SwitchProp from './switchP'
 import ResponsiveProp from './responsiveP'
 import ResponsiveBoolP from './responsiveBoolP'
 import TransformStyleP from './transformStyleP'
-import TransformStyle from './transformStyle'
+import {TransformStyle, name as TRANSFORMSTYLE} from './TransformStyle'
 //import GetThemeP from './getThemeP'
 import GetTheme from './getTheme'
 import Normalize from './normalize'
 import Parser from './parser'
-import Responsive from './responsive'
+import {createResponsive, ASSISTANTID as RESPONSIVE} from './responsive'
 import Media from './media'
-import matchBlockP from './matchBlockP'
+import {createMatchBlockP, ASSISTANTID as MATCHBLOCKP} from './matchBlockP'
 import {isFunction} from 'typed-is'
-
+import {IDKEY, ISSTANDALONEKEY} from './constants'
 const REM = 'rem'
 const EM = 'em'
 
@@ -60,23 +60,21 @@ const defaultOptions = {
   parserOptions: {},
 }
 
-const TOMQ_ = 'toMq'
 const TRANSFORMSTYLEP = 'transformStyleP'
 const RBOOLP = 'responsiveBoolP'
 const GETTHEME_ = 'getTheme'
 const BREAKPOINTSP_ = 'breakPointsP'
-const TRANSFORMSTYLE_ = 'transformStyle'
 const TRANSFORMSTYLEP_ = 'transformStyleP'
+const BASEFONTSIZE = 'baseFontSize'
 
 const PXTOREM_ = 'pxToRem'
 const PXTOEM_ = 'pxToEm'
-const BASEFONTSIZE = 'baseFontSize'
 const PXTOPCT_ = 'pxToPct'
 const NORMALIZE_ = 'normalize'
 const NORMALIZETOEM_ = 'normalizeToEm'
 const NORMALIZETOREM_ = 'normalizeToRem'
 const PXTOREL_ = 'pxToRelative'
-const RESPONSIVE_ = 'responsive'
+
 const RESPONSIVEP_ = 'responsiveP'
 const SWITCHP = 'switchP'
 
@@ -89,11 +87,9 @@ const defaultM = [
   [NORMALIZE_, x => Normalize(x[PXTO]())],
   [NORMALIZETOEM_, x => x[NORMALIZE_](EM)],
   [NORMALIZETOREM_, x => x[NORMALIZE_](REM)],
-  [TOMQ_, m => ToMq(m[PXTOEM_])],
-  [
-    GETTHEMEP,
-    (x, {defaultTheme, themeKey}) => GetThemeP(themeKey, defaultTheme),
-  ],
+  createToMq,
+  // [TOMQ, m => ToMq(m[PXTOEM_])],
+  createGetThemeP,
   [
     BREAKPOINTSP_,
     (m, {breakpointsKey}) => key =>
@@ -101,46 +97,26 @@ const defaultM = [
   ],
 
   [GETTHEME_, (m, {defaultTheme}) => GetTheme(defaultTheme)],
-  [
-    TRANSFORMSTYLE_,
-    (m, o) =>
-      TransformStyle(
-        m.getTheme,
-        {
-          keys: path('transformOptions.keys', o),
-          getter: path('transformOptions.getter', o),
-          functions: {
-            [PXTOREM_]: m[PXTOREM_],
-            [PXTOEM_]: m[PXTOEM_],
-            [PXTOPCT_]: m[PXTOPCT_],
-            ...path('transformOptions.functions', o),
-          },
-        },
-        {
-          defaultLookup: path('transformOptions.defaultLookup', o),
-          defaultTransform: path('transformOptions.defaultTransform', o),
-        },
-      ),
-  ],
-  [TRANSFORMSTYLEP_, m => TransformStyleP(m[TRANSFORMSTYLE_], m[GETTHEMEP])],
+  [TRANSFORMSTYLE, TransformStyle],
+  [TRANSFORMSTYLEP_, TransformStyleP],
   [
     RBOOLP,
     (m, {breakpointsKey}) =>
       ResponsiveBoolP(
         m[GETTHEMEP],
         breakpointsKey,
-        m[TOMQ_],
+        m[TOMQ],
         m[TRANSFORMSTYLEP],
       ),
   ],
   ['media', (m, o) => Media(o.defaultTheme.breakpoints, m.toMq)],
-
-  [RESPONSIVE_, (m, o) => Responsive(m.toMq, o.defaultTheme.breakpoints)],
+  createResponsive,
+  // [RESPONSIVE, (m, o) => Responsive(m.toMq, o.defaultTheme.breakpoints)],
   [
     RESPONSIVEP_,
     (m, o) =>
       ResponsiveProp(
-        m[RESPONSIVE_],
+        m[RESPONSIVE],
         m[GETTHEMEP],
         o.breakpointsKey,
         m[TRANSFORMSTYLEP_],
@@ -168,7 +144,7 @@ const defaultM = [
     (m, o) =>
       Parser(m.switchP, m.toMq, m.breakPointsP, m.responsiveP, o.parserOptions),
   ],
-  ['matchBlockP', () => matchBlockP],
+  createMatchBlockP,
 ]
 
 interface AssistantI {
@@ -179,10 +155,13 @@ interface AssistantI {
   [GETTHEMEP]: getThemePT;
 }
 
+const warnNamelessPlugin = () =>
+  warning(false, '[Assistant]:[creator] Nameless pluggins are not reccomended')
+
 const warnInvalidPlugin = name =>
   warning(
     false,
-    '[Assistant]:[INIT]: %s does not have a valid method.',
+    '[Assistant]:[creator]: %s does not have a valid method.',
     '',
     name,
   )
@@ -192,11 +171,26 @@ export default class Assistant implements AssistantI {
     const mergedOptions = {...defaultOptions, ...options}
     if (methods) {
       let AvailableMethods = {}
-      methods.forEach(([name, method]) => {
-        if (isFunction(method)) {
+      methods.forEach(pluginOrNamePluginPair => {
+        let name, plugin
+        let isStandAlone = false // logic to supply methods to first argument or options only
+
+        if (Array.isArray(pluginOrNamePluginPair)) {
+          ;[name, plugin] = pluginOrNamePluginPair
+        } else {
+          plugin = pluginOrNamePluginPair
+          name = pluginOrNamePluginPair[IDKEY]
+          if (pluginOrNamePluginPair.hasOwnProperty(ISSTANDALONEKEY)) {
+            isStandAlone = pluginOrNamePluginPair[ISSTANDALONEKEY]
+          }
+        }
+        if (isFunction(plugin)) {
+          const initFactory = !isStandAlone
+            ? plugin(AvailableMethods, mergedOptions)
+            : plugin(mergedOptions)
           AvailableMethods = {
             ...AvailableMethods,
-            [name]: method(AvailableMethods, mergedOptions),
+            [name]: initFactory,
           }
         } else warnInvalidPlugin(name)
       })
@@ -215,11 +209,19 @@ export const createAssistant: AssistantI = (
   let AvailableMethods = {}
   const mergedOptions = {...defaultOptions, ...options}
   if (methods) {
-    methods.forEach(([name, method]) => {
-      if (isFunction(method)) {
+    methods.forEach(pluginOrNamePluginPair => {
+      let name, plugin
+      if (Array.isArray(pluginOrNamePluginPair)) {
+        ;[name, plugin] = pluginOrNamePluginPair
+      } else {
+        plugin = pluginOrNamePluginPair
+        name = pluginOrNamePluginPair[IDKEY]
+      }
+      if (name === '' || name === undefined) warnNamelessPlugin()
+      if (isFunction(plugin)) {
         AvailableMethods = {
           ...AvailableMethods,
-          [name]: method(AvailableMethods, mergedOptions),
+          [name]: plugin(AvailableMethods, mergedOptions),
         }
       } else warnInvalidPlugin(name)
     })

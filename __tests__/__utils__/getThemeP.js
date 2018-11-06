@@ -1,4 +1,5 @@
-import {GetThemeP} from '../../src/GetThemeP/'
+import {createGetThemeP} from '../../src/getThemeP/'
 import defaultTheme from './testThemeObj'
 
-export default GetThemeP('theme', defaultTheme)
+const themeKey = 'theme'
+export default createGetThemeP({themeKey, defaultTheme})

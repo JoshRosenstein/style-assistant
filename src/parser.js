@@ -18,7 +18,7 @@ import {
   all,
   isDefined,
 } from '@roseys/futils'
-import matchBlockP from './matchBlockP'
+import {matchBlockP} from './matchBlockP'
 import {
   whenFunctionCallWith,
   falseToNull,

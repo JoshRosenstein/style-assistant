@@ -1,4 +1,5 @@
-import toMqCreator from '../../src/toMq'
+import {createToMq} from '../../src/toMq'
 import pxToC from '../../src/PxTo/PxTo'
 
-export default toMqCreator(pxToC(16)('em'))
+const pxToEm = pxToC(16)('em')
+export default createToMq({pxToEm})
