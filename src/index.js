@@ -10,11 +10,14 @@ import {createToMq, ASSISTANTID as TOMQ} from './toMq'
 import SwitchProp from './switchP'
 import ResponsiveProp from './responsiveP'
 import ResponsiveBoolP from './responsiveBoolP'
-import TransformStyleP from './transformStyleP'
+import {
+  createTransformStyleP,
+  ASSISTANTID as TRANSFORMSTYLEP,
+} from './transformStyleP'
 import {
   createTransformStyle,
   ASSISTANTID as TRANSFORMSTYLE,
-} from './TransformStyle'
+} from './transformStyle'
 //import GetThemeP from './getThemeP'
 
 import {
@@ -68,11 +71,10 @@ const defaultOptions = {
   parserOptions: {},
 }
 
-const TRANSFORMSTYLEP = 'transformStyleP'
 const RBOOLP = 'responsiveBoolP'
 
 const BREAKPOINTSP_ = 'breakPointsP'
-const TRANSFORMSTYLEP_ = 'transformStyleP'
+
 const BASEFONTSIZE = 'baseFontSize'
 
 const PXTOREM_ = 'pxToRem'
@@ -104,7 +106,8 @@ const defaultM = [
   ],
   createGetDefaultTheme,
   createTransformStyle,
-  [TRANSFORMSTYLEP_, TransformStyleP],
+  createTransformStyleP,
+
   [
     RBOOLP,
     (m, {breakpointsKey}) =>
@@ -117,7 +120,7 @@ const defaultM = [
   ],
   ['media', (m, o) => Media(o.defaultTheme.breakpoints, m.toMq)],
   createResponsive,
-  // [RESPONSIVE, (m, o) => Responsive(m.toMq, o.defaultTheme.breakpoints)],
+
   [
     RESPONSIVEP_,
     (m, o) =>
@@ -125,7 +128,7 @@ const defaultM = [
         m[RESPONSIVE],
         m[GETTHEMEP],
         o.breakpointsKey,
-        m[TRANSFORMSTYLEP_],
+        m[TRANSFORMSTYLEP],
         m.responsivePOptions,
       ),
   ],
@@ -135,7 +138,7 @@ const defaultM = [
       SwitchProp(
         m[RESPONSIVEP_],
         m[RBOOLP],
-        m[TRANSFORMSTYLEP_],
+        m[TRANSFORMSTYLEP],
         {
           [PXTOREM_]: m[PXTOREM_],
           [PXTOEM_]: m[PXTOEM_],

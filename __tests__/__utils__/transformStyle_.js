@@ -1,4 +1,4 @@
-import {createTransformStyle} from '../../src/TransformStyle'
+import {createTransformStyle} from '../../src/transformStyle'
 import getTheme from './getTheme'
 import testDefaultConfig from './testDefaultConfig'
 
