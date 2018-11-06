@@ -1,2 +1,2 @@
-export {default as TransformStyle} from './TransformStyle'
-export {default as name} from './constants'
+export {default as createTransformStyle} from './createTransformStyle'
+export {ASSISTANTID} from './constants'

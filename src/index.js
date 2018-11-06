@@ -11,9 +11,12 @@ import SwitchProp from './switchP'
 import ResponsiveProp from './responsiveP'
 import ResponsiveBoolP from './responsiveBoolP'
 import TransformStyleP from './transformStyleP'
-import {TransformStyle, name as TRANSFORMSTYLE} from './TransformStyle'
+import {
+  createTransformStyle,
+  ASSISTANTID as TRANSFORMSTYLE,
+} from './TransformStyle'
 //import GetThemeP from './getThemeP'
-import GetTheme from './getTheme_a'
+
 import {
   createGetDefaultTheme,
   ASSISTANTID as GETDEFAULTTHEME,
@@ -100,7 +103,7 @@ const defaultM = [
       m[GETTHEMEP]([breakpointsKey, key].filter(Boolean)),
   ],
   createGetDefaultTheme,
-  [TRANSFORMSTYLE, TransformStyle],
+  createTransformStyle,
   [TRANSFORMSTYLEP_, TransformStyleP],
   [
     RBOOLP,

@@ -1,3 +1,15 @@
+// @flow
+import {IDKEY} from '../constants'
+import {
+  ASSISTANTID,
+  OPTIONSKEY,
+  OPTIONKEYSKEY,
+  OPTIONGETTERSKEY,
+  OPTIONFUNCTIONSSKEY,
+  OPTIONDEFAULTLOOKUPKEY,
+  OPTIONDEFAULTTRANSFORMKEY,
+} from './constants'
+import type {transformStyleT} from './types'
 import {
   flow,
   isString,
@@ -7,10 +19,10 @@ import {
   isDefined,
   pipe,
   objOf,
-  path,
   whenFunctionCallWith,
+  prop,
 } from '@roseys/futils'
-
+import {ASSISTANTID as GETDEFAULTTHEME} from '../getDefaultTheme/constants'
 import {isTruthy} from '../utils'
 
 const PXTOREM_ = 'pxToRem'
@@ -20,21 +32,23 @@ const PXTOPCT_ = 'pxToPct'
 const isNeg = v => /^-.+/.test(v)
 const stripNeg = v => (isString(v) ? v.slice(1) : Math.abs(v))
 const toNeg = v => (isNumber(v) ? v * -1 : `-${v}`)
-export default function TransformStyle(m, o) {
-  let getTheme = m.getTheme
+
+const createTransformStyle = (m, o): transformStyleT => {
+  const transformOptions = prop(OPTIONSKEY, o)
+  let getTheme = prop(GETDEFAULTTHEME, m)
   let defaultLookups = {
-    keys: path('transformOptions.keys', o),
-    getter: path('transformOptions.getter', o),
-    functions: {
+    [OPTIONKEYSKEY]: prop(OPTIONKEYSKEY, transformOptions),
+    [OPTIONGETTERSKEY]: prop(OPTIONGETTERSKEY, transformOptions),
+    [OPTIONFUNCTIONSSKEY]: {
       [PXTOREM_]: m[PXTOREM_],
       [PXTOEM_]: m[PXTOEM_],
       [PXTOPCT_]: m[PXTOPCT_],
-      ...path('transformOptions.functions', o),
+      ...prop(OPTIONFUNCTIONSSKEY, transformOptions),
     },
   }
   let globalOptions = {
-    defaultLookup: path('transformOptions.defaultLookup', o),
-    defaultTransform: path('transformOptions.defaultTransform', o),
+    defaultLookup: prop(OPTIONDEFAULTLOOKUPKEY, transformOptions),
+    defaultTransform: prop(OPTIONDEFAULTTRANSFORMKEY, transformOptions),
   }
   return function transformStyle({
     value,
@@ -109,3 +123,7 @@ export default function TransformStyle(m, o) {
     )(value)
   }
 }
+
+createTransformStyle[IDKEY] = ASSISTANTID
+
+export default createTransformStyle
