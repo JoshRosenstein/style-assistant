@@ -5,4 +5,3 @@ export default (themeKey, defaultTheme) => (key = []) => props => {
   const res = path(pth)(props)
   return res || path(pth)({[themeKey]: defaultTheme})
 }
- 

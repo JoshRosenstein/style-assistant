@@ -15,7 +15,7 @@ const containsFunc = obj => {
   const functor = toPairs(obj)
   const length = functor.length
   let b = false
-  for (let i = 0; i < length; ++i) { 
+  for (let i = 0; i < length; ++i) {
     const a = functor[i]
     if (shouldLoop(a[1], a[0])) {
       b = containsFunc(a[1])

@@ -5,33 +5,33 @@ import testThemeObj from './__utils__/testThemeObj'
 
 import config from './__utils__/testDefaultConfig'
 
-const styler1 = new Assistant({ ...config, defaultTheme: testTheme })
-const styler2 = new Assistant({ ...config, defaultTheme: testThemeObj })
+const styler1 = new Assistant({...config, defaultTheme: testTheme})
+const styler2 = new Assistant({...config, defaultTheme: testThemeObj})
 
 describe('Array Theme Keys and Object Theme Keys', () => {
   describe('How responsiveBoolP and can be equivlent to responsiveP', () => {
     const TargetProp = 'isHidden'
-    const StandardResult = { display: 'block' }
+    const StandardResult = {display: 'block'}
     const ArrayResult = {
-      '@media screen and (min-width:1BP_Test)': { display: 'none' },
-      display: 'block'
+      '@media screen and (min-width:1BP_Test)': {display: 'none'},
+      display: 'block',
     }
     const ObjResult = {
-      '@media screen and (min-width:1BP_Test)': { display: 'none' },
-      display: 'block'
+      '@media screen and (min-width:1BP_Test)': {display: 'none'},
+      display: 'block',
     }
     const Func = (func, FNconfig) => propValue =>
-      func(FNconfig)({ [TargetProp]: propValue })
+      func(FNconfig)({[TargetProp]: propValue})
 
     it('responsiveBoolP ', () => {
       const StandardProps = false
       const ArrayProps = [false, true]
-      const ObjProps = { default: false, mobile: true }
+      const ObjProps = {default: false, mobile: true}
       const config = {
         T: 'none',
         F: 'block',
         cssProp: 'display',
-        prop: TargetProp
+        prop: TargetProp,
       }
 
       const FN1 = Func(styler1.responsiveBoolP, config)
@@ -48,12 +48,12 @@ describe('Array Theme Keys and Object Theme Keys', () => {
     it('responsiveP', () => {
       const StandardProps = 'block'
       const ArrayProps = ['block', 'none']
-      const ObjProps = { default: 'block', mobile: 'none' }
+      const ObjProps = {default: 'block', mobile: 'none'}
 
       const config = {
         cssProp: 'display',
         prop: TargetProp,
-        transform: false
+        transform: false,
       }
 
       const FN1 = Func(styler2.responsiveP, config)
@@ -76,10 +76,10 @@ describe('Array Theme Keys and Object Theme Keys', () => {
         cssProp: 'paddingTop',
         defaultValue: '16px',
         prop: 'Target',
-        transform: false
+        transform: false,
       }
-      const props = { Target: 'targetPropValue' }
-      const result = { paddingTop: 'targetPropValue' }
+      const props = {Target: 'targetPropValue'}
+      const result = {paddingTop: 'targetPropValue'}
 
       const FN1 = Func(styler1.responsiveP, FNconfig)(props)
       const FN2 = Func(styler2.responsiveP, FNconfig)(props)
@@ -93,10 +93,10 @@ describe('Array Theme Keys and Object Theme Keys', () => {
         cssProp: 'paddingTop',
         defaultValue: '16px',
         prop: 'Target',
-        transform: false
+        transform: false,
       }
-      const props = { Target: ['targetPropValue'] }
-      const result = { paddingTop: 'targetPropValue' }
+      const props = {Target: ['targetPropValue']}
+      const result = {paddingTop: 'targetPropValue'}
 
       const FN1 = Func(styler1.responsiveP, FNconfig)(props)
       const FN2 = Func(styler2.responsiveP, FNconfig)(props)
@@ -110,10 +110,10 @@ describe('Array Theme Keys and Object Theme Keys', () => {
         cssProp: 'paddingTop',
         defaultValue: '16px',
         prop: 'Target',
-        transform: false
+        transform: false,
       }
-      const props = { Target: { default: 'targetPropValue' } }
-      const result = { paddingTop: 'targetPropValue' }
+      const props = {Target: {default: 'targetPropValue'}}
+      const result = {paddingTop: 'targetPropValue'}
 
       const FN1 = () => Func(styler1.responsiveP, FNconfig)(props)
       const FN2 = Func(styler2.responsiveP, FNconfig)(props)
@@ -126,10 +126,10 @@ describe('Array Theme Keys and Object Theme Keys', () => {
       const FNconfig = {
         cssProp: 'paddingTop',
         defaultValue: '16px',
-        prop: 'Target'
+        prop: 'Target',
       }
-      const props = { Target: false }
-      const result = { paddingTop: '16px' }
+      const props = {Target: false}
+      const result = {paddingTop: '16px'}
 
       const FN1 = Func(styler1.responsiveP, FNconfig)(props)
       const FN2 = Func(styler2.responsiveP, FNconfig)(props)
@@ -143,11 +143,11 @@ describe('Array Theme Keys and Object Theme Keys', () => {
         cssProp: 'paddingTop',
         defaultValue: '16px',
         prop: 'Target',
-        transform: false
+        transform: false,
       }
 
-      const props = { Target: [false] }
-      const result = { paddingTop: '16px' }
+      const props = {Target: [false]}
+      const result = {paddingTop: '16px'}
 
       const FN1 = Func(styler1.responsiveP, FNconfig)(props)
       const FN2 = Func(styler2.responsiveP, FNconfig)(props)
@@ -160,11 +160,11 @@ describe('Array Theme Keys and Object Theme Keys', () => {
       const FNconfig = {
         cssProp: 'paddingTop',
         defaultValue: '16px',
-        prop: 'Target'
+        prop: 'Target',
       }
 
-      const props = { Target: { default: 'targetPropValue' } }
-      const result = { paddingTop: 'targetPropValue' }
+      const props = {Target: {default: 'targetPropValue'}}
+      const result = {paddingTop: 'targetPropValue'}
 
       const FN1 = () => Func(styler1.responsiveP, FNconfig)(props)
       const FN2 = Func(styler2.responsiveP, FNconfig)(props)
@@ -177,11 +177,11 @@ describe('Array Theme Keys and Object Theme Keys', () => {
       const FNconfig = {
         cssProp: 'paddingTop',
         defaultValue: '16px',
-        prop: 'Target'
+        prop: 'Target',
       }
 
-      const props = { Target: undefined }
-      const result = { paddingTop: '16px' }
+      const props = {Target: undefined}
+      const result = {paddingTop: '16px'}
 
       const FN1 = Func(styler1.responsiveP, FNconfig)(props)
       const FN2 = Func(styler2.responsiveP, FNconfig)(props)

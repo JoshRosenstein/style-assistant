@@ -1,4 +1,3 @@
-
 import {
   mergeAllDeepRight,
   flow,
@@ -6,12 +5,13 @@ import {
   map,
   isNumber,
   ifElse,
-  either,lt,
+  either,
+  lt,
   complement,
   whenFunctionCallWith,
   identity,
   prop,
-  compact
+  compact,
 } from '@roseys/futils'
 import Assistant from '../../src/index'
 
@@ -22,16 +22,16 @@ export const compose = (...funcs) => {
       funcs,
       map(whenFunctionCallWith(props)),
       compact,
-      mergeAllDeepRight
+      mergeAllDeepRight,
     )
 
   return fn
 }
 
-export const px = when(isNumber, num => `${num  }px`)
+export const px = when(isNumber, num => `${num}px`)
 
 const css = props => props.css
-const themed = key => props => prop(key,prop('theme',props))
+const themed = key => props => prop(key, prop('theme', props))
 
 const defaultLookups = {
   keys: {
@@ -84,13 +84,13 @@ const defaultLookups = {
     propValue: identity, // alias
     self: identity, // alias
     px,
-    ms: x => `${parseFloat(x)  }ms`,
+    ms: x => `${parseFloat(x)}ms`,
     pct: x => {
       x = parseFloat(x)
       x = Math.abs(x) < 1 ? x * 100 : x
-      return `${x  }%`
-    }
-  }
+      return `${x}%`
+    },
+  },
 }
 const defaultTheme = {
   // breakpoints: [640, 832, 1024],
@@ -98,7 +98,7 @@ const defaultTheme = {
   breakpoints: {
     tablet: 640,
     laptop: 832,
-    desktop: 1024
+    desktop: 1024,
   },
   space: [0, 4, 8, 16, 32, 64, 128, 256, 512],
   // space: {
@@ -124,25 +124,25 @@ const defaultTheme = {
   lineHeights: [1, 1.125, 1.25, 1.5],
   fontWeights: {
     normal: 500,
-    bold: 'bold'
+    bold: 'bold',
   },
   letterSpacings: {
     normal: 'normal',
-    caps: '0.25em'
+    caps: '0.25em',
   },
   radii: [0, 2, 4, 8],
   borders: [0, '1px solid', '2px solid'],
   shadows: {
     small: '0 0 4px rgba(0, 0, 0, .125)',
-    large: '0 0 24px rgba(0, 0, 0, .125)'
+    large: '0 0 24px rgba(0, 0, 0, .125)',
   },
   colors: {
     blue: 'blue',
-    lightgray: '#f6f6ff'
-  }
+    lightgray: '#f6f6ff',
+  },
 }
 
-export const config={
+export const config = {
   defaultTheme,
   baseFontSize: 16, // / Unitless value used for unit conversions Utils
   themeKey: 'theme', // / Unitless value used for unit conversions Utils
@@ -153,20 +153,19 @@ export const config={
     defaultTransform: true,
     keys: defaultLookups.keys,
     getter: defaultLookups.getter,
-    functions: defaultLookups.functions
+    functions: defaultLookups.functions,
   },
   responsivePOptions: {
-    transform: true
+    transform: true,
   },
   switchPOptions: {
     transform: true,
-    responsive:true
+    responsive: true,
   },
   parserOptions: {
-    transform: true
-  }
+    transform: true,
+  },
 }
-
 
 export const {
   responsiveP, // using alias to match styled-system
@@ -176,210 +175,209 @@ export const {
 export const getWidth = ifElse(
   either(isNotNumber, lt(1)),
   px,
-  decimal => `${decimal * 100  }%`
+  decimal => `${decimal * 100}%`,
 )
 // export const getWidth = n => (!isNumber(n) || n > 1 ? px(n) : n * 100 + "%");
 export const width = responsiveP({
   prop: 'width',
-  postFn: getWidth
+  postFn: getWidth,
 })
 
 export const fontSize = responsiveP({
   cssProp: 'fontSize',
   key: 'fontSizes',
   prop: 'fontSize',
-  postFn: px
+  postFn: px,
 })
 
 // flexbox
 export const alignItems = responsiveP({
-  prop: 'alignItems'
+  prop: 'alignItems',
 })
 
 export const alignContent = responsiveP({
-  prop: 'alignContent'
+  prop: 'alignContent',
 })
 
 export const justifyItems = responsiveP({
-  prop: 'justifyItems'
+  prop: 'justifyItems',
 })
 
 export const justifyContent = responsiveP({
-  prop: 'justifyContent'
+  prop: 'justifyContent',
 })
 
 export const flexWrap = responsiveP({
-  prop: 'flexWrap'
+  prop: 'flexWrap',
 })
 
 export const flexBasis = responsiveP({
   prop: 'flexBasis',
-  postFn: getWidth
+  postFn: getWidth,
 })
 
 export const flexDirection = responsiveP({
-  prop: 'flexDirection'
+  prop: 'flexDirection',
 })
 
 export const flex = responsiveP({
-  prop: 'flex'
+  prop: 'flex',
 })
 
 export const justifySelf = responsiveP({
-  prop: 'justifySelf'
+  prop: 'justifySelf',
 })
 
 export const alignSelf = responsiveP({
-  prop: 'alignSelf'
+  prop: 'alignSelf',
 })
 
 export const order = responsiveP({
-  prop: 'order'
+  prop: 'order',
 })
 
 export const textColor = responsiveP({
   prop: 'color',
-  key: 'colors'
+  key: 'colors',
 })
 
 export const bgColor = responsiveP({
   prop: 'bg',
   cssProp: 'backgroundColor',
-  key: 'colors'
+  key: 'colors',
 })
 
 export const color = compose(
   textColor,
-  bgColor
+  bgColor,
 )
 
 export const padding = switchP(
   {
     padding: 'returnAsIs',
-    p: 'returnAsIs'
+    p: 'returnAsIs',
   },
   {
     cssProp: 'padding',
     key: 'sizing',
-    postFn: px
-  }
+    postFn: px,
+  },
 )
 
 export const paddingLeft = switchP(
   {
     paddingLeft: 'returnAsIs',
     pl: 'returnAsIs',
-    px: 'returnAsIs'
+    px: 'returnAsIs',
   },
   {
     cssProp: 'paddingLeft',
     key: 'sizing',
-    postFn: px
-  }
+    postFn: px,
+  },
 )
 
 export const paddingRight = switchP(
   {
     paddingRight: 'returnAsIs',
     pr: 'returnAsIs',
-    px: 'returnAsIs'
+    px: 'returnAsIs',
   },
   {
     cssProp: 'paddingRight',
     key: 'sizing',
-    postFn: px
-  }
+    postFn: px,
+  },
 )
 
 export const paddingTop = switchP(
   {
     paddingTop: 'returnAsIs',
     pt: 'returnAsIs',
-    py: 'returnAsIs'
+    py: 'returnAsIs',
   },
   {
     cssProp: 'paddingTop',
     key: 'sizing',
-    postFn: px
-  }
+    postFn: px,
+  },
 )
 
 export const paddingBottom = switchP(
   {
     paddingBottom: 'returnAsIs',
     pb: 'returnAsIs',
-    py: 'returnAsIs'
+    py: 'returnAsIs',
   },
   {
     cssProp: 'paddingBottom',
     key: 'sizing',
-    postFn: px
-  }
+    postFn: px,
+  },
 )
 
 export const margin = switchP(
   {
     margin: 'returnAsIs',
-    m: 'returnAsIs'
+    m: 'returnAsIs',
   },
   {
     cssProp: 'margin',
     key: 'sizing',
     postFn: px,
-
-  }
+  },
 )
 
 export const marginLeft = switchP(
   {
     marginLeft: 'returnAsIs',
     ml: 'returnAsIs',
-    mx: 'returnAsIs'
+    mx: 'returnAsIs',
   },
   {
     cssProp: 'marginLeft',
     key: 'sizing',
-    postFn: px
-  }
+    postFn: px,
+  },
 )
 
 export const marginRight = switchP(
   {
     marginRight: 'returnAsIs',
     mr: 'returnAsIs',
-    mx: 'returnAsIs'
+    mx: 'returnAsIs',
   },
   {
     cssProp: 'marginRight',
     key: 'sizing',
-    postFn: px
-  }
+    postFn: px,
+  },
 )
 
 export const marginTop = switchP(
   {
     marginTop: 'returnAsIs',
     mt: 'returnAsIs',
-    my: 'returnAsIs'
+    my: 'returnAsIs',
   },
   {
     cssProp: 'marginTop',
     key: 'sizing',
-    postFn: px
-  }
+    postFn: px,
+  },
 )
 
 export const marginBottom = switchP(
   {
     marginBottom: 'returnAsIs',
     mb: 'returnAsIs',
-    my: 'returnAsIs'
+    my: 'returnAsIs',
   },
   {
     cssProp: 'marginBottom',
     key: 'sizing',
-    postFn: px
-  }
+    postFn: px,
+  },
 )
 
 export const space = compose(
@@ -392,7 +390,7 @@ export const space = compose(
   paddingBottom,
   paddingRight,
   paddingLeft,
-  padding
+  padding,
 )
 
 export const Box = compose(
@@ -405,17 +403,17 @@ export const Box = compose(
   alignSelf,
   justifySelf,
   themed('Box'),
-  css
+  css,
 )
 
 export const Flex = compose(
   {
-    display: 'flex'
+    display: 'flex',
   },
   flexWrap,
   flexDirection,
   alignItems,
   justifyContent,
 
-  themed('Flex')
+  themed('Flex'),
 )

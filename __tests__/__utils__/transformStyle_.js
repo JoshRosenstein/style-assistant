@@ -4,5 +4,5 @@ import defaultLookups from './defaultLookups'
 
 export default TransformStyle(getTheme, defaultLookups, {
   defaultLookup: true,
-  defaultTransform: true
+  defaultTransform: true,
 })

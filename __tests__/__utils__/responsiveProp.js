@@ -7,5 +7,5 @@ export default ResponsiveProp(
   responsive,
   getThemeP,
   'breakpoints',
-  transformStyle
+  transformStyle,
 )

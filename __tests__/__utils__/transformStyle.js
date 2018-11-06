@@ -5,5 +5,5 @@ import TransformStyle from './transformStyle_'
 
 export default TransformStyleP(TransformStyle, getThemeP, defaultLookups, {
   defaultLookup: true,
-  defaultTransform: true
+  defaultTransform: true,
 })

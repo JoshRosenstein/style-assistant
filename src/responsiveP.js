@@ -6,6 +6,7 @@ export default function ResponsiveProp(
   getTheme,
   breakpointsKey,
   transformStyle,
+  globalOptions,
 ) {
   return function responsiveProp({
     defaultValue,
@@ -13,8 +14,9 @@ export default function ResponsiveProp(
     cssProp,
     prop: targetPropName,
     transform,
-    ...transformOptions
+    ...localoptions
   }) {
+    let transformOptions = {...globalOptions, ...localoptions}
     return function responsiveP(props) {
       const css = cssProp || targetPropName
       targetPropName = targetPropName || cssProp

@@ -26,9 +26,6 @@ import {isFunction} from 'typed-is'
 
 const REM = 'rem'
 const EM = 'em'
-interface ASS {
-  pxToRem: pxToStr;
-}
 
 interface Options {
   defaultTheme?: {};
@@ -69,7 +66,7 @@ const defaultOptions = {
 const GETTHEMEP_ = 'getThemeP'
 const TOMQ_ = 'toMq'
 const TRANSFORMSTYLEP = 'transformStyleP'
-const RBOOLP = 'ResponsiveBoolP'
+const RBOOLP = 'responsiveBoolP'
 const GETTHEME_ = 'getTheme'
 const BREAKPOINTSP_ = 'breakPointsP'
 const TRANSFORMSTYLE_ = 'transformStyle'
@@ -83,20 +80,12 @@ const NORMALIZE_ = 'normalize'
 const NORMALIZETOEM_ = 'normalizeToEm'
 const NORMALIZETOREM_ = 'normalizeToRem'
 const PXTOREL_ = 'pxToRelative'
-//pxToPct: pxToStr = pxValue => this.pxTo('%')(pxValue * 100)
-//pxToRelative: pxToNum = this.pxTo()
-// pxToRem: pxToStr = this.pxTo(REM)
-// pxToEm: pxToStr = this.pxTo(EM)
-// pxToPct: pxToStr = pxValue => this.pxTo('%')(pxValue * 100)
-// pxToRelative: pxToNum = this.pxTo()
-//this.transformStyleP = TransformStyleP(this.transformStyle, this.getThemeP)
-//this.getTheme = GetTheme(this.defaultTheme)
-//  this.breakPointsP = key =>this.getThemeP([breakpointsKey, key].filter(Boolean))
+const RESPONSIVE_ = 'responsive'
+const RESPONSIVEP_ = 'responsiveP'
+const SWITCHP = 'switchP'
 
-// pxTo = PxTo(this.baseFontSize)
-// pxTo = PxTo(this.baseFontSize)
 const defaultM = [
-  [PXTO, (x, o: {[BASEFONTSIZE]: number}) => PxTo(o[BASEFONTSIZE])],
+  [PXTO, (x, o) => PxTo(o[BASEFONTSIZE])],
   [PXTOREM_, x => x[PXTO](REM)],
   [PXTOEM_, x => x[PXTO](EM)],
   [PXTOPCT_, x => pxValue => x[PXTO]('%')(pxValue * 100)],
@@ -104,6 +93,7 @@ const defaultM = [
   [NORMALIZE_, x => Normalize(x[PXTO]())],
   [NORMALIZETOEM_, x => x[NORMALIZE_](EM)],
   [NORMALIZETOREM_, x => x[NORMALIZE_](REM)],
+  [TOMQ_, m => ToMq(m[PXTOEM_])],
   [
     GETTHEMEP_,
     (x, {defaultTheme, themeKey}) => GetThemeP(themeKey, defaultTheme),
@@ -113,16 +103,7 @@ const defaultM = [
     (m, {breakpointsKey}) => key =>
       m[GETTHEMEP_]([breakpointsKey, key].filter(Boolean)),
   ],
-  [
-    RBOOLP,
-    (m, {breakpointsKey}) =>
-      ResponsiveBoolP(
-        m[GETTHEMEP_],
-        breakpointsKey,
-        m[TOMQ_],
-        m[TRANSFORMSTYLEP],
-      ),
-  ],
+
   [GETTHEME_, (m, {defaultTheme}) => GetTheme(defaultTheme)],
   [
     TRANSFORMSTYLE_,
@@ -133,9 +114,9 @@ const defaultM = [
           keys: path('transformOptions.keys', o),
           getter: path('transformOptions.getter', o),
           functions: {
-            pxToRem: m.pxToRem,
-            pxToEm: m.pxToEm,
-            pxToPct: m.pxToPct,
+            [PXTOREM_]: m[PXTOREM_],
+            [PXTOEM_]: m[PXTOEM_],
+            [PXTOPCT_]: m[PXTOPCT_],
             ...path('transformOptions.functions', o),
           },
         },
@@ -146,8 +127,52 @@ const defaultM = [
       ),
   ],
   [TRANSFORMSTYLEP_, m => TransformStyleP(m[TRANSFORMSTYLE_], m[GETTHEMEP_])],
+  [
+    RBOOLP,
+    (m, {breakpointsKey}) =>
+      ResponsiveBoolP(
+        m[GETTHEMEP_],
+        breakpointsKey,
+        m[TOMQ_],
+        m[TRANSFORMSTYLEP],
+      ),
+  ],
   ['media', (m, o) => Media(o.defaultTheme.breakpoints, m.toMq)],
-  ['toMq', m => ToMq(m.pxToEm)],
+
+  [RESPONSIVE_, (m, o) => Responsive(m.toMq, o.defaultTheme.breakpoints)],
+  [
+    RESPONSIVEP_,
+    (m, o) =>
+      ResponsiveProp(
+        m[RESPONSIVE_],
+        m[GETTHEMEP_],
+        o.breakpointsKey,
+        m[TRANSFORMSTYLEP_],
+        m.responsivePOptions,
+      ),
+  ],
+  [
+    SWITCHP,
+    (m, o) =>
+      SwitchProp(
+        m[RESPONSIVEP_],
+        m[RBOOLP],
+        m[TRANSFORMSTYLEP_],
+        {
+          [PXTOREM_]: m[PXTOREM_],
+          [PXTOEM_]: m[PXTOEM_],
+          [PXTOPCT_]: m[PXTOPCT_],
+          ...path('transformOptions.functions', o),
+        },
+        o.switchPOptions,
+      ),
+  ],
+  [
+    'parse',
+    (m, o) =>
+      Parser(m.switchP, m.toMq, m.breakPointsP, m.responsiveP, o.parserOptions),
+  ],
+  ['matchBlockP', () => matchBlockP],
 ]
 
 export default class Assistant {
@@ -229,59 +254,59 @@ export default class Assistant {
     //   this.getThemeP([breakpointsKey, key].filter(Boolean))
 
     //this[TOMQ] = ToMq(this.pxToEm)
-    this.toMq = ToMq(this.pxToEm)
+    // this.toMq = ToMq(this.pxToEm)
 
-    this.media = Media(this.defaultTheme.breakpoints, this.toMq)
+    // this.media = Media(this.defaultTheme.breakpoints, this.toMq)
 
-    this.transformStyle = TransformStyle(
-      this.getTheme,
-      this.defaultLookups,
-      this.computeDefaults,
-    )
+    // this.transformStyle = TransformStyle(
+    //   this.getTheme,
+    //   this.defaultLookups,
+    //   this.computeDefaults,
+    // )
     //this.transformStyleP = TransformStyleP(this.transformStyle, this.getThemeP)
 
-    this.responsiveBoolP = ResponsiveBoolP(
-      this.getThemeP,
-      this.breakpointsKey,
-      this.toMq,
-      this.transformStyleP,
-    )
+    // this.responsiveBoolP = ResponsiveBoolP(
+    //   this.getThemeP,
+    //   this.breakpointsKey,
+    //   this.toMq,
+    //   this.transformStyleP,
+    // )
 
-    this.responsive = Responsive(this.toMq, this.defaultTheme.breakpoints)
-    this.responsiveProp = ResponsiveProp(
-      this.responsive,
-      this.getThemeP,
-      this.breakpointsKey,
-      this.transformStyleP,
-    )
+    //this.responsive = Responsive(this.toMq, this.defaultTheme.breakpoints)
+    // this.responsiveProp = ResponsiveProp(
+    //   this.responsive,
+    //   this.getThemeP,
+    //   this.breakpointsKey,
+    //   this.transformStyleP,
+    // )
 
-    this.responsiveP = config => props =>
-      this.responsiveProp({...this.responsivePOptions, ...config})(props)
+    // this.responsiveP = config => props =>
+    //   this.responsiveProp({...this.responsivePOptions, ...config})(props)
 
-    this.switchP = SwitchProp(
-      this.responsiveP,
-      this.responsiveBoolP,
-      this.transformStyleP,
-      this.defaultLookups.functions,
-      this.switchPOptions,
-    )
+    // this.switchP = SwitchProp(
+    //   this.responsiveP,
+    //   this.responsiveBoolP,
+    //   this.transformStyleP,
+    //   this.defaultLookups.functions,
+    //   this.switchPOptions,
+    // )
 
-    this.parse = Parser(
-      this.switchP,
-      this.toMq,
-      this.breakPointsP,
-      this.responsiveP,
-      this.parserOptions,
-    )
+    // this.parse = Parser(
+    //   this.switchP,
+    //   this.toMq,
+    //   this.breakPointsP,
+    //   this.responsiveP,
+    //   this.parserOptions,
+    // )
 
-    this.matchBlockP = matchBlockP
+    // this.matchBlockP = matchBlockP
 
-    this.getThemeP = GetThemeP(this.themeKey, this.defaultTheme)
+    // this.getThemeP = GetThemeP(this.themeKey, this.defaultTheme)
   }
 
-  get getdefaultTheme() {
-    return this.defaultTheme
-  }
+  // get getdefaultTheme() {
+  //   return this.defaultTheme
+  // }
 
   /*
 Style UTILS
@@ -293,7 +318,7 @@ Style UTILS
   // pxToPct: pxToStr = pxValue => this.pxTo('%')(pxValue * 100)
   // pxToRelative: pxToNum = this.pxTo()
 
-  //  normalize = Normalize(this[PXTO_]())
+  //  normalize = Normalize(this[PXTO]())
   //  normalizeToEm = this.normalize(EM)
   // normalizeToRem = this.normalize(REM)
 
@@ -309,9 +334,9 @@ interface A {
   [PXTOPCT_]: pxToStr;
   [PXTOEM_]: pxToStr;
   [PXTOREM_]: pxToStr;
-  [PXTO_]: pxToT;
+  [PXTO]: pxToT;
 }
-const a: A = new Assistant({defaultTheme: {breakpoints: [1, 2, 4]}})
-const t = a.pxTo('rem')(16)
+//const a: A = new Assistant({defaultTheme: {breakpoints: [1, 2, 4]}})
+//const t = a.pxTo('rem')(16)
 // console.log(t)
 // console.log('testMesthod', testMethod)

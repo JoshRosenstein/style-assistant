@@ -7,16 +7,18 @@ export default function ResponsiveBoolProp(
   breakpointsKey,
   toMq,
   transformStyle,
+  globalOptions,
 ) {
   const responsiveBool = ResponsiveBool(toMq)
-  return function responsiveBoolProp({
-    value,
-    T: trueValue,
-    F: falseValue,
-    cssProp,
-    prop: targetPropName,
-    transform,
-  }) {
+  return function responsiveBoolProp(config) {
+    let {
+      value,
+      T: trueValue,
+      F: falseValue,
+      cssProp,
+      prop: targetPropName,
+      transform,
+    } = {...globalOptions, ...config}
     return function responsiveBool_(props) {
       const css = cssProp || targetPropName
       let transformer = v => v

@@ -1,4 +1,4 @@
-import Assistant from '../src/index2'
+import Assistant from '../src/index'
 
 import testTheme from './__utils__/testThemeArr'
 

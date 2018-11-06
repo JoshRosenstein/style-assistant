@@ -1,6 +1,6 @@
-import { identity, curry } from '@roseys/futils'
-import { appendUnit } from '../../src/utils'
-import PxTo from '../../src/pxTo'
+import {identity, curry} from '@roseys/futils'
+import {appendUnit} from '../../src/utils'
+import PxTo from '../../src/PxTo/PxTo'
 const pxToRem = v => PxTo(16)('rem')(v)
 const pxToEm = v => PxTo(16)('em')(v)
 const pxToPct = v => PxTo(16 / 100)('%')(v)
@@ -35,7 +35,7 @@ export default {
     border: 'borders',
     borderColor: 'colors',
     backgroundColor: 'colors',
-    boxShadow: 'shadows'
+    boxShadow: 'shadows',
   },
   getter: {
     margin: 'pxToRem',
@@ -48,7 +48,7 @@ export default {
     paddingBottom: 'pxToRem',
     paddingLeft: 'pxToRem',
     paddingRight: 'pxToRem',
-    fontSize: 'px'
+    fontSize: 'px',
   },
   functions: {
     returnAsIs: identity,
@@ -61,6 +61,6 @@ export default {
     px,
     ms,
     pct,
-    '%': pct
-  }
+    '%': pct,
+  },
 }
