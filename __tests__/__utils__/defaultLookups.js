@@ -1,4 +1,4 @@
-import {identity, curry} from '@roseys/futils'
+import {identity} from '@roseys/futils'
 import {appendUnit} from '../../src/utils'
 import PxTo from '../../src/PxTo/PxTo'
 const pxToRem = v => PxTo(16)('rem')(v)

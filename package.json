@@ -42,7 +42,8 @@
   },
   "dependencies": {
     "@roseys/futils": "^0.0.22",
-    "typed-is": "^1.0.2"
+    "typed-is": "^1.0.2",
+    "warning": "^4.0.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.0",

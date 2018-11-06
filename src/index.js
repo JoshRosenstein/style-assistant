@@ -1,28 +1,25 @@
 // @flow
+import warning from 'warning'
 import {path} from '@roseys/futils'
-import PxTo from './PxTo/PxTo'
-import {PXTO} from './PxTo/constants'
+import {PxTo, PXTO} from './PxTo'
 import type {pxToT, pxToStr, pxToNum} from './PxTo/types'
+import {GetThemeP, name as GETTHEMEP} from './GetThemeP'
+import type {getThemePT} from './GetThemeP/types'
+
 import ToMq from './toMq'
 import SwitchProp from './switchP'
 import ResponsiveProp from './responsiveP'
 import ResponsiveBoolP from './responsiveBoolP'
 import TransformStyleP from './transformStyleP'
 import TransformStyle from './transformStyle'
-import GetThemeP from './getThemeP'
+//import GetThemeP from './getThemeP'
 import GetTheme from './getTheme'
 import Normalize from './normalize'
 import Parser from './parser'
 import Responsive from './responsive'
 import Media from './media'
 import matchBlockP from './matchBlockP'
-
 import {isFunction} from 'typed-is'
-
-// type pxToStr = (pxValue: number | string) => string
-// type pxToNum = (pxValue: number | string) => number
-
-// type pxToT = ((unit: undefined) => pxToNum) & ((unit: string) => pxToStr)
 
 const REM = 'rem'
 const EM = 'em'
@@ -63,7 +60,6 @@ const defaultOptions = {
   parserOptions: {},
 }
 
-const GETTHEMEP_ = 'getThemeP'
 const TOMQ_ = 'toMq'
 const TRANSFORMSTYLEP = 'transformStyleP'
 const RBOOLP = 'responsiveBoolP'
@@ -95,13 +91,13 @@ const defaultM = [
   [NORMALIZETOREM_, x => x[NORMALIZE_](REM)],
   [TOMQ_, m => ToMq(m[PXTOEM_])],
   [
-    GETTHEMEP_,
+    GETTHEMEP,
     (x, {defaultTheme, themeKey}) => GetThemeP(themeKey, defaultTheme),
   ],
   [
     BREAKPOINTSP_,
     (m, {breakpointsKey}) => key =>
-      m[GETTHEMEP_]([breakpointsKey, key].filter(Boolean)),
+      m[GETTHEMEP]([breakpointsKey, key].filter(Boolean)),
   ],
 
   [GETTHEME_, (m, {defaultTheme}) => GetTheme(defaultTheme)],
@@ -126,12 +122,12 @@ const defaultM = [
         },
       ),
   ],
-  [TRANSFORMSTYLEP_, m => TransformStyleP(m[TRANSFORMSTYLE_], m[GETTHEMEP_])],
+  [TRANSFORMSTYLEP_, m => TransformStyleP(m[TRANSFORMSTYLE_], m[GETTHEMEP])],
   [
     RBOOLP,
     (m, {breakpointsKey}) =>
       ResponsiveBoolP(
-        m[GETTHEMEP_],
+        m[GETTHEMEP],
         breakpointsKey,
         m[TOMQ_],
         m[TRANSFORMSTYLEP],
@@ -145,7 +141,7 @@ const defaultM = [
     (m, o) =>
       ResponsiveProp(
         m[RESPONSIVE_],
-        m[GETTHEMEP_],
+        m[GETTHEMEP],
         o.breakpointsKey,
         m[TRANSFORMSTYLEP_],
         m.responsivePOptions,
@@ -180,7 +176,16 @@ interface AssistantI {
   [PXTOPCT_]: pxToStr;
   [PXTOEM_]: pxToStr;
   [PXTOREM_]: pxToStr;
+  [GETTHEMEP]: getThemePT;
 }
+
+const warnInvalidPlugin = name =>
+  warning(
+    false,
+    '[Assistant]:[INIT]: %s does not have a valid method.',
+    '',
+    name,
+  )
 
 export default class Assistant implements AssistantI {
   constructor(options: Options, methods = defaultM) {
@@ -188,12 +193,12 @@ export default class Assistant implements AssistantI {
     if (methods) {
       let AvailableMethods = {}
       methods.forEach(([name, method]) => {
-        if (!isFunction(method)) {
-          throw Error(`${name} Function is not valid`)
-        }
-        //  console.log({ name })
-        const methodInitialized = method(AvailableMethods, mergedOptions)
-        AvailableMethods = {...AvailableMethods, [name]: methodInitialized}
+        if (isFunction(method)) {
+          AvailableMethods = {
+            ...AvailableMethods,
+            [name]: method(AvailableMethods, mergedOptions),
+          }
+        } else warnInvalidPlugin(name)
       })
 
       Object.entries(AvailableMethods).forEach(([name, method]) => {
@@ -201,4 +206,23 @@ export default class Assistant implements AssistantI {
       })
     }
   }
+}
+
+export const createAssistant: AssistantI = (
+  options: Options,
+  methods: Array<[string, Function]> = defaultM,
+) => {
+  let AvailableMethods = {}
+  const mergedOptions = {...defaultOptions, ...options}
+  if (methods) {
+    methods.forEach(([name, method]) => {
+      if (isFunction(method)) {
+        AvailableMethods = {
+          ...AvailableMethods,
+          [name]: method(AvailableMethods, mergedOptions),
+        }
+      } else warnInvalidPlugin(name)
+    })
+  }
+  return Object.freeze(AvailableMethods)
 }
