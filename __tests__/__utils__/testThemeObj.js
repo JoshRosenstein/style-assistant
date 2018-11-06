@@ -5,7 +5,7 @@ export default {
     laptop: '3BP_Test',
     desktop: '4BP_Test',
     test_convertPXStringToEm: '100px',
-    test_convertPXNumberToEm: 100
+    test_convertPXNumberToEm: 100,
   },
 
   space: {
@@ -16,7 +16,7 @@ export default {
     md: 16,
     lg: 32,
     xl: 64,
-    xxl: 128
+    xxl: 128,
   },
   fontSizes: {
     xxs: 12,
@@ -25,7 +25,7 @@ export default {
     md: 20,
     lg: 20,
     xl: 24,
-    xxl: 32
+    xxl: 32,
   },
   colors: {
     red: '#f5222d',
@@ -47,6 +47,6 @@ export default {
     lightGray: '#bfbfbf',
     gray: '#808080',
     darkGray: '#404040',
-    nuetral: '#97a4a4'
-  }
+    nuetral: '#97a4a4',
+  },
 }

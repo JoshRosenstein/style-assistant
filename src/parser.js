@@ -10,11 +10,14 @@ import {
   flow,
   toArray,
   isObject,
-  objOf,map,
+  objOf,
+  map,
   contains,
-  when,isArray,all, 
-  isDefined
-} from '@roseys/futils'  
+  when,
+  isArray,
+  all,
+  isDefined,
+} from '@roseys/futils'
 import matchBlockP from './matchBlockP'
 import {
   whenFunctionCallWith,
@@ -23,7 +26,9 @@ import {
   isAtRule,
   isMQ,
   isTemplate,
-  extractTemplateValue,isTruthy
+  extractTemplateValue,
+  isTruthy,
+  containsSpecial,
 } from './utils'
 
 export const PSUEDO_WITHOUT_SELECTOR = /(^|\s)(:{1,2})(\w)/g
@@ -31,9 +36,6 @@ export const REFERENCE_SELECTOR = /&/g
 
 export const isNestableAtRule = selector =>
   /@\S*\b(media|supports|keyframes)\b/.test(selector)
-
-export const containsSpecial = str =>
-  /[~`!@#$%\^&*+=\-\[\]\\';.,/{}|\\":<>\?\s]/g.test(str) // eslint-disable-line no-useless-escape
 
 export const hasReference = selector => selector.indexOf('&') !== -1
 
@@ -74,7 +76,7 @@ const reduceRule = (rules, result) =>
       return style
     },
     result,
-    rules
+    rules,
   )
 
 const formatOutput = grouped =>
@@ -84,10 +86,14 @@ const isPatternBlock = key => key === '__match'
 
 // const isResponsive = value => isArray(value)
 
-const isResponsive =  (value,BPkeys) =>isArray(value) ? true: isDefined(value) && isObject(value) && isDefined(BPkeys) && all(isTruthy,
-  map(k=>contains(k,[...BPkeys,'default'] ),keys(value) ))
+const isResponsive = (value, BPkeys) =>
+  isArray(value)
+    ? true
+    : isDefined(value) &&
+      isObject(value) &&
+      isDefined(BPkeys) &&
+      all(isTruthy, map(k => contains(k, [...BPkeys, 'default']), keys(value)))
 
-    
 const isInlinePattern = (value, selector, location) =>
   isObject(value) &&
   !isEmpty(value) &&
@@ -96,18 +102,15 @@ const isInlinePattern = (value, selector, location) =>
   !isNestable(last(location) || []) &&
   !isPatternBlock(selector)
 
-const parseRulesC = (parseInlinePattern, initSelectorTransform, responsiveP,breakpointsP) => (
-  parseNested,
-  selector,
-  value,
-  parents,
-  location,
-  props,
-  options
-) => {
+const parseRulesC = (
+  parseInlinePattern,
+  initSelectorTransform,
+  responsiveP,
+  breakpointsP,
+) => (parseNested, selector, value, parents, location, props, options) => {
   selector = initSelectorTransform(selector, props)
   let next = selector
-  const breakPointKeys= keys(breakpointsP()(props))
+  const breakPointKeys = keys(breakpointsP()(props))
 
   // / If theres a parent selector- prep next selector
   if (parents.length) {
@@ -121,33 +124,33 @@ const parseRulesC = (parseInlinePattern, initSelectorTransform, responsiveP,brea
     value,
     whenFunctionCallWith(props),
     falseToNull,
-    when(isTemplate, template => objOf(extractTemplateValue(template), 'self'))
+    when(isTemplate, template => objOf(extractTemplateValue(template), 'self')),
   )
 
   if (selector === '@font-face') {
-    return { location: [], selector: '', property: selector, value }
+    return {location: [], selector: '', property: selector, value}
   }
 
   if (isPatternBlock(selector)) {
     return parseNested(matchBlockP(value)(props), parents, location)
   }
 
-  if (isObject(value) || isArray(value)){
-    if (isDefined(breakPointKeys) && isResponsive(value,breakPointKeys)) {
+  if (isObject(value) || isArray(value)) {
+    if (isDefined(breakPointKeys) && isResponsive(value, breakPointKeys)) {
       value = responsiveP({
         value,
         cssProp: selector,
-        ...options
+        ...options,
       })(props)
       // return parseNested(value, parents, location);
       if (isObject(value)) {
         return parseNested(value, parents, location)
       }
-    }else if (isInlinePattern(value, selector, parents)) {
+    } else if (isInlinePattern(value, selector, parents)) {
       value = parseInlinePattern(value, {
         cssProp: selector,
         valueOnly: true,
-        ...options
+        ...options,
       })(props)
       // return parseNested(value, parents, location);
       if (isObject(value)) {
@@ -155,7 +158,6 @@ const parseRulesC = (parseInlinePattern, initSelectorTransform, responsiveP,brea
       }
     }
   }
- 
 
   if (isObject(value)) {
     if (isNestable(selector)) {
@@ -180,7 +182,7 @@ const parseRulesC = (parseInlinePattern, initSelectorTransform, responsiveP,brea
     location,
     selector: parents.join(' '),
     property: selector,
-    value
+    value,
   }
 }
 
@@ -209,7 +211,7 @@ const groupRules = (group = true) => rules => {
           location: rule.location,
           selectors: rule.selector ? [rule.selector] : [],
           property: rule.property,
-          value: rule.value
+          value: rule.value,
         }
       } else if (rule.selector) {
         grouped[rule.location][id].selectors.push(rule.selector)
@@ -217,7 +219,7 @@ const groupRules = (group = true) => rules => {
       return grouped
     },
     {},
-    rules
+    rules,
   )
 }
 
@@ -228,21 +230,21 @@ export function getRulesC(ruleParser, config) {
     parents = [],
     location = [],
     props,
-    options = {}
+    options = {},
   }) {
     if (is('Function')(obj)) {
       obj = obj(props)
     }
 
-    const { options: globalOptions, ...rules } = obj
-    options = { ...config, ...globalOptions, ...options }
+    const {options: globalOptions, ...rules} = obj
+    options = {...config, ...globalOptions, ...options}
     const getNested = (givenObj, givenParents, givenLocation) =>
       getRules({
         obj: givenObj,
         parents: givenParents,
         location: givenLocation,
         options,
-        props
+        props,
       })
 
     return pipe(
@@ -259,19 +261,25 @@ export function getRulesC(ruleParser, config) {
                 parents.slice(),
                 location.slice(),
                 props,
-                options
+                options,
               )
 
               return res.concat(parsed)
-            }, result)
+            }, result),
           )(selectors),
-        []
-      )
+        [],
+      ),
     )(obj)
   }
 }
 
-export default function stylerC(switchProp, toMq, breakpointsP,responsiveP, config) {
+export default function stylerC(
+  switchProp,
+  toMq,
+  breakpointsP,
+  responsiveP,
+  config,
+) {
   const initSelectorTransform = (selector, props) => {
     // / Duplicate overidable keys
     selector = selector.replace(/__.$/, '')
@@ -283,7 +291,12 @@ export default function stylerC(switchProp, toMq, breakpointsP,responsiveP, conf
     return selector
   }
 
-  const parseRules = parseRulesC(switchProp, initSelectorTransform,responsiveP,breakpointsP)
+  const parseRules = parseRulesC(
+    switchProp,
+    initSelectorTransform,
+    responsiveP,
+    breakpointsP,
+  )
 
   // //////Start Styler
   const getRules = getRulesC(parseRules, config)
@@ -294,16 +307,16 @@ export default function stylerC(switchProp, toMq, breakpointsP,responsiveP, conf
         return stylerProp(obj(props))(props)
       }
       if (Array.isArray(obj)) {
-        rules = obj.reduce((r, o) => r.concat(getRules({ obj: o, props })), [])
+        rules = obj.reduce((r, o) => r.concat(getRules({obj: o, props})), [])
       } else {
         // return obj
-        rules = getRules({ obj, props })
+        rules = getRules({obj, props})
       }
 
       return flow(
         rules,
         groupRules(groupSelectors),
-        formatOutput
+        formatOutput,
         //  cleanAndSort
       )
     }

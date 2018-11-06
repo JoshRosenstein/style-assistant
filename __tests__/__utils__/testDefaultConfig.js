@@ -12,15 +12,15 @@ export default {
     defaultTransform: true,
     keys: defaultLookups.keys,
     getter: defaultLookups.getter,
-    functions: defaultLookups.functions
+    functions: defaultLookups.functions,
   },
   responsivePOptions: {
-    transform: false
+    transform: false,
   },
   switchPOptions: {
-    transform: false
+    transform: false,
   },
   parserOptions: {
-    transform: false
-  }
+    transform: false,
+  },
 }

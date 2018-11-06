@@ -8,80 +8,80 @@ describe('Switch Prop', () => {
     basicFunc: v => v,
     basicFuncProps: (v, p) => (p.customProp ? p.customProp : v),
     basic3: 'basic2Value',
-    default: 'defaultValue'
+    default: 'defaultValue',
   }
   const CSSPROP = 'margin'
 
   describe('SwitchProp Without Transformer', () => {
-    const { switchP } = new Assistant({ defaultTheme: testTheme })
+    const {switchP} = new Assistant({defaultTheme: testTheme})
 
     it('[Fallsback to default] when has empty Props', () => {
-      const e = switchP(switchConfig, { cssProp: CSSPROP })({})
-      const r = { [CSSPROP]: 'defaultValue' }
-      expect(e).toEqual(r) 
+      const e = switchP(switchConfig, {cssProp: CSSPROP})({})
+      const r = {[CSSPROP]: 'defaultValue'}
+      expect(e).toEqual(r)
     })
     it('[Fallsback to default] when has matched props that are false or null', () => {
-      const e = switchP(switchConfig, { cssProp: CSSPROP })({
+      const e = switchP(switchConfig, {cssProp: CSSPROP})({
         basic: null,
-        basic2: false
+        basic2: false,
       })
-      const r = { [CSSPROP]: 'defaultValue' }
+      const r = {[CSSPROP]: 'defaultValue'}
       expect(e).toEqual(r)
     })
     it('[Returns basicValue] when basic prop is true', () => {
-      const e = switchP(switchConfig, { cssProp: CSSPROP })({
-        basic: true
+      const e = switchP(switchConfig, {cssProp: CSSPROP})({
+        basic: true,
       })
-      const r = { [CSSPROP]: 'basicValue' }
+      const r = {[CSSPROP]: 'basicValue'}
       expect(e).toEqual(r)
     })
 
     it('[Returns basicValue] when basic prop is not nill', () => {
-      const e = switchP(switchConfig, { cssProp: CSSPROP })({
-        basic: '1'
+      const e = switchP(switchConfig, {cssProp: CSSPROP})({
+        basic: '1',
       })
-      const r = { [CSSPROP]: 'basicValue' }
+      const r = {[CSSPROP]: 'basicValue'}
       expect(e).toEqual(r)
     })
 
     it('[Matched with a Function] Returns PropValue when matched key is a basicFunc', () => {
-      const e = switchP(switchConfig, { cssProp: CSSPROP })({
-        basicFunc: 'basicFuncValue'
+      const e = switchP(switchConfig, {cssProp: CSSPROP})({
+        basicFunc: 'basicFuncValue',
       })
-      const r = { [CSSPROP]: 'basicFuncValue' }
+      const r = {[CSSPROP]: 'basicFuncValue'}
       expect(e).toEqual(r)
     })
 
     it('[Matched with a Function] allows functions with props as second argument ', () => {
       expect(
-        switchP(switchConfig, { cssProp: CSSPROP })({
-          basicFuncProps: 'basicFuncValue'
-        })
-      ).toEqual({ [CSSPROP]: 'basicFuncValue' })
+        switchP(switchConfig, {cssProp: CSSPROP})({
+          basicFuncProps: 'basicFuncValue',
+        }),
+      ).toEqual({[CSSPROP]: 'basicFuncValue'})
 
       expect(
-        switchP(switchConfig, { cssProp: CSSPROP })({
+        switchP(switchConfig, {cssProp: CSSPROP})({
           basicFuncProps: 'basicFuncValue',
-          customProp: 'customPropValue'
-        })
-      ).toEqual({ [CSSPROP]: 'customPropValue' })
+          customProp: 'customPropValue',
+        }),
+      ).toEqual({[CSSPROP]: 'customPropValue'})
     })
 
     it('[responsiveProp] doesnt passes to responsiveProp without responsive true', () => {
       const e = switchP(switchConfig, {
         cssProp: CSSPROP,
-        responsive: false
+        responsive: false,
       })({
-        basicFunc: [1, 2]
+        basicFunc: [1, 2],
       })
 
       const e2 = switchP(switchConfig, {
-        cssProp: CSSPROP
+        cssProp: CSSPROP,
       })({
-        basicFunc: [1, 2]
+        basicFunc: [1, 2],
       })
 
-      const r = { [CSSPROP]: [1, 2] }
+      const r = {[CSSPROP]: [1, 2]}
 
       expect(e).toEqual(r)
       expect(e2).toEqual(r)
@@ -90,14 +90,14 @@ describe('Switch Prop', () => {
     it('[responsiveProp] passes to responsiveProp if responsive true', () => {
       const e = switchP(switchConfig, {
         cssProp: CSSPROP,
-        responsive: true
+        responsive: true,
       })({
-        basicFunc: [1, 2]
+        basicFunc: [1, 2],
       })
 
       const r = {
-        '@media screen and (min-width:1BP_Test)': { [CSSPROP]: 2 },
-        [CSSPROP]: 1
+        '@media screen and (min-width:1BP_Test)': {[CSSPROP]: 2},
+        [CSSPROP]: 1,
       }
 
       expect(e).toEqual(r)
@@ -106,13 +106,13 @@ describe('Switch Prop', () => {
     it('[responsiveBoolProp] passes to responsiveBoolProp if responsiveBool true', () => {
       const e = switchP(switchConfig, {
         cssProp: CSSPROP,
-        responsiveBool: true
+        responsiveBool: true,
       })({
-        basic: [false, true]
+        basic: [false, true],
       })
 
       const r = {
-        '@media screen and (min-width:1BP_Test)': { [CSSPROP]: 'basicValue' }
+        '@media screen and (min-width:1BP_Test)': {[CSSPROP]: 'basicValue'},
       }
 
       expect(e).toEqual(r)
@@ -122,87 +122,87 @@ describe('Switch Prop', () => {
   describe('SwitchProp With Transformer', () => {
     const defaultTransformer = v => v + 1
     const defaultThemeKey = 'space'
-    const { switchP: switchProp } = new Assistant({
+    const {switchP: switchProp} = new Assistant({
       defaultTheme: testTheme,
       switchPOptions: {
-        transform: true
+        transform: true,
       },
       transformOptions: {
         defaultLookup: true,
         defaultTransform: true,
-        keys: { [CSSPROP]: defaultThemeKey },
-        getter: { [CSSPROP]: 'defaultTransformer' },
-        functions: { defaultTransformer }
-      }
+        keys: {[CSSPROP]: defaultThemeKey},
+        getter: {[CSSPROP]: 'defaultTransformer'},
+        functions: {defaultTransformer},
+      },
     })
 
     it('[Fallsback to default] does default Transform', () => {
-      const e = switchProp(switchConfig, { cssProp: CSSPROP })({})
-      const r = { [CSSPROP]: defaultTransformer('defaultValue') }
+      const e = switchProp(switchConfig, {cssProp: CSSPROP})({})
+      const r = {[CSSPROP]: defaultTransformer('defaultValue')}
       expect(e).toEqual(r)
     })
     it('[Fallsback to default] when has matched props that are false or null', () => {
-      const e = switchProp(switchConfig, { cssProp: CSSPROP })({
+      const e = switchProp(switchConfig, {cssProp: CSSPROP})({
         basic: null,
-        basic2: false
+        basic2: false,
       })
-      const r = { [CSSPROP]: defaultTransformer('defaultValue') }
+      const r = {[CSSPROP]: defaultTransformer('defaultValue')}
       expect(e).toEqual(r)
     })
     it('[Returns basicValue] when basic prop is true', () => {
-      const e = switchProp(switchConfig, { cssProp: CSSPROP })({
-        basic: true
+      const e = switchProp(switchConfig, {cssProp: CSSPROP})({
+        basic: true,
       })
-      const r = { [CSSPROP]: defaultTransformer('basicValue') }
+      const r = {[CSSPROP]: defaultTransformer('basicValue')}
       expect(e).toEqual(r)
     })
 
     it('[Returns basicValue] when basic prop is not nill', () => {
-      const e = switchProp(switchConfig, { cssProp: CSSPROP })({
-        basic: '1'
+      const e = switchProp(switchConfig, {cssProp: CSSPROP})({
+        basic: '1',
       })
-      const r = { [CSSPROP]: defaultTransformer('basicValue') }
+      const r = {[CSSPROP]: defaultTransformer('basicValue')}
       expect(e).toEqual(r)
     })
 
     it('[Matched with a Function] Returns PropValue when matched key is a basicFunc', () => {
-      const e = switchProp(switchConfig, { cssProp: CSSPROP })({
-        basicFunc: 'basicFuncValue'
+      const e = switchProp(switchConfig, {cssProp: CSSPROP})({
+        basicFunc: 'basicFuncValue',
       })
-      const r = { [CSSPROP]: defaultTransformer('basicFuncValue') }
+      const r = {[CSSPROP]: defaultTransformer('basicFuncValue')}
       expect(e).toEqual(r)
     })
 
     it('[Matched with a Function] allows functions with props as second argument ', () => {
       expect(
-        switchProp(switchConfig, { cssProp: CSSPROP })({
-          basicFuncProps: 'basicFuncValue'
-        })
-      ).toEqual({ [CSSPROP]: defaultTransformer('basicFuncValue') })
+        switchProp(switchConfig, {cssProp: CSSPROP})({
+          basicFuncProps: 'basicFuncValue',
+        }),
+      ).toEqual({[CSSPROP]: defaultTransformer('basicFuncValue')})
 
       expect(
-        switchProp(switchConfig, { cssProp: CSSPROP })({
+        switchProp(switchConfig, {cssProp: CSSPROP})({
           basicFuncProps: 'basicFuncValue',
-          customProp: 'customPropValue'
-        })
-      ).toEqual({ [CSSPROP]: defaultTransformer('customPropValue') })
+          customProp: 'customPropValue',
+        }),
+      ).toEqual({[CSSPROP]: defaultTransformer('customPropValue')})
     })
 
     it('[responsiveProp] doesnt passes to responsiveProp without responsive true', () => {
       const e = switchProp(switchConfig, {
         cssProp: CSSPROP,
-        responsive: false
+        responsive: false,
       })({
-        basicFunc: [1, 2]
+        basicFunc: [1, 2],
       })
 
       const e2 = switchProp(switchConfig, {
-        cssProp: CSSPROP
+        cssProp: CSSPROP,
       })({
-        basicFunc: [1, 2]
+        basicFunc: [1, 2],
       })
 
-      const r = { [CSSPROP]: defaultTransformer([1, 2]) }
+      const r = {[CSSPROP]: defaultTransformer([1, 2])}
 
       expect(e).toEqual(r)
       expect(e2).toEqual(r)
@@ -211,16 +211,16 @@ describe('Switch Prop', () => {
     it('[responsiveProp] passes to responsiveProp if responsive true', () => {
       const e = switchProp(switchConfig, {
         cssProp: CSSPROP,
-        responsive: true
+        responsive: true,
       })({
-        basicFunc: [1, 2]
+        basicFunc: [1, 2],
       })
 
       const r = {
         '@media screen and (min-width:1BP_Test)': {
-          [CSSPROP]: defaultTransformer(2)
+          [CSSPROP]: defaultTransformer(2),
         },
-        [CSSPROP]: defaultTransformer(1)
+        [CSSPROP]: defaultTransformer(1),
       }
 
       expect(e).toEqual(r)
@@ -229,15 +229,15 @@ describe('Switch Prop', () => {
     it('[responsiveBoolProp] passes to responsiveBoolProp if responsiveBool true', () => {
       const e = switchProp(switchConfig, {
         cssProp: CSSPROP,
-        responsiveBool: true
+        responsiveBool: true,
       })({
-        basic: [false, true]
+        basic: [false, true],
       })
 
       const r = {
         '@media screen and (min-width:1BP_Test)': {
-          [CSSPROP]: defaultTransformer('basicValue')
-        }
+          [CSSPROP]: defaultTransformer('basicValue'),
+        },
       }
 
       expect(e).toEqual(r)
@@ -246,15 +246,15 @@ describe('Switch Prop', () => {
     it('[responsiveBoolProp] passes to responsiveBoolProp if responsiveBool true', () => {
       const e = switchProp(switchConfig, {
         cssProp: CSSPROP,
-        responsiveBool: true
+        responsiveBool: true,
       })({
-        basic: [false, true]
+        basic: [false, true],
       })
 
       const r = {
         '@media screen and (min-width:1BP_Test)': {
-          [CSSPROP]: defaultTransformer('basicValue')
-        }
+          [CSSPROP]: defaultTransformer('basicValue'),
+        },
       }
 
       expect(e).toEqual(r)
@@ -263,13 +263,13 @@ describe('Switch Prop', () => {
     it('extracts theme key balue and applies transformer', () => {
       const e = switchProp(switchConfig, {
         cssProp: CSSPROP,
-        responsive: true
+        responsive: true,
       })({
-        basicFunc: 'sm'
+        basicFunc: 'sm',
       })
 
       const r = {
-        [CSSPROP]: defaultTransformer(testTheme[defaultThemeKey].sm)
+        [CSSPROP]: defaultTransformer(testTheme[defaultThemeKey].sm),
       }
 
       expect(e).toEqual(r)
@@ -279,13 +279,13 @@ describe('Switch Prop', () => {
       const e = switchProp(switchConfig, {
         cssProp: CSSPROP,
         responsive: true,
-        transform: false
+        transform: false,
       })({
-        basicFunc: 'sm'
+        basicFunc: 'sm',
       })
 
       const r = {
-        [CSSPROP]: 'sm'
+        [CSSPROP]: 'sm',
       }
 
       expect(e).toEqual(r)
@@ -294,16 +294,16 @@ describe('Switch Prop', () => {
     it('responsiveProp+themeKeyLookUp', () => {
       const e = switchProp(switchConfig, {
         cssProp: CSSPROP,
-        responsive: true
+        responsive: true,
       })({
-        basicFunc: ['sm', 'md']
+        basicFunc: ['sm', 'md'],
       })
 
       const r = {
         '@media screen and (min-width:1BP_Test)': {
-          [CSSPROP]: defaultTransformer(testTheme[defaultThemeKey].md)
+          [CSSPROP]: defaultTransformer(testTheme[defaultThemeKey].md),
         },
-        [CSSPROP]: defaultTransformer(testTheme[defaultThemeKey].sm)
+        [CSSPROP]: defaultTransformer(testTheme[defaultThemeKey].sm),
       }
 
       expect(e).toEqual(r)

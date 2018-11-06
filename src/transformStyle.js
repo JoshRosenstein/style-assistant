@@ -6,10 +6,10 @@ import {
   ifElse,
   isDefined,
   pipe,
-  objOf
+  objOf,
 } from '@roseys/futils'
 
-import { whenFunctionCallWith, isTruthy } from './utils'
+import {whenFunctionCallWith, isTruthy} from './utils'
 
 const isNeg = v => /^-.+/.test(v)
 const stripNeg = v => (isString(v) ? v.slice(1) : Math.abs(v))
@@ -17,7 +17,7 @@ const toNeg = v => (isNumber(v) ? v * -1 : `-${v}`)
 export default function TransformStyle(
   getTheme,
   defaultLookups,
-  globalOptions
+  globalOptions,
 ) {
   return function transformStyle({
     value,
@@ -30,10 +30,10 @@ export default function TransformStyle(
     props,
     ...localOptions
   }) {
-    const options = { ...globalOptions, ...localOptions }
+    const options = {...globalOptions, ...localOptions}
     let {
       defaultLookup: doDefaultLookup,
-      defaultTransform: doDefaultTransform
+      defaultTransform: doDefaultTransform,
     } = options
 
     // cant lookup default transformations if no cssProp is provided
@@ -49,7 +49,7 @@ export default function TransformStyle(
 
     const hasPreFn = () => isDefined(preFn)
     const checkAndCallPreFn = when(hasPreFn, v =>
-      whenFunctionCallWith(v, props)(preFn)
+      whenFunctionCallWith(v, props)(preFn),
     )
 
     const hasThemeKey = () => isDefined(themeKey)
@@ -63,10 +63,10 @@ export default function TransformStyle(
         pipe(
           stripNeg,
           getThemeOr,
-          toNeg
+          toNeg,
         ),
-        getThemeOr
-      )
+        getThemeOr,
+      ),
     )
 
     const hasGetter = () => isTruthy(getter)
@@ -74,7 +74,7 @@ export default function TransformStyle(
       flow(
         getter,
         when(isString, x => defaultLookups.functions[x]),
-        whenFunctionCallWith(v, props)
+        whenFunctionCallWith(v, props),
       )
     const checkAndCallGetter = when(hasGetter, callGetter)
     const shouldReturnObj = () => !valueOnly
@@ -85,10 +85,10 @@ export default function TransformStyle(
         pipe(
           checkAndCallPreFn,
           checkAndCallgetTheme,
-          checkAndCallGetter
-        )
+          checkAndCallGetter,
+        ),
       ),
-      when(shouldReturnObj, objOf(cssProp))
+      when(shouldReturnObj, objOf(cssProp)),
     )(value)
   }
 }

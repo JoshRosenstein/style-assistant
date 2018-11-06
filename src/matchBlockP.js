@@ -14,20 +14,28 @@ import {
   reject,
   either,
   all,
-  contains,isString,split,toArray,
-  props as getprops
+  contains,
+  isString,
+  split,
+  toArray,
+  props as getprops,
 } from '@roseys/futils'
 
 import {
   whenFunctionCallWith,
   isTruthy,
   safeMapValues,
-  cleanAndSort
+  cleanAndSort,
 } from './utils'
 
-const splitWhenNoSpace =(keys,delim) => isString(keys)?/\s/g.test(keys)?[keys]:split(delim,keys):toArray(keys)
+const splitWhenNoSpace = (keys, delim) =>
+  isString(keys)
+    ? /\s/g.test(keys)
+      ? [keys]
+      : split(delim, keys)
+    : toArray(keys)
 export const NestKey = '$nest'
-  
+
 // const logger = (prefix, overide) =>
 //   tap(x =>
 //     console.log(
@@ -35,7 +43,7 @@ export const NestKey = '$nest'
 //       whenFunctionCallWith(x)(overide) || x
 //     )
 //   )
-  
+
 // /// Filter Out undefined Values but if Null then overide previous ones
 // const NestedMatchBlock = props => rulesForProp => {
 //   return reduce(
@@ -49,11 +57,10 @@ export const NestKey = '$nest'
 //     toPairs(rulesForProp)
 //   )
 // }
-  
 
-export default value => props => 
-// const values = keys(value)
-// console.log(map(v=>splitWhenNoSpace(v, ','))(values) )
+export default value => props =>
+  // const values = keys(value)
+  // console.log(map(v=>splitWhenNoSpace(v, ','))(values) )
   flow(
     value,
     // logger('Value'),
@@ -64,7 +71,7 @@ export default value => props =>
         value = flow(
           splitWhenNoSpace(propName, ','),
           // logger('propNames'),
-          x => getprops(x, props)
+          x => getprops(x, props),
           //   logger('propValues'),
         )
         isMatch = all(isTruthy, value)
@@ -75,15 +82,15 @@ export default value => props =>
       }
       return flow(
         rulesForProp,
-  
+
         //  logger('All', { accumulated, rulesForProp, propName, props }),
         ifElse(
           // Skip Undefined or False Values, but not 0's
           always(isMatch),
-  
+
           pipe(
             //    logger('TRUE'),
-  
+
             // logger('rulesForProp'),
             // Call if function on parent Level BLOCK LEVEL
             whenFunctionCallWith(value, props),
@@ -95,25 +102,24 @@ export default value => props =>
               pipe(
                 // whenFunctionCallWith(props[propName], props),
                 //    logger('rulesForPropAfterCall'),
-                whenFunctionCallWith(props)
-              )
+                whenFunctionCallWith(props),
+              ),
             ),
             // logger('isArray', v => ({ accum: accumulated, value: v, isArray: isArray(v) })),
             when(isArray, mergeAllDeepRight),
             // /Keep Nulls, tells to overide previous styled
             reject(either(simplyEquals(undefined), isEmpty)),
-            mergeDeepRight(accumulated)
-  
+            mergeDeepRight(accumulated),
+
             // logger('AfterMerge')
           ),
-          always(accumulated)
-        )
+          always(accumulated),
+        ),
       )
     }, {}),
     // / compact,
-    cleanAndSort
+    cleanAndSort,
   )
-  
 
 // console.log(
 //   matchBlockP({
@@ -121,4 +127,3 @@ export default value => props =>
 //     'variant,color': ([variant, color], props) => ({ color: variant + color })
 //   })({ color: 'red', variant: 'Darker' })
 // )
-  

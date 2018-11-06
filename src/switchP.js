@@ -10,7 +10,7 @@ import {
   filter,
   isDefined,
   path,
-  pathOr
+  pathOr,
 } from '@roseys/futils'
 
 import {
@@ -20,7 +20,7 @@ import {
   iterateUntilResult,
   isResponsiveType,
   isTruthy,
-  pipeIfDefined
+  pipeIfDefined,
 } from './utils'
 
 export default function SwitchProp(
@@ -28,7 +28,7 @@ export default function SwitchProp(
   responsiveBoolProp,
   transformStyle,
   mappedFunctions,
-  SwitchPropOptions = {}
+  SwitchPropOptions = {},
 ) {
   const {
     transform: globalTransform,
@@ -45,10 +45,10 @@ export default function SwitchProp(
       responsive: localResponsive,
       responsiveBool: localResponsiveBool,
       ...localTransformOpt
-    }
+    },
   ) {
     return function switch_(props) {
-      const { default: defaultValue, options: opt = {}, ...matchers } = value
+      const {default: defaultValue, options: opt = {}, ...matchers} = value
       const {
         transform: parserTransform,
         responsive: parserResponsive,
@@ -59,25 +59,25 @@ export default function SwitchProp(
       const transformOptions = {
         ...globalTransformOpt,
         ...localTransformOpt,
-        ...parserTransformOpt
+        ...parserTransformOpt,
       }
 
       const transform = firstNonNil([
         parserTransform,
         localTransform,
-        globalTransform
+        globalTransform,
       ])
 
       const responsive = firstNonNil([
         parserResponsive,
         localResponsive,
-        globalResponsive
+        globalResponsive,
       ])
 
       const responsiveBool = firstNonNil([
         parserResponsiveBool,
         localResponsiveBool,
-        globalResponsiveBool
+        globalResponsiveBool,
       ])
 
       let transformer = v => v
@@ -93,12 +93,12 @@ export default function SwitchProp(
             value: v,
             cssProp,
             valueOnly: true,
-            ...transformOptions
+            ...transformOptions,
           })(props)
       }
       // /Isuue with Pick when value is 0, fix FUTILS
       const intersectedMatchers = keys(
-        pick(keys(matchers), filter(isTruthy, props))
+        pick(keys(matchers), filter(isTruthy, props)),
       )
       let matchedPropName
       // let matchedPropValue
@@ -123,11 +123,11 @@ export default function SwitchProp(
             return pipeIfDefined(
               when(isString, x => pathOr(x, x, mappedFunctions)),
               whenFunctionCallWith(props[propName], props),
-              whenFunctionCallWith(props)
+              whenFunctionCallWith(props),
             )(path(propName, matchers))
           }),
           falseToNull,
-          defaultTo(whenFunctionCallWith(props)(defaultValue))
+          defaultTo(whenFunctionCallWith(props)(defaultValue)),
         )
       }
 
@@ -145,7 +145,7 @@ export default function SwitchProp(
             cssProp,
             prop: matchedPropName,
             transform,
-            ...transformOptions
+            ...transformOptions,
           })(props)
         }
         if (responsive) {
@@ -154,7 +154,7 @@ export default function SwitchProp(
             cssProp,
             prop: matchedPropName,
             transform,
-            ...transformOptions
+            ...transformOptions,
           })(props)
         }
       }
@@ -165,7 +165,7 @@ export default function SwitchProp(
       return valueOnly
         ? computedValue
         : cssProp
-          ? { [cssProp]: computedValue }
+          ? {[cssProp]: computedValue}
           : computedValue
     }
   }

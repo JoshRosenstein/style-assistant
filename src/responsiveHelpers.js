@@ -7,9 +7,9 @@ import {
   mergeDeepRight,
   mapValues,
   when,
-  noop
+  noop,
 } from '@roseys/futils'
-import { arrToObj, isBool, isResponsiveType } from './utils'
+import {arrToObj, isBool, isResponsiveType} from './utils'
 
 export const nonBoolsToNil = mapValues(when(x => !isBool(x), noop))
 
@@ -24,22 +24,22 @@ export const getBreakPoints = (breakpoints, breakPointsFromTheme) => {
   //   console.log(switchValue);
 
   switch (switchValue) {
-  case 11: // /both are arrays
-    return [Dummy, ...breakPointsFromTheme]
+    case 11: // /both are arrays
+      return [Dummy, ...breakPointsFromTheme]
 
-  case -11: // /both are Objects
-    return { default: Dummy, ...breakPointsFromTheme }
+    case -11: // /both are Objects
+      return {default: Dummy, ...breakPointsFromTheme}
 
-  case 9: // / Theme is Object
-    return arrToObj([Dummy, ...values(breakPointsFromTheme)])
+    case 9: // / Theme is Object
+      return arrToObj([Dummy, ...values(breakPointsFromTheme)])
 
-  default:
-    // /9 Valueprop is object but theme BP is array throw error
-    if (process.env !== 'production') {
-      throw Error(
-        "You are using Object Literals for responsive props when your BP's is an Array"
-      )
-    }
+    default:
+      // /9 Valueprop is object but theme BP is array throw error
+      if (process.env !== 'production') {
+        throw Error(
+          "You are using Object Literals for responsive props when your BP's is an Array",
+        )
+      }
   }
 
   return breakPointsFromTheme
@@ -51,7 +51,7 @@ export const responsiveReducer = (
   css,
   tranformer,
   toMq,
-  init = {}
+  init = {},
 ) => {
   let breakpoints = isResponsiveType(value) ? value : [value]
   const transFormedBps = getBreakPoints(breakpoints, breakPointsFromTheme)
@@ -76,7 +76,7 @@ export const responsiveReducer = (
       const bpVal = getBp(bpKey)
       if (isNil(bpVal) && bpKey !== 'default') {
         console.warn(
-          `Styler could not find a match for breakPoints matching ${bpKey} in ${css} style with `
+          `Styler could not find a match for breakPoints matching ${bpKey} in ${css} style with `,
         )
         return acc
       }

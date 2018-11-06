@@ -19,9 +19,9 @@ import {
   isString,
   isNumber,
   isArray,
-  isNil
+  isNil,
 } from '@roseys/futils'
-import { isAtRule } from './utils'
+import {isAtRule} from './utils'
 
 const isDimension = test(/[height|width]$/)
 
@@ -32,8 +32,8 @@ const replaceShorthandKeys = mapKeys(x =>
     minW: 'min-width',
     maxW: 'max-width',
     minH: 'min-height',
-    maxH: 'max-height'
-  })
+    maxH: 'max-height',
+  }),
 )
 
 const objParserCreator = pxToEm => obj => {
@@ -45,8 +45,8 @@ const objParserCreator = pxToEm => obj => {
       cond([
         [equals(true), always(feature)],
         [equals(false), always(`not ${feature}`)],
-        [T, temp => `(${feature}:${temp})`]
-      ])
+        [T, temp => `(${feature}:${temp})`],
+      ]),
     )
   }
 
@@ -55,7 +55,7 @@ const objParserCreator = pxToEm => obj => {
     replaceShorthandKeys,
     toPairs,
     map(fn),
-    join(' and ')
+    join(' and '),
   )
 }
 
@@ -70,20 +70,20 @@ export default function ToMQ(pxToEm) {
           isArray,
           pipe(
             map(objParser),
-            join(', ')
-          )
+            join(', '),
+          ),
         ],
         [
           either(isString, isNumber),
           pipe(
             pxToEm,
-            x => ({ screen: true, minWidth: x }),
-            objParser
-          )
+            x => ({screen: true, minWidth: x}),
+            objParser,
+          ),
         ],
-        [T, objParser]
+        [T, objParser],
       ]),
-      when(x=>!isAtRule(x),x => `@media ${x}`)
+      when(x => !isAtRule(x), x => `@media ${x}`),
     )(config)
   }
 }

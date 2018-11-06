@@ -1,11 +1,11 @@
-import { prop } from '@roseys/futils'
-import { falseToNull, safeMapValues } from './utils'
+import {prop} from '@roseys/futils'
+import {falseToNull, safeMapValues} from './utils'
 
 export default function ResponsiveProp(
   responsive,
   getTheme,
   breakpointsKey,
-  transformStyle
+  transformStyle,
 ) {
   return function responsiveProp({
     defaultValue,
@@ -34,7 +34,7 @@ export default function ResponsiveProp(
             value: v,
             cssProp: css,
             valueOnly: true,
-            ...transformOptions
+            ...transformOptions,
           })(props)
       }
 
@@ -43,7 +43,7 @@ export default function ResponsiveProp(
         defaultValue,
         cssProp: css,
         transformer,
-        breakpoints: getTheme(breakpointsKey)(props)
+        breakpoints: getTheme(breakpointsKey)(props),
       })
     }
   }

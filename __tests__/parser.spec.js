@@ -1,14 +1,14 @@
 import Assistant from '../src/index'
 import config from './__utils__/testDefaultConfig'
 
-const { 
+const {
   parse: styler,
   getThemeP,
   transformStyleP,
-  switchP: switchProp
+  switchP: switchProp,
 } = new Assistant(config)
 
-const StylerEq = ({ args, props, result }) => {
+const StylerEq = ({args, props, result}) => {
   expect(styler(args)(props)).toEqual(result)
 }
 
@@ -16,7 +16,6 @@ const StylerTest = (Name, args) =>
   it(Name, () => {
     StylerEq(args)
   })
-
 
 describe('Styler', () => {
   it('Sorted Keys', () => {
@@ -27,69 +26,76 @@ describe('Styler', () => {
         backgroundImage: 3,
         background: 1,
         borderLeft: 6,
-        border: 5
-      })({})
+        border: 5,
+      })({}),
     ).toEqual({
       background: 1,
       backgroundColor: 2,
       backgroundImage: 3,
       backgroundRepeat: 4,
       border: 5,
-      borderLeft: 6
+      borderLeft: 6,
     })
   })
 
   it('Responsive Array', () => {
     expect(
       styler({
-        border: [5,4,3,2]
-      })({})
-    ).toEqual({'@media screen and (min-width:1BP_Test)': {'border': 4}, '@media screen and (min-width:2BP_Test)': {'border': 3}, '@media screen and (min-width:3BP_Test)': {'border': 2}, 'border': 5})
-
+        border: [5, 4, 3, 2],
+      })({}),
+    ).toEqual({
+      '@media screen and (min-width:1BP_Test)': {border: 4},
+      '@media screen and (min-width:2BP_Test)': {border: 3},
+      '@media screen and (min-width:3BP_Test)': {border: 2},
+      border: 5,
+    })
   })
-
 
   it('Responsive Object', () => {
     expect(
       styler({
         border: {
-          'default':5,
-          'mobile':4,
-          'tablet':3,
-          'laptop':2
-        }
-      })({})
-    ).toEqual({'@media screen and (min-width:1BP_Test)': {'border': 4}, '@media screen and (min-width:2BP_Test)': {'border': 3}, '@media screen and (min-width:3BP_Test)': {'border': 2}, 'border': 5})
-
+          default: 5,
+          mobile: 4,
+          tablet: 3,
+          laptop: 2,
+        },
+      })({}),
+    ).toEqual({
+      '@media screen and (min-width:1BP_Test)': {border: 4},
+      '@media screen and (min-width:2BP_Test)': {border: 3},
+      '@media screen and (min-width:3BP_Test)': {border: 2},
+      border: 5,
+    })
   })
 
   describe('Duplicate Keys Issue', () => {
     it('Template', () => {
-      expect(styler({ border: 1, border__2: 2 })({})).toEqual({ border: 2 })
+      expect(styler({border: 1, border__2: 2})({})).toEqual({border: 2})
     })
 
     it('with MQ', () => {
       expect(
         styler({
-          mq_mobile__1: { border: 1 },
-          mq_mobile__2: { borderTop__2: 2 }
-        })({ theme: { breakpoints: { mobile: 'BpFromProps' } } })
+          mq_mobile__1: {border: 1},
+          mq_mobile__2: {borderTop__2: 2},
+        })({theme: {breakpoints: {mobile: 'BpFromProps'}}}),
       ).toEqual({
         '@media screen and (min-width:BpFromProps)': {
           border: 1,
-          borderTop: 2
-        }
+          borderTop: 2,
+        },
       })
     })
   })
 
   describe('MQ Selector', () => {
     expect(
-      styler({ mq_mobilee: { marginTop: { margin: 'self' } } })({
-        margin: '16px'
-      })
+      styler({mq_mobilee: {marginTop: {margin: 'self'}}})({
+        margin: '16px',
+      }),
     ).toEqual({
-      '@media screen and (min-width:mobilee)': { marginTop: '16px' }
+      '@media screen and (min-width:mobilee)': {marginTop: '16px'},
     })
 
     expect(
@@ -98,19 +104,19 @@ describe('Styler', () => {
           alignItems: 'stretch',
           display: 'flex',
           justifyContent: 'flex-end',
-          marginLeft: 'auto'
-        }
+          marginLeft: 'auto',
+        },
       })({
         margin: '1px',
-        theme: { breakpoints: { desktop: 'desktop' } }
-      })
+        theme: {breakpoints: {desktop: 'desktop'}},
+      }),
     ).toEqual({
       '@media screen and (min-width:desktop)': {
         alignItems: 'stretch',
         display: 'flex',
         justifyContent: 'flex-end',
-        marginLeft: 'auto'
-      }
+        marginLeft: 'auto',
+      },
     })
   })
 
@@ -119,40 +125,40 @@ describe('Styler', () => {
       testCSSProp: {
         red: 'red',
         blue: 'blue',
-        default: 'white'
-      }
+        default: 'white',
+      },
     })
     it('It Should return result of first Match', () => {
-      expect(testStyler({ red: true })).toEqual({ testCSSProp: 'red' })
+      expect(testStyler({red: true})).toEqual({testCSSProp: 'red'})
     })
     it('It Should return blue', () => {
-      expect(testStyler({ blue: true })).toEqual({ testCSSProp: 'blue' })
+      expect(testStyler({blue: true})).toEqual({testCSSProp: 'blue'})
     })
 
     it('It Should return result of first Match with multiple matches', () => {
-      expect(testStyler({ red: true, blue: true })).toEqual({
-        testCSSProp: 'red'
+      expect(testStyler({red: true, blue: true})).toEqual({
+        testCSSProp: 'red',
       })
     })
     it('It Should return default when no matches', () => {
-      expect(testStyler({})).toEqual({ testCSSProp: 'white' })
+      expect(testStyler({})).toEqual({testCSSProp: 'white'})
     })
     it('Should not depend on prop order', () => {
-      const props1 = { mode: 'dark', nextOne: 'hello' }
-      const props2 = { nextOne: 'hello', mode: 'dark' }
+      const props1 = {mode: 'dark', nextOne: 'hello'}
+      const props2 = {nextOne: 'hello', mode: 'dark'}
       const rules1 = {
         color: {
           mode: value => value === 'dark' && 'navy',
           nextOne: 'purple',
-          default: 'green'
-        }
+          default: 'green',
+        },
       }
       const rules2 = {
         color: {
           nextOne: 'purple',
           mode: value => value === 'dark' && 'navy',
-          default: 'green'
-        }
+          default: 'green',
+        },
       }
 
       const result1 = styler(rules1)(props1)
@@ -173,8 +179,8 @@ describe('Styler', () => {
         returnAsIs: 'returnAsIs',
         dependsOnOtherProp: (value, p) => p.otherProp,
         getThemePColor: (value, p) => getThemeP(`colors.${value}`)(p),
-        default: 'white'
-      }
+        default: 'white',
+      },
     })
 
     it('will render a block of styles for a block pattern', () => {
@@ -182,19 +188,19 @@ describe('Styler', () => {
         __match: {
           mode: {
             fontWeight: 'bold',
-            color: 'purple'
+            color: 'purple',
           },
           nextOne: value => ({
             color: value,
-            border: '1px solid #ccc'
-          })
-        }
+            border: '1px solid #ccc',
+          }),
+        },
       })
-      const result = testBlock({ nextOne: 'dodgerblue', mode: 'hi there' })
+      const result = testBlock({nextOne: 'dodgerblue', mode: 'hi there'})
       expect(result).toEqual({
         border: '1px solid #ccc',
         color: 'dodgerblue',
-        fontWeight: 'bold'
+        fontWeight: 'bold',
       })
     })
 
@@ -203,15 +209,15 @@ describe('Styler', () => {
         __match: {
           isActive: {
             fontWeight: 'bold',
-            color: 'purple'
-          }
-        }
+            color: 'purple',
+          },
+        },
       })
-      expect(testBlock({ isActive: true })).toEqual({
+      expect(testBlock({isActive: true})).toEqual({
         color: 'purple',
-        fontWeight: 'bold'
+        fontWeight: 'bold',
       })
-      expect(testBlock({ isActive: false })).toEqual({})
+      expect(testBlock({isActive: false})).toEqual({})
     })
     it('will merge block of styles for a block pattern correctly', () => {
       const testBlock = styler({
@@ -223,15 +229,15 @@ describe('Styler', () => {
         __match: {
           mode: {
             fontWeight: 'bold',
-            color: 'purple'
+            color: 'purple',
           },
           nextOne: value => ({
             color: value,
-            border: '1px solid #ccc'
-          })
-        }
+            border: '1px solid #ccc',
+          }),
+        },
       })
-      const result = testBlock({ nextOne: 'dodgerblue', mode: 'hi there' })
+      const result = testBlock({nextOne: 'dodgerblue', mode: 'hi there'})
       expect(result).toEqual({
         border: '1px solid #ccc',
         color: 'dodgerblue',
@@ -239,26 +245,26 @@ describe('Styler', () => {
         display: 'inline-block',
         fontWeight: 'bold',
         minHeight: '1em',
-        outline: 'none'
+        outline: 'none',
       })
     })
 
     it('Can return propValue using Custom', () => {
       const testProps = {
-        returnPropValue: 'ThisWillBeReturned'
+        returnPropValue: 'ThisWillBeReturned',
       }
       const result = {
-        testCSSProp: 'ThisWillBeReturned'
+        testCSSProp: 'ThisWillBeReturned',
       }
       expect(testStyler(testProps)).toEqual(result)
     })
 
     it('Can return propValue using returnAsIs', () => {
       const testProps = {
-        returnAsIs: 'ThisWillBeReturned'
+        returnAsIs: 'ThisWillBeReturned',
       }
       const result = {
-        testCSSProp: 'ThisWillBeReturned'
+        testCSSProp: 'ThisWillBeReturned',
       }
       expect(testStyler(testProps)).toEqual(result)
     })
@@ -266,10 +272,10 @@ describe('Styler', () => {
     it('Can reference other props', () => {
       const testProps = {
         dependsOnOtherProp: true,
-        otherProp: 'blue'
+        otherProp: 'blue',
       }
       const result = {
-        testCSSProp: 'blue'
+        testCSSProp: 'blue',
       }
       expect(testStyler(testProps)).toEqual(result)
     })
@@ -277,33 +283,33 @@ describe('Styler', () => {
       const testProps = {
         getThemePColor: 'blue',
         theme: {
-          colors: { blue: 'Themedblue' }
-        }
+          colors: {blue: 'Themedblue'},
+        },
       }
       const result = {
-        testCSSProp: 'Themedblue'
+        testCSSProp: 'Themedblue',
       }
       expect(testStyler(testProps)).toEqual(result)
     })
   })
 
   describe('Styler accepts Functions Dependent on Props', () => {
-    const ifFunction = ({ shouldExecute }) =>
-      shouldExecute ? { testCSSProp: 'returned' } : {}
+    const ifFunction = ({shouldExecute}) =>
+      shouldExecute ? {testCSSProp: 'returned'} : {}
 
     const testStyler = styler(ifFunction)
     it('Works ', () => {
       expect(
         testStyler({
-          shouldExecute: true
-        })
+          shouldExecute: true,
+        }),
       ).toEqual({
-        testCSSProp: 'returned'
+        testCSSProp: 'returned',
       })
       expect(
         testStyler({
-          shouldExecute: false
-        })
+          shouldExecute: false,
+        }),
       ).toEqual({})
     })
   })
@@ -312,15 +318,15 @@ describe('Styler', () => {
       const testStyler = transformStyleP({
         cssProp: 'margin',
         value: 'small',
-        key: 'customSpace'
+        key: 'customSpace',
       })
       const testProps = {
         theme: {
-          customSpace: { small: 'returnThis' }
-        }
+          customSpace: {small: 'returnThis'},
+        },
       }
       const result = {
-        margin: 'returnThis'
+        margin: 'returnThis',
       }
       expect(testStyler(testProps)).toEqual(result)
     })
@@ -328,23 +334,23 @@ describe('Styler', () => {
     it('SwitchProp to transformStyleP Test', () => {
       const testStyler = switchProp(
         {
-          isSmall: 'small'
+          isSmall: 'small',
         },
         {
           cssProp: 'this',
 
           transform: true,
-          key: 'customSpace'
-        }
+          key: 'customSpace',
+        },
       )
       const testProps = {
         isSmall: true,
         theme: {
-          customSpace: { small: 'returnThis' }
-        }
+          customSpace: {small: 'returnThis'},
+        },
       }
       const result = {
-        this: 'returnThis'
+        this: 'returnThis',
       }
       expect(testStyler(testProps)).toEqual(result)
     })
@@ -355,32 +361,32 @@ describe('Styler', () => {
           isSmall: 'small',
           options: {
             key: 'customSpace',
-            transform: true
-          }
-        }
+            transform: true,
+          },
+        },
       })
       const testProps = {
         isSmall: true,
         theme: {
-          customSpace: { small: 'returnThis' }
-        }
+          customSpace: {small: 'returnThis'},
+        },
       }
       const result = {
-        margin: 'returnThis'
+        margin: 'returnThis',
       }
       expect(testStyler(testProps)).toEqual(result)
     })
     it('Only Works when inside object', () => {
       const testStyler = styler({
-        margin: 'small'
+        margin: 'small',
       })
       const testProps = {
         theme: {
-          space: { small: 'returnThis' }
-        }
+          space: {small: 'returnThis'},
+        },
       }
       const result = {
-        margin: 'small'
+        margin: 'small',
       }
       expect(testStyler(testProps)).toEqual(result)
     })
@@ -389,54 +395,54 @@ describe('Styler', () => {
   describe('Can accept Arrays', () => {
     it('Should execute if a Single Array Objects', () => {
       const testStyler = styler({
-        testCSSProp: 'returnThis'
+        testCSSProp: 'returnThis',
       })
 
       expect(testStyler({})).toEqual({
-        testCSSProp: 'returnThis'
+        testCSSProp: 'returnThis',
       })
     })
 
     it('Should execute if a Multiple Array Objects', () => {
       const testStyler = styler([
         {
-          testCSSProp: 'returnThis'
+          testCSSProp: 'returnThis',
         },
         {
-          testCSSProp2_: 'returnThis'
-        }
+          testCSSProp2_: 'returnThis',
+        },
       ])
 
       expect(testStyler({})).toEqual({
         testCSSProp: 'returnThis',
-        testCSSProp2_: 'returnThis'
+        testCSSProp2_: 'returnThis',
       })
     })
     it('Should execute if a Single Array Nested Styler Function', () => {
       const testStyler = styler(
         styler({
-          testCSSProp: 'returnThis'
-        })
+          testCSSProp: 'returnThis',
+        }),
       )
 
       expect(testStyler({})).toEqual({
-        testCSSProp: 'returnThis'
+        testCSSProp: 'returnThis',
       })
     })
 
     it('Should execute if Multiple Array Nested Styler Functions', () => {
       const testStyler = styler([
         styler({
-          testCSSProp: 'returnThis'
+          testCSSProp: 'returnThis',
         }),
         styler({
-          testCSSProp2: 'returnThis'
-        })
+          testCSSProp2: 'returnThis',
+        }),
       ])
 
       expect(testStyler({})).toEqual({
         testCSSProp: 'returnThis',
-        testCSSProp2: 'returnThis'
+        testCSSProp2: 'returnThis',
       })
     })
 
@@ -445,24 +451,24 @@ describe('Styler', () => {
         testCSSProp: {
           contollerProp: 'self',
           options: {
-            responsive: true
-          }
+            responsive: true,
+          },
         },
         testCSSProp2: {
           contollerProp: 'self',
           options: {
-            responsive: true
-          }
-        }
+            responsive: true,
+          },
+        },
       })
 
-      const testProps = { contollerProp: { mobile: 'tabletValue' } }
+      const testProps = {contollerProp: {mobile: 'tabletValue'}}
 
       expect(testStyler(testProps)).toEqual({
         '@media screen and (min-width:1BP_Test)': {
           testCSSProp: 'tabletValue',
-          testCSSProp2: 'tabletValue'
-        }
+          testCSSProp2: 'tabletValue',
+        },
       })
     })
   })
@@ -472,16 +478,16 @@ describe('Styler', () => {
       const testStyler = styler({
         testCSSProp: {
           testProp: 'returnAsIs',
-          default: 'small'
-        }
+          default: 'small',
+        },
       })
 
       const testProps = {
-        testProp: 'thisShouldBeReturned'
+        testProp: 'thisShouldBeReturned',
       }
 
       expect(testStyler(testProps)).toEqual({
-        testCSSProp: 'thisShouldBeReturned'
+        testCSSProp: 'thisShouldBeReturned',
       })
     })
 
@@ -489,16 +495,16 @@ describe('Styler', () => {
       const testStyler = styler({
         testCSSProp: {
           testProp: 'identity',
-          default: 'small'
-        }
+          default: 'small',
+        },
       })
 
       const testProps = {
-        testProp: 'thisShouldBeReturned'
+        testProp: 'thisShouldBeReturned',
       }
 
       expect(testStyler(testProps)).toEqual({
-        testCSSProp: 'thisShouldBeReturned'
+        testCSSProp: 'thisShouldBeReturned',
       })
     })
 
@@ -506,16 +512,16 @@ describe('Styler', () => {
       const testStyler = styler({
         testCSSProp: {
           testProp: 'propValue',
-          default: 'small'
-        }
+          default: 'small',
+        },
       })
 
       const testProps = {
-        testProp: 'thisShouldBeReturned'
+        testProp: 'thisShouldBeReturned',
       }
 
       expect(testStyler(testProps)).toEqual({
-        testCSSProp: 'thisShouldBeReturned'
+        testCSSProp: 'thisShouldBeReturned',
       })
     })
 
@@ -523,16 +529,16 @@ describe('Styler', () => {
       const testStyler = styler({
         testCSSProp: {
           testProp: 'self',
-          default: 'small'
-        }
+          default: 'small',
+        },
       })
 
       const testProps = {
-        testProp: 'thisShouldBeReturned'
+        testProp: 'thisShouldBeReturned',
       }
 
       expect(testStyler(testProps)).toEqual({
-        testCSSProp: 'thisShouldBeReturned'
+        testCSSProp: 'thisShouldBeReturned',
       })
     })
 
@@ -540,32 +546,32 @@ describe('Styler', () => {
       args: {
         testCSSProp: {
           testProp: 'pxToRem',
-          default: 'small'
-        }
+          default: 'small',
+        },
       },
       props: {
-        testProp: 16
+        testProp: 16,
       },
       result: {
-        testCSSProp: '1rem'
-      }
+        testCSSProp: '1rem',
+      },
     })
 
     StylerTest('Should join Nested Selectors', {
       args: {
         '>:first-child': {
           '>*': {
-            cssProp: 1
-          }
-        }
+            cssProp: 1,
+          },
+        },
       },
       props: {
-        column: { mobile: true, tablet: true },
-        row: { mobile: true }
+        column: {mobile: true, tablet: true},
+        row: {mobile: true},
       },
       result: {
-        '>:first-child >*': { cssProp: 1 }
-      }
+        '>:first-child >*': {cssProp: 1},
+      },
     })
   })
 
@@ -579,15 +585,15 @@ describe('Styler', () => {
           row: 'row',
           column: 'column',
           rowReverse: 'row-reverse',
-          columnReverse: 'column-reverse'
-        }
+          columnReverse: 'column-reverse',
+        },
       })
 
       const props = {
-        column: { mobile: true, tablet: true },
-        row: { mobile: true }
+        column: {mobile: true, tablet: true},
+        row: {mobile: true},
       }
-      const res = { flexDirection: 'row' }
+      const res = {flexDirection: 'row'}
 
       expect(testStyler(props)).toEqual(res)
     })
@@ -601,16 +607,16 @@ describe('Styler', () => {
           column: 'column',
           rowReverse: 'row-reverse',
           columnReverse: 'column-reverse',
-          options: { responsiveBool: true, transform: true }
-        }
+          options: {responsiveBool: true, transform: true},
+        },
       })
 
       const props = {
-        column: [true, true]
+        column: [true, true],
       }
       const res = {
-        '@media screen and (min-width:1BP_Test)': { flexDirection: 'column' },
-        flexDirection: 'column'
+        '@media screen and (min-width:1BP_Test)': {flexDirection: 'column'},
+        flexDirection: 'column',
       }
 
       expect(testStyler(props)).toEqual(res)
@@ -626,53 +632,53 @@ describe('Styler', () => {
               minimal: 'transparent',
               disabled: 'bg_disabled',
               main: v !== 'regular' ? `${v}D1` : 'blueD1',
-              default: 'grayL4'
+              default: 'grayL4',
             },
             color: {
               disabled: 'gray',
               minimal: v !== 'regular' ? `${v}D1` : 'blueD1',
               main: 'white',
-              default: v !== 'regular' ? `${v}D1` : 'grayD5'
-            }
-          })
+              default: v !== 'regular' ? `${v}D1` : 'grayD5',
+            },
+          }),
         },
 
         '&:hover': {
           backgroundColor: {
             minimal: 'transparent',
             disabled: 'bg_disabled',
-            main: (v, { variant }) =>
+            main: (v, {variant}) =>
               variant !== 'regular' ? `${variant}D1` : 'blueD1',
-            default: 'grayL4'
-          }
-        }
+            default: 'grayL4',
+          },
+        },
       },
-      props: { variant: 'blue' },
+      props: {variant: 'blue'},
       result: {
-        '&:hover': { backgroundColor: 'grayL4' },
+        '&:hover': {backgroundColor: 'grayL4'},
         backgroundColor: 'grayL4',
-        color: 'blueD1'
-      }
+        color: 'blueD1',
+      },
     })
 
     StylerTest('correctly reformats Result', {
       args: {
         '@media only screen and (max-width: 700px)': {
-          '&:hover': { margin: '1px', color: 'red' }
+          '&:hover': {margin: '1px', color: 'red'},
         },
         '&:hover': {
           '@media only screen and (max-width: 700px)': {
             color: 'blue',
-            '': { test: 'hey' }
-          }
-        }
+            '': {test: 'hey'},
+          },
+        },
       },
       props: {},
       result: {
         '@media only screen and (max-width: 700px)': {
-          '&:hover': { color: 'blue', margin: '1px', test: 'hey' }
-        }
-      }
+          '&:hover': {color: 'blue', margin: '1px', test: 'hey'},
+        },
+      },
     })
   })
 
@@ -699,11 +705,11 @@ describe('Styler', () => {
     StylerTest('Correctly Returns Negatives', {
       args: {
         marginTop: {
-          default: '-.5rem'
-        }
+          default: '-.5rem',
+        },
       },
       props: {},
-      result: { marginTop: '-.5rem' }
+      result: {marginTop: '-.5rem'},
     })
   })
 
@@ -712,13 +718,13 @@ describe('Styler', () => {
       args: {
         options: {
           defaultTransform: false,
-          defaultLookup: false
+          defaultLookup: false,
         },
-        marginBottom: { default: '1px' },
-        marginTop: { default: 'sm' }
+        marginBottom: {default: '1px'},
+        marginTop: {default: 'sm'},
       },
-      props: { theme: { margin: '1px' } },
-      result: { marginBottom: '1px', marginTop: 'sm' }
+      props: {theme: {margin: '1px'}},
+      result: {marginBottom: '1px', marginTop: 'sm'},
     })
 
     StylerTest('Doesnt Compute Local', {
@@ -727,19 +733,19 @@ describe('Styler', () => {
           default: '1px',
           options: {
             defaultTransform: false,
-            defaultLookup: false
-          }
+            defaultLookup: false,
+          },
         },
         marginTop: {
           default: 'sm',
           options: {
             defaultTransform: false,
-            defaultLookup: false
-          }
-        }
+            defaultLookup: false,
+          },
+        },
       },
-      props: { theme: { margin: '1px' } },
-      result: { marginBottom: '1px', marginTop: 'sm' }
+      props: {theme: {margin: '1px'}},
+      result: {marginBottom: '1px', marginTop: 'sm'},
     })
   })
 })

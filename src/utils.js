@@ -1,7 +1,7 @@
+// @flow
 import {
   pipe,
   isNil,
-  complement,
   flip,
   toString,
   test,
@@ -14,7 +14,6 @@ import {
   concat,
   is,
   when,
-  both,
   defaultTo,
   attach,
   isFunction,
@@ -23,14 +22,15 @@ import {
   isObject,
   mapValues,
   isDefined,
-  isPopulated
+  isPopulated,
 } from '@roseys/futils'
+import isNumber from 'typed-is/lib/isNumber'
 
 export const cleanAndSort = unordered => {
   const ordered = {}
   Object.keys(unordered)
     .sort()
-    .forEach((key) => {
+    .forEach(key => {
       const val = unordered[key]
       if (isPopulated(val)) {
         if (isObject(val)) {
@@ -46,7 +46,7 @@ export const cleanAndSort = unordered => {
 export const firstNonNil = reduceWhile(isNil, (a, v) => v, null)
 export const isResponsiveType = x => isObject(x) || isArray(x)
 export const safeMapValues = curryN(2, (func, item) =>
-  pipe(ifElse(either(isArray, isObject), mapValues(func), func))(item)
+  pipe(ifElse(either(isArray, isObject), mapValues(func), func))(item),
 )
 
 export const isTemplate = test(/{!([^}]+)}/g)
@@ -66,19 +66,21 @@ export const isTruthy = either(Boolean, simplyEquals(0))
 export const isF = x => x === false
 export const isT = x => x === true
 
-export const isNonZeroNumber = both(is('Number'), complement(simplyEquals(0)))
+export const isNonZeroNumber = (value: mixed): boolean =>
+  isNumber(value) && value !== 0
+
 export const appendString = flip(concat)
 
 const whenisNonZeroNumber = curryN(2, (fn, input) =>
-  when(isNonZeroNumber, defaultTo(identity, fn))(input)
+  when(isNonZeroNumber, defaultTo(identity, fn))(input),
 )
 
 export const appendUnit = unit =>
   whenisNonZeroNumber(
     pipe(
       toString,
-      appendString(unit)
-    )
+      appendString(unit),
+    ),
   )
 
 // export const isNilOrEmpty = either(isNil, isEmpty)
@@ -99,6 +101,9 @@ export const whenFunctionCallWith = (...argsToGive) =>
 
 export const isAtRule = selector => selector.indexOf('@') === 0
 export const isMQ = selector => /^(MQ|mq)+/.test(selector)
+export const containsSpecial = str =>
+  /[~`!@#$%\^&*+=\-\[\]\\';.,/{}|\\":<>\?\s]/g.test(str) // eslint-disable-line no-useless-escape
+
 export const splitSelectors = selectors => {
   if (isAtRule(selectors)) {
     return [selectors]

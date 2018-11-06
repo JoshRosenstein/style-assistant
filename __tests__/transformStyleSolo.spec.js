@@ -6,10 +6,10 @@ describe('How responsiveBoolProp and can be equivlent to responsiveProp', () => 
     const e = transformStyle({
       value: 'sm',
       cssProp: 'margin',
-      key: 'space'
+      key: 'space',
     })({})
 
-    const r = { margin: '0.5rem' }
+    const r = {margin: '0.5rem'}
     // log.getLogger('transformStyle').setLevel(3)
     expect(e).toEqual(r)
   })
@@ -21,9 +21,9 @@ describe('How responsiveBoolProp and can be equivlent to responsiveProp', () => 
       key: 'space',
       getter: 'pxToRem',
       defaultLookup: false,
-      defaultTransform: false
+      defaultTransform: false,
     })({})
-    const r = { marginTop: '1rem' }
+    const r = {marginTop: '1rem'}
 
     expect(e).toEqual(r)
   })
@@ -35,9 +35,9 @@ describe('How responsiveBoolProp and can be equivlent to responsiveProp', () => 
       key: 'space',
       getter: 'pxToRem',
       defaultLookup: false,
-      defaultTransform: false
-    })({ theme: { space: [0, 16, 4, 6, 8] } })
-    const r = { marginTop: '1rem' }
+      defaultTransform: false,
+    })({theme: {space: [0, 16, 4, 6, 8]}})
+    const r = {marginTop: '1rem'}
 
     expect(e).toEqual(r)
   })

@@ -1,5 +1,5 @@
-import { isT, isF, isBool, isResponsiveType } from './utils'
-import { responsiveReducer } from './responsiveHelpers'
+import {isT, isF, isBool, isResponsiveType} from './utils'
+import {responsiveReducer} from './responsiveHelpers'
 
 export default function ResponsiveBool(toMq) {
   return function responsiveBool({
@@ -8,7 +8,7 @@ export default function ResponsiveBool(toMq) {
     F: falseValue,
     cssProp,
     transformer = v => v,
-    breakpoints
+    breakpoints,
   }) {
     const css = cssProp
 
@@ -20,7 +20,7 @@ export default function ResponsiveBool(toMq) {
             ? transformer(falseValue)
             : false
 
-        return v ? { [css]: v } : {}
+        return v ? {[css]: v} : {}
       }
 
       return {}

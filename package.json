@@ -18,6 +18,7 @@
     "README.md"
   ],
   "scripts": {
+    "deps": "flow-typed install",
     "docz:dev": "docz dev",
     "docz:build": "docz build",
     "prepack": "yarn run build",
@@ -32,10 +33,16 @@
     "test:coverage": "jest --coverage",
     "reinstall": "yarn run clean && yarn",
     "lint": "npx eslint .",
-    "clean:temp": "rimraf temp"
+    "clean:temp": "rimraf temp",
+    "flow:start": "flow start",
+    "flow:stop": "flow stop",
+    "flow:status": "flow status",
+    "flow": "flow",
+    "flow:coverage": "flow coverage"
   },
   "dependencies": {
-    "@roseys/futils": "^0.0.22"
+    "@roseys/futils": "^0.0.22",
+    "typed-is": "^1.0.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.0",
@@ -44,8 +51,11 @@
     "@babel/plugin-proposal-class-properties": "^7.1.0",
     "@babel/plugin-transform-runtime": "^7.1.0",
     "@babel/preset-env": "^7.1.0",
+    "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
-    "@emotion/core": "^0.13.1",
+    "@emotion/core": "^10.0.0-beta.5",
+    "@emotion/serialize": "^0.10.0",
+    "@emotion/utils": "^0.9.0",
     "@roseys/clean-props-by-tag": "^0.0.3",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "^8.2.2",
@@ -54,11 +64,25 @@
     "codecov": "^3.0.0",
     "cross-env": "^5.2.0",
     "docz": "^0.11.0",
+    "eslint": "^5.7.0",
+    "eslint-config-prettier": "^3.1.0",
     "eslint-config-react-tools": "^1.1.6",
+    "eslint-import-resolver-babel-module": "5.0.0-beta.1",
+    "eslint-plugin-babel": "^5.2.1",
+    "eslint-plugin-flowtype": "^3.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsdoc": "^3.8.0",
+    "eslint-plugin-jsx-a11y": "^6.1.2",
+    "eslint-plugin-prettier": "^3.0.0",
+    "flow-bin": "^0.83.0",
+    "flow-copy-source": "^2.0.2",
+    "flow-typed": "^2.5.1",
     "jest": "^22.4.3",
     "jest-cli": "^22.4.3",
     "lint-staged": "^7.2.0",
     "microbundle": "^0.6.0",
+    "prettier": "^1.14.3",
+    "prettylint": "^1.0.0",
     "react": "^16.5.2",
     "react-emotion": "^9.2.12",
     "rimraf": "^2.6.1",
@@ -80,5 +104,12 @@
       "prettier --no-semi --single-quote --write",
       "git add"
     ]
+  },
+  "prettier": {
+    "bracketSpacing": false,
+    "proseWrap": "never",
+    "singleQuote": true,
+    "trailingComma": "all",
+    "semi": false
   }
 }

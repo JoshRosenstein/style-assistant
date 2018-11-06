@@ -1,8 +1,6 @@
 // @flow
 import {path} from '@roseys/futils'
-import PxTo from './PxTo/PxTo'
-import {PXTO} from './PxTo/constants'
-import type {pxToT, pxToStr, pxToNum} from './PxTo/types'
+import PxTo from './pxTo'
 import ToMq from './toMq'
 import SwitchProp from './switchP'
 import ResponsiveProp from './responsiveP'
@@ -19,10 +17,10 @@ import matchBlockP from './matchBlockP'
 
 import {isFunction} from 'typed-is'
 
-// type pxToStr = (pxValue: number | string) => string
-// type pxToNum = (pxValue: number | string) => number
+type pxToStr = (pxValue: number | string) => string
+type pxToNum = (pxValue: number | string) => number
 
-// type pxToT = ((unit: undefined) => pxToNum) & ((unit: string) => pxToStr)
+type pxToT = ((unit: undefined) => pxToNum) & ((unit: string) => pxToStr)
 
 const REM = 'rem'
 const EM = 'em'
@@ -66,6 +64,9 @@ const defaultOptions = {
   parserOptions: {},
 }
 
+const responsiveP_ = ({getThemeP, toMq, transformStyleP}, {breakpointsKey}) =>
+  ResponsiveBoolP(getThemeP, breakpointsKey, toMq, transformStyleP)
+
 const GETTHEMEP_ = 'getThemeP'
 const TOMQ_ = 'toMq'
 const TRANSFORMSTYLEP = 'transformStyleP'
@@ -74,7 +75,7 @@ const GETTHEME_ = 'getTheme'
 const BREAKPOINTSP_ = 'breakPointsP'
 const TRANSFORMSTYLE_ = 'transformStyle'
 const TRANSFORMSTYLEP_ = 'transformStyleP'
-
+const PXTO_ = 'pxTo'
 const PXTOREM_ = 'pxToRem'
 const PXTOEM_ = 'pxToEm'
 const BASEFONTSIZE = 'baseFontSize'
@@ -96,12 +97,12 @@ const PXTOREL_ = 'pxToRelative'
 // pxTo = PxTo(this.baseFontSize)
 // pxTo = PxTo(this.baseFontSize)
 const defaultM = [
-  [PXTO, (x, o: {[BASEFONTSIZE]: number}) => PxTo(o[BASEFONTSIZE])],
-  [PXTOREM_, x => x[PXTO](REM)],
-  [PXTOEM_, x => x[PXTO](EM)],
-  [PXTOPCT_, x => pxValue => x[PXTO]('%')(pxValue * 100)],
-  [PXTOREL_, x => x[PXTO]()],
-  [NORMALIZE_, x => Normalize(x[PXTO]())],
+  [PXTO_, (x, o) => PxTo(o[BASEFONTSIZE])],
+  [PXTOREM_, (x, o) => x[PXTO_](REM)],
+  [PXTOEM_, (x, o) => x[PXTO_](EM)],
+  [PXTOPCT_, (x, o) => pxValue => x[PXTO_]('%')(pxValue * 100)],
+  [PXTOREL_, x => x[PXTO_]()],
+  [NORMALIZE_, x => Normalize(x[PXTO_]())],
   [NORMALIZETOEM_, x => x[NORMALIZE_](EM)],
   [NORMALIZETOREM_, x => x[NORMALIZE_](REM)],
   [
@@ -145,9 +146,10 @@ const defaultM = [
         },
       ),
   ],
-  [TRANSFORMSTYLEP_, m => TransformStyleP(m[TRANSFORMSTYLE_], m[GETTHEMEP_])],
-  ['media', (m, o) => Media(o.defaultTheme.breakpoints, m.toMq)],
-  ['toMq', m => ToMq(m.pxToEm)],
+  [
+    TRANSFORMSTYLEP_,
+    (m, o) => TransformStyleP(m[TRANSFORMSTYLE_], m[GETTHEMEP_]),
+  ],
 ]
 
 export default class Assistant {
@@ -156,6 +158,7 @@ export default class Assistant {
     const {
       defaultTheme,
       themeKey,
+      baseFontSize,
       breakpointsKey,
       alwaysTransform,
       responsivePOptions,
@@ -187,7 +190,7 @@ export default class Assistant {
       Object.entries(AvailableMethods).forEach(([name, method]) => {
         this[name] = method
       })
-      //  console.log({AvailableMethods})
+      console.log({AvailableMethods})
     }
 
     this.parserOptions = parserOptions
@@ -221,12 +224,12 @@ export default class Assistant {
 
     //this[PXTO] = PxTo(this[BASEFONTSIZE])
     //this[GETTHEME] = GetTheme(this[DEFAULTTHEME])
-    // this.getTheme = GetTheme(this.defaultTheme)
-    // this.getThemeP = GetThemeP(this.themeKey, this.defaultTheme)
+    this.getTheme = GetTheme(this.defaultTheme)
+    this.getThemeP = GetThemeP(this.themeKey, this.defaultTheme)
     // this[GETTHEMEP] = GetThemeP(this[THEMEKEY], this[DEFAULTTHEME])
 
-    // this.breakPointsP = key =>
-    //   this.getThemeP([breakpointsKey, key].filter(Boolean))
+    this.breakPointsP = key =>
+      this.getThemeP([breakpointsKey, key].filter(Boolean))
 
     //this[TOMQ] = ToMq(this.pxToEm)
     this.toMq = ToMq(this.pxToEm)
@@ -311,7 +314,7 @@ interface A {
   [PXTOREM_]: pxToStr;
   [PXTO_]: pxToT;
 }
-const a: A = new Assistant({defaultTheme: {breakpoints: [1, 2, 4]}})
-const t = a.pxTo('rem')(16)
+// const a: A = new Assistant({ defaultTheme: { breakpoints: [1, 2, 4] } })
+// const t = a.pxTo('rem')(16)
 // console.log(t)
 // console.log('testMesthod', testMethod)

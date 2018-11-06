@@ -1,4 +1,4 @@
-import { prop } from '@roseys/futils'
+import {prop} from '@roseys/futils'
 
 import ResponsiveBool from './responsiveBool'
 
@@ -6,7 +6,7 @@ export default function ResponsiveBoolProp(
   getTheme,
   breakpointsKey,
   toMq,
-  transformStyle
+  transformStyle,
 ) {
   const responsiveBool = ResponsiveBool(toMq)
   return function responsiveBoolProp({
@@ -15,7 +15,7 @@ export default function ResponsiveBoolProp(
     F: falseValue,
     cssProp,
     prop: targetPropName,
-    transform
+    transform,
   }) {
     return function responsiveBool_(props) {
       const css = cssProp || targetPropName
@@ -26,7 +26,7 @@ export default function ResponsiveBoolProp(
           transformStyle({
             value: v,
             cssProp: css,
-            valueOnly: true
+            valueOnly: true,
           })(props)
       }
       return responsiveBool({
@@ -35,7 +35,7 @@ export default function ResponsiveBoolProp(
         F: falseValue,
         cssProp: css,
         transformer,
-        breakpoints: getTheme(breakpointsKey)(props)
+        breakpoints: getTheme(breakpointsKey)(props),
       })
     }
   }
