@@ -58,14 +58,6 @@ describe('Quick Helpers', () => {
   //   expect(getDefaultTheme('colors.customColor')).toEqual('MycustomColor')
   // })
 
-  it('defaultTheme Getter', () => {
-    //   const { getTheme } = styler
-
-    expect(styler.defaultTheme.colors.black).toEqual('#000')
-    //  styler.mergeDefaultTheme({ colors: { customColor: 'MycustomColor' } })
-    //  expect(getDefaultTheme('colors.customColor')).toEqual('MycustomColor')
-  })
-
   it('GetThemeP', () => {
     const {getThemeP} = styler
 
