@@ -1,10 +1,10 @@
 import {identity} from '@roseys/futils'
 import {appendUnit} from '../../src/utils'
-import PxTo from '../../src/PxTo/PxTo'
-const pxToRem = v => PxTo(16)('rem')(v)
-const pxToEm = v => PxTo(16)('em')(v)
-const pxToPct = v => PxTo(16 / 100)('%')(v)
-const px = v => PxTo(1)('px')(v)
+import {pxTo} from '../../src/pxTo'
+const pxToRem = v => pxTo(16)('rem')(v)
+const pxToEm = v => pxTo(16)('em')(v)
+const pxToPct = v => pxTo(16 / 100)('%')(v)
+const px = v => pxTo(1)('px')(v)
 const ms = appendUnit('ms')
 const pct = appendUnit('%')
 

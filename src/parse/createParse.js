@@ -9,7 +9,7 @@ import {ASSISTANTID as TOMQ} from '../toMq/constants'
 import {ASSISTANTID as SWITCHP} from '../switchP/constants'
 import {ASSISTANTID as GETBREAKPOINTSP} from '../getBreakpointsP/constants'
 import {isMQ} from '../utils'
-const BREAKPOINTSP_ = 'breakPointsP'
+
 const getDeps = getAndCheckMethod(ASSISTANTID)
 
 /**

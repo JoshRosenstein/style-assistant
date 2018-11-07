@@ -12,26 +12,28 @@ const divideBy = flip(divide)
 
 const cssRegex = /^([+-]?(?:\d+|\d*\.\d+))([a-z]*|%)$/
 
-const stripUnit = (value: string | number, returnUnit?: boolean) => {
+const getCssValueStringPair = (value: string | number) => {
   const unitlessValue = parseFloat(value) || undefined
-
-  if (returnUnit) {
-    if (isNumber(value)) return [value, 0]
-    if (isString(value)) {
-      return !value.match(cssRegex)
-        ? [value, 0]
-        : [unitlessValue, value.match(cssRegex)[2]]
+  if (isNumber(value)) return [value, 0]
+  if (isString(value)) {
+    const maybeMatched = value.match(cssRegex)
+    if (Array.isArray(maybeMatched)) {
+      return [unitlessValue, maybeMatched[2]]
     }
+    return [value, 0]
   }
 
-  return unitlessValue
+  return [value, 0]
 }
 
 const defaultDivisor: number = 16
 
-type PxToT = (divisor?: number) => pxToT
-const PxTo: PxToT = (divisor?: number): pxToT => unit => pxValue => {
-  const [maybeUnitlessValue, un] = stripUnit(pxValue, true)
+export const pxTo = (divisor?: number): pxToT => unit => pxValue => {
+  if (!(isString(pxValue) || isNumber(pxValue))) {
+    return pxValue
+  }
+
+  const [maybeUnitlessValue, un] = getCssValueStringPair(pxValue)
   if (un && un !== 'px') return pxValue
   if (isNonZeroNumber(maybeUnitlessValue)) {
     const possiblyAppendNewUnit = (x: number): number | string =>
@@ -51,4 +53,4 @@ const PxTo: PxToT = (divisor?: number): pxToT => unit => pxValue => {
   return pxValue
 }
 
-export default PxTo
+export default pxTo

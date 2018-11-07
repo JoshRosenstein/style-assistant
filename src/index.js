@@ -1,8 +1,9 @@
 // @flow
 import warning from 'warning'
 import {path} from '@roseys/futils'
-import {PxTo, ASSISTANTID as PXTO} from './PxTo'
-import type {pxToT, pxToStr} from './PxTo/types'
+import {createPxTo, ASSISTANTID as PXTO} from './pxTo'
+
+import type {pxToT, pxToStr} from './pxTo/types'
 import {createGetThemeP} from './getThemeP'
 import type {getThemePT} from './getThemeP/types'
 import {createResponsiveBool} from './responsiveBool'
@@ -71,15 +72,18 @@ const NORMALIZETOEM_ = 'normalizeToEm'
 const NORMALIZETOREM_ = 'normalizeToRem'
 const PXTOREL_ = 'pxToRelative'
 
+type PX = {[PXTO]: pxToT}
+
 const AllPlugins = [
-  [PXTO, (x, o) => PxTo(o[BASEFONTSIZE])],
-  [PXTOREM_, x => x[PXTO](REM)],
-  [PXTOEM_, x => x[PXTO](EM)],
-  [PXTOPCT_, x => pxValue => x[PXTO]('%')(pxValue * 100)],
-  [PXTOREL_, x => x[PXTO]()],
-  [NORMALIZE_, x => Normalize(x[PXTO]())],
-  [NORMALIZETOEM_, x => x[NORMALIZE_](EM)],
-  [NORMALIZETOREM_, x => x[NORMALIZE_](REM)],
+  createPxTo,
+
+  [PXTOREM_, (x: PX) => x[PXTO](REM)],
+  [PXTOEM_, (x: PX) => x[PXTO](EM)],
+  [PXTOPCT_, (x: PX) => (pxValue: number) => x[PXTO]('%')(pxValue * 100)],
+  [PXTOREL_, (x: PX) => x[PXTO]()],
+  [NORMALIZE_, (x: PX) => Normalize(x[PXTO]())],
+  [NORMALIZETOEM_, (x: PX) => x[NORMALIZE_](EM)],
+  [NORMALIZETOREM_, (x: PX) => x[NORMALIZE_](REM)],
   createToMq,
   createGetThemeP,
   createGetBreakpointsP,
