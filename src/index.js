@@ -14,8 +14,9 @@ import {createResponsiveP} from './responsiveP'
 import {createTransformStyleP} from './transformStyleP'
 import {createTransformStyle} from './transformStyle'
 import {createGetDefaultTheme} from './getDefaultTheme'
-import Normalize from './normalize'
-
+import {createPxToRelative} from './pxToRelative'
+// import Normalize from './normalize'
+import {createNormalize} from './normalize'
 import {createParse} from './parse'
 import {createResponsive} from './responsive'
 import Media from './media'
@@ -80,8 +81,10 @@ const AllPlugins = [
   [PXTOREM_, (x: PX) => x[PXTO](REM)],
   [PXTOEM_, (x: PX) => x[PXTO](EM)],
   [PXTOPCT_, (x: PX) => (pxValue: number) => x[PXTO]('%')(pxValue * 100)],
-  [PXTOREL_, (x: PX) => x[PXTO]()],
-  [NORMALIZE_, (x: PX) => Normalize(x[PXTO]())],
+  createPxToRelative,
+  // [PXTOREL_, (x: PX) => x[PXTO]()],
+  createNormalize,
+  // [NORMALIZE_, (x: PX) => Normalize(x[PXTO]())],
   [NORMALIZETOEM_, (x: PX) => x[NORMALIZE_](EM)],
   [NORMALIZETOREM_, (x: PX) => x[NORMALIZE_](REM)],
   createToMq,
