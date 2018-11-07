@@ -1,12 +1,16 @@
-import ResponsiveBoolProp from '../../src/responsiveBoolP'
+import {createResponsiveBoolP} from '../../src/responsiveBoolP'
 import getThemeP from './getThemeP'
-import transformStyle from './transformStyle'
-import toMq from './toMq'
+import transformStyleP from './transformStyle'
+import responsiveBool from './responsiveBool'
 //(getTheme, breakpointsKey, toMq)
 
-export default ResponsiveBoolProp(
-  getThemeP,
-  'breakpoints',
-  toMq,
-  transformStyle,
+const breakpointsKey = 'breakpoints'
+
+export default createResponsiveBoolP(
+  {
+    getThemeP,
+    responsiveBool,
+    transformStyleP,
+  },
+  {breakpointsKey},
 )

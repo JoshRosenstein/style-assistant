@@ -1,6 +1,6 @@
 import {prop} from '@roseys/futils'
 
-import ResponsiveBool from './responsiveBool'
+import {createResponsiveBool} from './responsiveBool'
 
 export default function ResponsiveBoolProp(
   getTheme,
@@ -9,7 +9,7 @@ export default function ResponsiveBoolProp(
   transformStyle,
   globalOptions,
 ) {
-  const responsiveBool = ResponsiveBool(toMq)
+  const responsiveBool = createResponsiveBool({toMq})
   return function responsiveBoolProp(config) {
     let {
       value,

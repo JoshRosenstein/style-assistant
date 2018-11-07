@@ -5,11 +5,12 @@ import {PxTo, PXTO} from './PxTo'
 import type {pxToT, pxToStr, pxToNum} from './PxTo/types'
 import {createGetThemeP, ASSISTANTID as GETTHEMEP} from './getThemeP'
 import type {getThemePT} from './getThemeP/types'
-
+import {createResponsiveBool} from './responsiveBool'
+import {createResponsiveBoolP} from './responsiveBoolP'
 import {createToMq, ASSISTANTID as TOMQ} from './toMq'
 import SwitchProp from './switchP'
 import ResponsiveProp from './responsiveP'
-import ResponsiveBoolP from './responsiveBoolP'
+//import ResponsiveBoolP from './responsiveBoolP'
 import {
   createTransformStyleP,
   ASSISTANTID as TRANSFORMSTYLEP,
@@ -107,20 +108,22 @@ const defaultM = [
   createGetDefaultTheme,
   createTransformStyle,
   createTransformStyleP,
-
-  [
-    RBOOLP,
-    (m, {breakpointsKey}) =>
-      ResponsiveBoolP(
-        m[GETTHEMEP],
-        breakpointsKey,
-        m[TOMQ],
-        m[TRANSFORMSTYLEP],
-      ),
-  ],
+  createResponsiveBool,
+  //[TRANSFORMSTYLEP_, TransformStyleP],
+  createResponsiveBoolP,
+  // [
+  //   RBOOLP,
+  //   (m, {breakpointsKey}) =>
+  //     ResponsiveBoolP(
+  //       m[GETTHEMEP],
+  //       breakpointsKey,
+  //       m[TOMQ],
+  //       m[TRANSFORMSTYLEP],
+  //     ),
+  // ],
   ['media', (m, o) => Media(o.defaultTheme.breakpoints, m.toMq)],
   createResponsive,
-
+  // [RESPONSIVE, (m, o) => Responsive(m.toMq, o.defaultTheme.breakpoints)],
   [
     RESPONSIVEP_,
     (m, o) =>
