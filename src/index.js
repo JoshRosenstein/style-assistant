@@ -8,7 +8,8 @@ import type {getThemePT} from './getThemeP/types'
 import {createResponsiveBool} from './responsiveBool'
 import {createResponsiveBoolP} from './responsiveBoolP'
 import {createToMq, ASSISTANTID as TOMQ} from './toMq'
-import SwitchProp from './switchP'
+//import SwitchProp from './switchP_'
+import {createSwitchP} from './switchP'
 //import ResponsiveProp from './responsiveP_'
 import {createResponsiveP} from './responsiveP'
 //import ResponsiveBoolP from './responsiveBoolP'
@@ -114,22 +115,23 @@ const defaultM = [
   ['media', (m, o) => Media(o.defaultTheme.breakpoints, m.toMq)],
   createResponsive,
   createResponsiveP,
-  [
-    SWITCHP,
-    (m, o) =>
-      SwitchProp(
-        m[RESPONSIVEP_],
-        m[RBOOLP],
-        m[TRANSFORMSTYLEP],
-        {
-          [PXTOREM_]: m[PXTOREM_],
-          [PXTOEM_]: m[PXTOEM_],
-          [PXTOPCT_]: m[PXTOPCT_],
-          ...path('transformOptions.functions', o),
-        },
-        o.switchPOptions,
-      ),
-  ],
+  createSwitchP,
+  // [
+  //   SWITCHP,
+  //   (m, o) =>
+  //     SwitchProp(
+  //       m[RESPONSIVEP_],
+  //       m[RBOOLP],
+  //       m[TRANSFORMSTYLEP],
+  //       {
+  //         [PXTOREM_]: m[PXTOREM_],
+  //         [PXTOEM_]: m[PXTOEM_],
+  //         [PXTOPCT_]: m[PXTOPCT_],
+  //         ...path('transformOptions.functions', o),
+  //       },
+  //       o.switchPOptions,
+  //     ),
+  // ],
   [
     'parse',
     (m, o) =>

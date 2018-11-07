@@ -6,12 +6,12 @@ describe('How responsiveBoolProp and can be equivlent to responsiveProp', () => 
       {
         primary: 'primary',
         secondary: v => v,
-        default: 'defaultValue'
+        default: 'defaultValue',
       },
-      { cssProp: 'key' }
-    )({ primary: null, secondary: null })
+      {cssProp: 'key'},
+    )({primary: null, secondary: null})
 
-    const r = { key: 'defaultValue' }
+    const r = {key: 'defaultValue'}
 
     expect(e).toEqual(r)
   })
@@ -21,18 +21,18 @@ describe('How responsiveBoolProp and can be equivlent to responsiveProp', () => 
       {
         primary: 'primary',
         secondary: v => v,
-        default: 'defaultValue'
+        default: 'defaultValue',
       },
       {
         cssProp: 'marginTop',
         transform: false,
-        responsive: true
-      }
-    )({ primary: null, secondary: [1, 2] })
+        responsive: true,
+      },
+    )({primary: null, secondary: [1, 2]})
 
     const r = {
-      '@media screen and (min-width:1BP_Test)': { marginTop: 2 },
-      marginTop: 1
+      '@media screen and (min-width:1BP_Test)': {marginTop: 2},
+      marginTop: 1,
     }
 
     expect(e).toEqual(r)
@@ -43,18 +43,18 @@ describe('How responsiveBoolProp and can be equivlent to responsiveProp', () => 
       {
         primary: 'primary',
         secondary: v => v,
-        default: 'defaultValue'
+        default: 'defaultValue',
       },
       {
         cssProp: 'marginTop',
         key: 'space',
         // responsive: true,
-        responsiveBool: true
-      }
-    )({ secondary: null, primary: [true, true] })
+        responsiveBool: true,
+      },
+    )({secondary: null, primary: [true, true]})
     const r = {
-      '@media screen and (min-width:1BP_Test)': { marginTop: 'primary' },
-      marginTop: 'primary'
+      '@media screen and (min-width:1BP_Test)': {marginTop: 'primary'},
+      marginTop: 'primary',
     }
 
     expect(e).toEqual(r)
@@ -64,20 +64,20 @@ describe('How responsiveBoolProp and can be equivlent to responsiveProp', () => 
   it('switchProps you can reference other props', () => {
     const e = switchProp(
       {
-        height: (heightPropValue, { heightScaleFactor }) =>
+        height: (heightPropValue, {heightScaleFactor}) =>
           heightScaleFactor
             ? heightPropValue * heightScaleFactor
             : heightPropValue,
-        default: 'defaultValue'
+        default: 'defaultValue',
       },
       {
-        cssProp: 'height'
+        cssProp: 'height',
         //  key: 'space',
         // responsive: true,
         //  responsiveBool: true
-      }
-    )({ height: 2, heightScaleFactor: 2 })
-    const r = { height: 4 }
+      },
+    )({height: 2, heightScaleFactor: 2})
+    const r = {height: 4}
 
     expect(e).toEqual(r)
   })
@@ -85,19 +85,19 @@ describe('How responsiveBoolProp and can be equivlent to responsiveProp', () => 
   it('switchProp uses ComputeOptions', () => {
     const e = switchProp(
       {
-        height: v => v
+        height: v => v,
       },
       {
         cssProp: 'height',
         key: 'space',
-        postFn: v => `${v / 16  }rem`
+        postFn: v => `${v / 16}rem`,
 
         //  key: 'space',
         // responsive: true,
         //  responsiveBool: true
-      }
-    )({ height: 'sm' })
-    const r = { height: '0.5rem' }
+      },
+    )({height: 'sm'})
+    const r = {height: '0.5rem'}
 
     expect(e).toEqual(r)
   })
