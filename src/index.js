@@ -2,41 +2,27 @@
 import warning from 'warning'
 import {path} from '@roseys/futils'
 import {PxTo, ASSISTANTID as PXTO} from './PxTo'
-import type {pxToT, pxToStr, pxToNum} from './PxTo/types'
-import {createGetThemeP, ASSISTANTID as GETTHEMEP} from './getThemeP'
+import type {pxToT, pxToStr} from './PxTo/types'
+import {createGetThemeP} from './getThemeP'
 import type {getThemePT} from './getThemeP/types'
 import {createResponsiveBool} from './responsiveBool'
 import {createResponsiveBoolP} from './responsiveBoolP'
-import {createToMq, ASSISTANTID as TOMQ} from './toMq'
-//import SwitchProp from './switchP_'
+import {createToMq} from './toMq'
 import {createSwitchP} from './switchP'
-//import ResponsiveProp from './responsiveP_'
 import {createResponsiveP} from './responsiveP'
-//import ResponsiveBoolP from './responsiveBoolP'
-import {
-  createTransformStyleP,
-  ASSISTANTID as TRANSFORMSTYLEP,
-} from './transformStyleP'
-import {
-  createTransformStyle,
-  ASSISTANTID as TRANSFORMSTYLE,
-} from './transformStyle'
-//import GetThemeP from './getThemeP'
-
-import {
-  createGetDefaultTheme,
-  ASSISTANTID as GETDEFAULTTHEME,
-} from './getDefaultTheme'
-
+import {createTransformStyleP} from './transformStyleP'
+import {createTransformStyle} from './transformStyle'
+import {createGetDefaultTheme} from './getDefaultTheme'
 import Normalize from './normalize'
-import Parser from './parser_'
+
 import {createParse} from './parse'
-import {createResponsive, ASSISTANTID as RESPONSIVE} from './responsive'
+import {createResponsive} from './responsive'
 import Media from './media'
-import {createMatchBlockP, ASSISTANTID as MATCHBLOCKP} from './matchBlockP'
+import {createMatchBlockP} from './matchBlockP'
 import {isFunction} from 'typed-is'
 import {IDKEY, ISSTANDALONEKEY} from './constants'
 import {createGetBreakpointsP} from './getBreakpointsP'
+
 const REM = 'rem'
 const EM = 'em'
 
@@ -76,10 +62,7 @@ const defaultOptions = {
   parserOptions: {},
 }
 
-const BREAKPOINTSP_ = 'breakPointsP'
-
 const BASEFONTSIZE = 'baseFontSize'
-
 const PXTOREM_ = 'pxToRem'
 const PXTOEM_ = 'pxToEm'
 const PXTOPCT_ = 'pxToPct'
@@ -88,7 +71,7 @@ const NORMALIZETOEM_ = 'normalizeToEm'
 const NORMALIZETOREM_ = 'normalizeToRem'
 const PXTOREL_ = 'pxToRelative'
 
-const defaultM = [
+const AllPlugins = [
   [PXTO, (x, o) => PxTo(o[BASEFONTSIZE])],
   [PXTOREM_, x => x[PXTO](REM)],
   [PXTOEM_, x => x[PXTO](EM)],
@@ -100,11 +83,6 @@ const defaultM = [
   createToMq,
   createGetThemeP,
   createGetBreakpointsP,
-  // [
-  //   BREAKPOINTSP_,
-  //   (m, {breakpointsKey}) => key =>
-  //     m[GETTHEMEP]([breakpointsKey, key].filter(Boolean)),
-  // ],
   createGetDefaultTheme,
   createTransformStyle,
   createTransformStyleP,
@@ -138,7 +116,7 @@ const warnInvalidPlugin = name =>
   )
 
 export default class Assistant implements AssistantI {
-  constructor(options: Options, methods = defaultM) {
+  constructor(options: Options, methods = AllPlugins) {
     const mergedOptions = {...defaultOptions, ...options}
     if (methods) {
       let AvailableMethods = {}
@@ -175,7 +153,7 @@ export default class Assistant implements AssistantI {
 
 export const createAssistant: AssistantI = (
   options: Options,
-  methods: Array<[string, Function]> = defaultM,
+  methods: Array<[string, Function]> = AllPlugins,
 ) => {
   let AvailableMethods = {}
   const mergedOptions = {...defaultOptions, ...options}

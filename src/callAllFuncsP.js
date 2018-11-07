@@ -27,6 +27,7 @@ const containsFunc = obj => {
   return b
 }
 
+/// loop through object literal styles as if each value may be a function
 export default style => {
   if (!containsFunc(style)) {
     return style
