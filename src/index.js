@@ -29,7 +29,8 @@ import {
 } from './getDefaultTheme'
 
 import Normalize from './normalize'
-import Parser from './parser'
+import Parser from './parser_'
+import {createParse} from './parse'
 import {createResponsive, ASSISTANTID as RESPONSIVE} from './responsive'
 import Media from './media'
 import {createMatchBlockP, ASSISTANTID as MATCHBLOCKP} from './matchBlockP'
@@ -74,8 +75,6 @@ const defaultOptions = {
   parserOptions: {},
 }
 
-const RBOOLP = 'responsiveBoolP'
-
 const BREAKPOINTSP_ = 'breakPointsP'
 
 const BASEFONTSIZE = 'baseFontSize'
@@ -87,9 +86,6 @@ const NORMALIZE_ = 'normalize'
 const NORMALIZETOEM_ = 'normalizeToEm'
 const NORMALIZETOREM_ = 'normalizeToRem'
 const PXTOREL_ = 'pxToRelative'
-
-const RESPONSIVEP_ = 'responsiveP'
-const SWITCHP = 'switchP'
 
 const defaultM = [
   [PXTO, (x, o) => PxTo(o[BASEFONTSIZE])],
@@ -116,27 +112,7 @@ const defaultM = [
   createResponsive,
   createResponsiveP,
   createSwitchP,
-  // [
-  //   SWITCHP,
-  //   (m, o) =>
-  //     SwitchProp(
-  //       m[RESPONSIVEP_],
-  //       m[RBOOLP],
-  //       m[TRANSFORMSTYLEP],
-  //       {
-  //         [PXTOREM_]: m[PXTOREM_],
-  //         [PXTOEM_]: m[PXTOEM_],
-  //         [PXTOPCT_]: m[PXTOPCT_],
-  //         ...path('transformOptions.functions', o),
-  //       },
-  //       o.switchPOptions,
-  //     ),
-  // ],
-  [
-    'parse',
-    (m, o) =>
-      Parser(m.switchP, m.toMq, m.breakPointsP, m.responsiveP, o.parserOptions),
-  ],
+  createParse,
   createMatchBlockP,
 ]
 

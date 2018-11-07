@@ -32,7 +32,6 @@ import type {SwitchPT, DependentMethodsT} from './types'
 
 import {ASSISTANTID as RESPONSIVEP} from '../responsiveP/constants'
 import {ASSISTANTID as TRANSFORMSTYLEP} from '../transformStyleP/constants'
-
 import {ASSISTANTID as RESPONSIVEBOOLP} from '../responsiveBoolP/constants'
 
 import getAndCheckMethod from '../shared/getAndCheckMethod'
