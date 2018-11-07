@@ -9,7 +9,8 @@ import {createResponsiveBool} from './responsiveBool'
 import {createResponsiveBoolP} from './responsiveBoolP'
 import {createToMq, ASSISTANTID as TOMQ} from './toMq'
 import SwitchProp from './switchP'
-import ResponsiveProp from './responsiveP'
+//import ResponsiveProp from './responsiveP_'
+import {createResponsiveP} from './responsiveP'
 //import ResponsiveBoolP from './responsiveBoolP'
 import {
   createTransformStyleP,
@@ -111,30 +112,21 @@ const defaultM = [
   createResponsiveBool,
   //[TRANSFORMSTYLEP_, TransformStyleP],
   createResponsiveBoolP,
-  // [
-  //   RBOOLP,
-  //   (m, {breakpointsKey}) =>
-  //     ResponsiveBoolP(
-  //       m[GETTHEMEP],
-  //       breakpointsKey,
-  //       m[TOMQ],
-  //       m[TRANSFORMSTYLEP],
-  //     ),
-  // ],
   ['media', (m, o) => Media(o.defaultTheme.breakpoints, m.toMq)],
   createResponsive,
+  createResponsiveP,
   // [RESPONSIVE, (m, o) => Responsive(m.toMq, o.defaultTheme.breakpoints)],
-  [
-    RESPONSIVEP_,
-    (m, o) =>
-      ResponsiveProp(
-        m[RESPONSIVE],
-        m[GETTHEMEP],
-        o.breakpointsKey,
-        m[TRANSFORMSTYLEP],
-        m.responsivePOptions,
-      ),
-  ],
+  // [
+  //   RESPONSIVEP_,
+  //   (m, o) =>
+  //     ResponsiveProp(
+  //       m[RESPONSIVE],
+  //       m[GETTHEMEP],
+  //       o.breakpointsKey,
+  //       m[TRANSFORMSTYLEP],
+  //       m.responsivePOptions,
+  //     ),
+  // ],
   [
     SWITCHP,
     (m, o) =>

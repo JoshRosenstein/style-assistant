@@ -1,11 +1,15 @@
-import ResponsiveProp from '../../src/responsiveP'
+import {createResponsiveP} from '../../src/responsiveP'
 import getThemeP from './getThemeP'
-import transformStyle from './transformStyle'
+import transformStyleP from './transformStyle'
 import responsive from './responsive'
 
-export default ResponsiveProp(
-  responsive,
-  getThemeP,
-  'breakpoints',
-  transformStyle,
+export default createResponsiveP(
+  {
+    responsive,
+    getThemeP,
+    transformStyleP,
+  },
+  {
+    breakpointsKey: 'breakpoints',
+  },
 )
