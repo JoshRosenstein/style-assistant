@@ -7,6 +7,10 @@ import {isResponsiveType, isTruthy} from '../utils'
 
 import {responsiveReducer} from '../responsiveHelpers'
 
+/**
+ * @requires toMq
+ */
+
 export const createResponsive = ({toMq}, {breakpointsKey, defaultTheme}) => {
   let defaultBreakPoints = prop(breakpointsKey, defaultTheme)
   return ({

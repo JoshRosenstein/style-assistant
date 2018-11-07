@@ -1,2 +1,1 @@
-const name = 'pxTo'
-export default name
+export const ASSISTANTID = 'pxTo'

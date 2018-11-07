@@ -10,6 +10,12 @@ import getAndCheckMethod from '../shared/getAndCheckMethod'
 
 const getDeps = getAndCheckMethod(ASSISTANTID)
 
+/**
+ * @requires responsiveBool
+ * @requires transformStyleP
+ * @requires getThemeP
+ */
+
 const createResponsiveBoolP = (
   methods: DependentMethodsT,
   {breakpointsKey},

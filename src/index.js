@@ -1,7 +1,7 @@
 // @flow
 import warning from 'warning'
 import {path} from '@roseys/futils'
-import {PxTo, PXTO} from './PxTo'
+import {PxTo, ASSISTANTID as PXTO} from './PxTo'
 import type {pxToT, pxToStr, pxToNum} from './PxTo/types'
 import {createGetThemeP, ASSISTANTID as GETTHEMEP} from './getThemeP'
 import type {getThemePT} from './getThemeP/types'
@@ -110,23 +110,10 @@ const defaultM = [
   createTransformStyle,
   createTransformStyleP,
   createResponsiveBool,
-  //[TRANSFORMSTYLEP_, TransformStyleP],
   createResponsiveBoolP,
   ['media', (m, o) => Media(o.defaultTheme.breakpoints, m.toMq)],
   createResponsive,
   createResponsiveP,
-  // [RESPONSIVE, (m, o) => Responsive(m.toMq, o.defaultTheme.breakpoints)],
-  // [
-  //   RESPONSIVEP_,
-  //   (m, o) =>
-  //     ResponsiveProp(
-  //       m[RESPONSIVE],
-  //       m[GETTHEMEP],
-  //       o.breakpointsKey,
-  //       m[TRANSFORMSTYLEP],
-  //       m.responsivePOptions,
-  //     ),
-  // ],
   [
     SWITCHP,
     (m, o) =>

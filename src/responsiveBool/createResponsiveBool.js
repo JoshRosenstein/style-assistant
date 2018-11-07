@@ -8,6 +8,9 @@ import {ASSISTANTID as TOMQ} from '../toMq/constants'
 import getAndCheckMethod from '../shared/getAndCheckMethod'
 const getDeps = getAndCheckMethod(ASSISTANTID)
 
+/**
+ * @requires toMq
+ */
 const createResponsiveBool = (
   methods: DependentMethodsT,
 ): CreateResponsiveBoolT => {
