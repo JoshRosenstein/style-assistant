@@ -36,6 +36,7 @@ import Media from './media'
 import {createMatchBlockP, ASSISTANTID as MATCHBLOCKP} from './matchBlockP'
 import {isFunction} from 'typed-is'
 import {IDKEY, ISSTANDALONEKEY} from './constants'
+import {createGetBreakpointsP} from './getBreakpointsP'
 const REM = 'rem'
 const EM = 'em'
 
@@ -98,11 +99,12 @@ const defaultM = [
   [NORMALIZETOREM_, x => x[NORMALIZE_](REM)],
   createToMq,
   createGetThemeP,
-  [
-    BREAKPOINTSP_,
-    (m, {breakpointsKey}) => key =>
-      m[GETTHEMEP]([breakpointsKey, key].filter(Boolean)),
-  ],
+  createGetBreakpointsP,
+  // [
+  //   BREAKPOINTSP_,
+  //   (m, {breakpointsKey}) => key =>
+  //     m[GETTHEMEP]([breakpointsKey, key].filter(Boolean)),
+  // ],
   createGetDefaultTheme,
   createTransformStyle,
   createTransformStyleP,

@@ -7,6 +7,7 @@ import getAndCheckMethod from '../shared/getAndCheckMethod'
 import {ASSISTANTID as RESPONSIVEP} from '../responsiveP/constants'
 import {ASSISTANTID as TOMQ} from '../toMq/constants'
 import {ASSISTANTID as SWITCHP} from '../switchP/constants'
+import {ASSISTANTID as GETBREAKPOINTSP} from '../getBreakpointsP/constants'
 import {isMQ} from '../utils'
 const BREAKPOINTSP_ = 'breakPointsP'
 const getDeps = getAndCheckMethod(ASSISTANTID)
@@ -21,7 +22,7 @@ const getDeps = getAndCheckMethod(ASSISTANTID)
 const createParse = (methods, options) => {
   let switchProp = getDeps(SWITCHP, methods)
   let toMq = getDeps(TOMQ, methods)
-  let breakpointsP = getDeps(BREAKPOINTSP_, methods)
+  let breakpointsP = getDeps(GETBREAKPOINTSP, methods)
   let responsiveP = getDeps(RESPONSIVEP, methods)
   let config = prop(OPTIONSKEY, options)
 
